@@ -11,9 +11,6 @@ public:
 
     ~SquareSignal() override = default;
 private:
-    double amplitude;
     double basePeriod;
-    double startTime;
-    double signalDuration;
     double fillFactor;
 };
