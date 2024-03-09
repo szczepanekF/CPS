@@ -4,11 +4,11 @@
 std::pair<std::vector<double>, std::vector<double>> Calculator::getCalculatedSignal(std::string operationType) {
     std::vector<double> calculatedValues = signals[0]->getSignal().first;
     std::vector<double> finalTimeInterval = signals[0]->getSignal().second;
-    calculateSignalsValues(operationType, calculatedValues);
+    calculatedValues = calculateSignalsValues(operationType, calculatedValues);
     return std::make_pair(calculatedValues, finalTimeInterval);
 }
 
-double Calculator::calculateSignalsValues(std::string operationType, std::vector<double> calculatedValues) {
+std::vector<double> Calculator::calculateSignalsValues(std::string operationType, std::vector<double> calculatedValues) {
     int signalsAmount = static_cast<int>(signals.size());
     for(int i=1; i<signalsAmount; i++) {
         std::vector<double> signalValues = signals[i]->getSignal().first;
@@ -20,6 +20,7 @@ double Calculator::calculateSignalsValues(std::string operationType, std::vector
             calculatedValues[j] = calculatedValue;
         }
     }
+    return calculatedValues;
 }
 
 double Calculator::calculateSignalValue(std::string operationType, double firstValue, double secondValue) {
