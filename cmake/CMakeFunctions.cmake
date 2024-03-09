@@ -19,6 +19,8 @@ function(set_link_options TARGET_NAME)
     target_compile_options(${TARGET_NAME} PRIVATE
             -Wall
             -Wextra
+            -Werror
+            -Wreturn-type
             -Wno-unused-variable
             -Wno-maybe-uninitialized
             -Wnon-virtual-dtor

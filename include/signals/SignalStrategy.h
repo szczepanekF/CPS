@@ -11,7 +11,7 @@ public:
 
 private:
     double duration;
-    const static int SAMPLE_COUNT = 10;
+    const static int SAMPLE_COUNT = 1000;
 protected:
     double beginTime;
     double amplitude;

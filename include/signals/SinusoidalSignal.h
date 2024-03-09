@@ -1,6 +1,6 @@
 #pragma once
 
-#include <random>
+
 #include "SignalStrategy.h"
 
 class SinusoidalSignal : public SignalStrategy {
