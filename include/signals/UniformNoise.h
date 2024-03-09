@@ -1,16 +1,14 @@
 
 #pragma once
 
-#include <random>
-#include "SignalStrategy.h"
+#include "ContinousSignal.h"
 
-class UniformNoise : public SignalStrategy {
+class UniformNoise : public ContinousSignal {
 public:
     UniformNoise(double amp, double time0, double dur);
 
     double calculateSignalAt(double time) override;
 
-    ~UniformNoise() override = default;
 };
 
 

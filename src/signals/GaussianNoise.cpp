@@ -9,5 +9,5 @@ double GaussianNoise::calculateSignalAt(double) {
     return distr(generator);
 }
 
-GaussianNoise::GaussianNoise(double amp, double time0, double dur) : SignalStrategy(amp, time0, dur) {
+GaussianNoise::GaussianNoise(double amp, double time0, double dur) : ContinousSignal(amp, time0, dur) {
 }

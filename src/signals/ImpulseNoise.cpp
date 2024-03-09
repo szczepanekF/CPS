@@ -11,5 +11,5 @@ double ImpulseNoise::calculateSignalAt(double) {
 }
 
 ImpulseNoise::ImpulseNoise(double amp, double time0, double dur, double freq, double prob)
-    : SignalStrategy(amp, time0, dur), samplingFrequency(freq), probability(prob){
+    : DiscreteSignal(amp, time0, dur, freq), probability(prob){
 }

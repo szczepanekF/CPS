@@ -9,5 +9,5 @@ double UniformNoise::calculateSignalAt(double) {
     return distr(generator);
 }
 
-UniformNoise::UniformNoise(double amp, double time0, double dur) : SignalStrategy(amp, time0, dur) {
+UniformNoise::UniformNoise(double amp, double time0, double dur) : ContinousSignal(amp, time0, dur) {
 }

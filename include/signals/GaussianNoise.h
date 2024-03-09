@@ -1,10 +1,8 @@
 
 #pragma once
+#include "ContinousSignal.h"
 
-#include <random>
-#include "SignalStrategy.h"
-
-class GaussianNoise : public SignalStrategy {
+class GaussianNoise : public ContinousSignal {
 public:
     GaussianNoise(double amp, double time0, double dur);
 

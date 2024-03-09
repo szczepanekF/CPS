@@ -3,7 +3,7 @@
 #include <cmath>
 
 RectangularSignal::RectangularSignal(double amp, double time0, double dur, double basePeriod, double fillFactor)
-        : SignalStrategy(amp, time0, dur), basePeriod(basePeriod), fillFactor(fillFactor) {
+        : ContinousSignal(amp, time0, dur), basePeriod(basePeriod), fillFactor(fillFactor) {
 
 }
 

@@ -1,17 +1,15 @@
 #pragma once
 
 
-#include "SignalStrategy.h"
+#include "ContinousSignal.h"
 
-class SinusoidalSignal : public SignalStrategy {
+class SinusoidalSignal : public ContinousSignal {
 public:
     SinusoidalSignal(double amp, double time0, double dur, double basePeriod);
+    ~SinusoidalSignal() override = default;
 
     double calculateSignalAt(double time) override;
-
-    ~SinusoidalSignal() override = default;
+    double getBasePeriod() const;
 private:
     double basePeriod;
-public:
-    double getBasePeriod() const;
 };

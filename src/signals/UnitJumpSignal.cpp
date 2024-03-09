@@ -2,7 +2,7 @@
 #include "signals/UnitJumpSignal.h"
 
 UnitJumpSignal::UnitJumpSignal(double amp, double time0, double dur, double jumpTime)
-        : SignalStrategy(amp, time0, dur), jumpTime(jumpTime) {
+        : ContinousSignal(amp, time0, dur), jumpTime(jumpTime) {
 
 }
 

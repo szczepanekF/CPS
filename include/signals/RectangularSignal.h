@@ -1,9 +1,9 @@
 #pragma once
 
 #include <random>
-#include "SignalStrategy.h"
+#include "ContinousSignal.h"
 
-class RectangularSignal : public SignalStrategy {
+class RectangularSignal : public ContinousSignal {
 public:
     RectangularSignal(double amp, double time0, double dur, double basePeriod, double fillFactor);
 

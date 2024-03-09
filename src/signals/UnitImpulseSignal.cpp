@@ -1,8 +1,8 @@
 
 #include "signals/UnitImpulseSignal.h"
 
-UnitImpulseSignal::UnitImpulseSignal(double amp, double time0, double dur, double jumpTime)
-        : SignalStrategy(amp, time0, dur), jumpTime(jumpTime) {
+UnitImpulseSignal::UnitImpulseSignal(double amp, double time0, double dur, double freq, double jumpTime)
+        : DiscreteSignal(amp, time0, dur, freq), jumpTime(jumpTime) {
 
 }
 

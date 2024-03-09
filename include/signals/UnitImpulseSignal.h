@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "SignalStrategy.h"
-class UnitImpulseSignal : public SignalStrategy {
+#include "DiscreteSignal.h"
+class UnitImpulseSignal : public DiscreteSignal {
 public:
-    UnitImpulseSignal(double amp, double time0, double dur, double jumpTime);
+    UnitImpulseSignal(double amp, double time0, double dur, double freq, double jumpTime);
 
     double calculateSignalAt(double time) override;
 private:
