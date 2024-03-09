@@ -32,8 +32,6 @@ function(set_link_options TARGET_NAME)
             -Wduplicated-branches
             -Wlogical-op
             -Wnull-dereference
-            -Wuseless-cast
-            -Wdouble-promotion
             #            -O3
             )
 endfunction()
@@ -42,3 +40,12 @@ function(add_to_project_libs TARGET_NAME)
     get_property(PROJECT_LIBS GLOBAL PROPERTY PROJECT_LIBS_TARGETS)
     set_property(GLOBAL PROPERTY PROJECT_LIBS_TARGETS "${PROJECT_LIBS};${TARGET_NAME}")
 endfunction()
+
+macro(download_conan_cmake)
+    if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan/conan.cmake")
+        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/develop2/conan_provider.cmake"
+                "${CMAKE_BINARY_DIR}/conan/conan.cmake")
+    endif ()
+
+
+endmacro()

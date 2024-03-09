@@ -18,7 +18,17 @@ add_lib(src
         signals/UniformNoise.cpp
         signals/UnitImpulseSignal.cpp
         signals/UnitJumpSignal.cpp
+
         Calculator.cpp
         )
+
 add_to_project_libs(Python3::NumPy)
-add_app(${PROJECT_NAME} run/main.cpp)
+add_to_project_libs(imgui::imgui)
+add_to_project_libs(glfw)
+add_to_project_libs(GLEW::glew_s)
+add_app(${PROJECT_NAME}
+        run/main.cpp
+        bindings/imgui_impl_opengl3.cpp
+        bindings/imgui_impl_opengl3.h
+        bindings/imgui_impl_glfw.cpp
+        bindings/imgui_impl_glfw.h)
