@@ -18,6 +18,7 @@ add_lib(src
         signals/UniformNoise.cpp
         signals/UnitImpulseSignal.cpp
         signals/UnitJumpSignal.cpp
+        Calculator.cpp
         )
 add_to_project_libs(Python3::NumPy)
 add_app(${PROJECT_NAME} run/main.cpp)

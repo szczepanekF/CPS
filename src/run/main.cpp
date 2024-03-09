@@ -16,10 +16,10 @@ namespace plt = matplotlibcpp;
 
 int main() {
     SignalStrategy* signal = new ImpulseNoise(10, -5, 15,1, 0.4);
+
     auto data = signal->getSignal();
-//    plt::hist<int>({2,2,2,3,3,1,1,1,1,1,5,2,3,8,8,9,4});
-    plt::scatter(data.first, data.second, 3);
-//    plt::plot<>(data.first, data.second,{{"linewidth" ,"0.5"}});
+//    plt::scatter(data.first, data.second, 3);
+    plt::plot<>(data.first, data.second,{{"linewidth" ,"0.5"}});
     plt::show();
     delete signal;
 }
