@@ -12,4 +12,6 @@ public:
     ~SinusoidalSignal() override = default;
 private:
     double basePeriod;
+public:
+    double getBasePeriod() const;
 };

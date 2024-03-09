@@ -16,6 +16,10 @@ std::pair<std::vector<double>, std::vector<double>> SignalStrategy::getSignal() 
     return std::make_pair(timeValues, signalValues);
 }
 
-double SignalStrategy::getAmplitude() {
+double SignalStrategy::getAmplitude() const {
     return amplitude;
+}
+
+double SignalStrategy::getBeginTime() const {
+    return beginTime;
 }

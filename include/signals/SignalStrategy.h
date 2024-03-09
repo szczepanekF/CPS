@@ -7,12 +7,15 @@ public:
     virtual ~SignalStrategy() = default;
     virtual double calculateSignalAt(double time) = 0;
     std::pair<std::vector<double>, std::vector<double>> getSignal();
-    double getAmplitude();
+    double getAmplitude() const;
 
 private:
     double duration;
     const static int SAMPLE_COUNT = 1000;
-protected:
     double beginTime;
+public:
+    double getBeginTime() const;
+
+private:
     double amplitude;
 };

@@ -5,7 +5,11 @@ SinusoidalSignal::SinusoidalSignal(double amp, double time0, double dur, double 
 
 
 double SinusoidalSignal::calculateSignalAt(double time) {
-    double angularSpeed = (2 * M_PI) / basePeriod;
-    double timeDifference = time - beginTime;
-    return amplitude * sin(angularSpeed * timeDifference);
+    double angularSpeed = (2 * M_PI) / getBasePeriod();
+    double timeDifference = time - getBeginTime();
+    return getAmplitude() * sin(angularSpeed * timeDifference);
+}
+
+double SinusoidalSignal::getBasePeriod() const {
+    return basePeriod;
 }
