@@ -1,17 +1,19 @@
 #include "Calculator.h"
 
 
-std::pair<std::vector<double>, std::vector<double>> Calculator::getCalculatedSignal(std::string operationType) {
-    std::vector<double> calculatedValues = signals[0]->getSignal().first;
-    std::vector<double> finalTimeInterval = signals[0]->getSignal().second;
-    calculatedValues = calculateSignalsValues(operationType, calculatedValues);
-    return std::make_pair(calculatedValues, finalTimeInterval);
+Signal Calculator::getCalculatedSignal(std::string operationType) {
+    Signal signal;
+    std::vector<double> calculatedValues = signals[0]->getSignal().signalValues;
+    signal.timeValues = signals[0]->getSignal().timeValues;
+    calculateSignalsValues(operationType, calculatedValues);
+    signal.signalValues = calculatedValues;
+    return signal;
 }
 
-std::vector<double> Calculator::calculateSignalsValues(std::string operationType, std::vector<double> calculatedValues) {
+void Calculator::calculateSignalsValues(std::string operationType, std::vector<double> &calculatedValues) {
     int signalsAmount = static_cast<int>(signals.size());
     for(int i=1; i<signalsAmount; i++) {
-        std::vector<double> signalValues = signals[i]->getSignal().first;
+        std::vector<double> signalValues = signals[i]->getSignal().signalValues;
         int valuesAmount = static_cast<int>(signalValues.size());
         for(int j=0; j<valuesAmount; j++) {
             double calculatedValue =  calculateSignalValue(operationType,
@@ -20,7 +22,6 @@ std::vector<double> Calculator::calculateSignalsValues(std::string operationType
             calculatedValues[j] = calculatedValue;
         }
     }
-    return calculatedValues;
 }
 
 double Calculator::calculateSignalValue(std::string operationType, double firstValue, double secondValue) {
@@ -31,9 +32,12 @@ double Calculator::calculateSignalValue(std::string operationType, double firstV
     } else if(operationType == "multiply") {
         return  firstValue * secondValue;
     } else if(operationType == "divide") {
+
         return firstValue / secondValue;
     }
 }
+
+Calculator::Calculator(std::vector<SignalStrategy *> signals):signals(signals) {}
 
 
 

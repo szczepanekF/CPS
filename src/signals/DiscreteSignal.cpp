@@ -5,16 +5,15 @@ DiscreteSignal::DiscreteSignal(double amp, double time0, double dur, double freq
         : SignalStrategy(amp, time0, dur), frequency(frequency) {
 }
 
-std::pair<std::vector<double>, std::vector<double>> DiscreteSignal::getSignal() {
+Signal DiscreteSignal::getSignal() {
     double diff = 1 / frequency;
     double time = getBeginTime();
-    std::vector<double> signalValues;
-    std::vector<double> timeValues;
+    Signal signal;
     while (time < getBeginTime() + getDuration()) {
-        signalValues.push_back(calculateSignalAt(time));
-        timeValues.push_back(time);
+        signal.signalValues.push_back(calculateSignalAt(time));
+        signal.timeValues.push_back(time);
         time += diff;
     }
-    return std::make_pair(timeValues, signalValues);
+    return signal;
 
 }
