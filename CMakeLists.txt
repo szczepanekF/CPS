@@ -11,5 +11,7 @@ SET(CMAKE_C_COMPILER_VERSION 11)
 find_package(imgui)
 find_package(glfw3)
 find_package(glew)
+find_package(implot)
 #
+
 add_subdirectory(src)
