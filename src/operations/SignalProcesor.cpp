@@ -1,5 +1,5 @@
 #include <utility>
-
+#include <fstream>
 #include "operations/SignalProcesor.h"
 
 SignalProcesor::SignalProcesor(std::unique_ptr<SignalStrategy> signalStrategy) : strategy(std::move(signalStrategy)), signalValues() {

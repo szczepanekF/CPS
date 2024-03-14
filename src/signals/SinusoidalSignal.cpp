@@ -2,7 +2,9 @@
 #include <cmath>
 
 SinusoidalSignal::SinusoidalSignal(double amp, double time0, double dur, double basePeriod)
-        : ContinousSignal(amp, time0, dur), basePeriod(basePeriod) {}
+        : ContinousSignal(amp, time0, dur), basePeriod(basePeriod) {
+
+}
 
 
 double SinusoidalSignal::calculateSignalAt(double time) {

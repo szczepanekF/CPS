@@ -10,4 +10,5 @@ double GaussianNoise::calculateSignalAt(double) {
 }
 
 GaussianNoise::GaussianNoise(double amp, double time0, double dur) : ContinousSignal(amp, time0, dur) {
+
 }

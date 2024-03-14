@@ -18,4 +18,7 @@ public:
     double meanPower() const;
     double rms() const;
 
+    size_t size() const;
+
+    void convertToFloat(double* vals, double* time) const;
 };

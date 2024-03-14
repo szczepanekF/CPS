@@ -3,7 +3,9 @@
 
 RectangularSymmetricSignal::RectangularSymmetricSignal(double amp, double time0, double dur, double basePeriod,
                                                        double fillFactor)
-        : RectangularSignal(amp, time0, dur, basePeriod, fillFactor) {}
+        : RectangularSignal(amp, time0, dur, basePeriod, fillFactor) {
+
+}
 
 double RectangularSymmetricSignal::calculateSignalAt(double time) {
     double beginTime = getBeginTime();

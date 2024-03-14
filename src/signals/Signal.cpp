@@ -80,3 +80,14 @@ double Signal::meanPower() const {
 double Signal::rms() const {
     return std::sqrt(meanPower());
 }
+
+size_t Signal::size() const {
+    return signalValues.size();
+}
+
+void Signal::convertToFloat(double *vals, double *time) const {
+    for (int i = 0; i < size(); i++) {
+        vals[i] = signalValues[i];
+        time[i] = timeValues[i];
+    }
+}
