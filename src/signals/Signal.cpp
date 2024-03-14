@@ -1,5 +1,6 @@
 #include "signals/Signal.h"
 #include <cmath>
+#include <iostream>
 
 Signal Signal::operator-(const Signal &s) const {
     Signal ret;
@@ -27,6 +28,7 @@ Signal Signal::operator/(const Signal &s) const {
     ret.timeValues = this->timeValues;
     ret.signalValues = std::vector<double>(this->signalValues.size());
     for(size_t i = 0; i < signalValues.size(); i++) {
+        if (s.signalValues[i] == 0) continue;
         ret.signalValues[i] = this->signalValues[i] / s.signalValues[i];
     }
     return ret;

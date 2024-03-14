@@ -1,4 +1,5 @@
 
+#include <cmath>
 #include "signals/UnitJumpSignal.h"
 
 UnitJumpSignal::UnitJumpSignal(double amp, double time0, double dur, double jumpTime)
@@ -7,7 +8,7 @@ UnitJumpSignal::UnitJumpSignal(double amp, double time0, double dur, double jump
 }
 
 double UnitJumpSignal::calculateSignalAt(double time) {
-    if (time == jumpTime) {
+    if (std::fabs(time - jumpTime) < 0.001) {
         return getAmplitude() / 2;
     }
     return time > jumpTime ? getAmplitude() : 0;

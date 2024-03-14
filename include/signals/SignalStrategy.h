@@ -8,21 +8,24 @@ public:
 
     virtual ~SignalStrategy() = default;
 
-    virtual double calculateSignalAt(double time) = 0;
+    virtual double calculateSignalAt(double time);
 
-    Signal &getSignal();
-
+    virtual Signal &getSignal();
     double getAmplitude() const;
-
     double getBeginTime() const;
-
     double getDuration() const;
+    int getSampleCount() const;
+
+    void setSignal(const Signal &signal);
+    void setSampleCount(int sampleCount);
+
 
 protected:
+    void calculateSignal();
+
+private:
 
     int SAMPLE_COUNT;
-private:
-    void calculateSignal();
 
     Signal signal;
 

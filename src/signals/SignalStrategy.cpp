@@ -1,5 +1,5 @@
 #include "signals/SignalStrategy.h"
-#include <iostream>
+
 SignalStrategy::SignalStrategy(double amp, double time0, double dur): SAMPLE_COUNT(10000), duration(dur), beginTime(time0), amplitude(amp) {
 }
 
@@ -44,12 +44,11 @@ double SignalStrategy::getDuration() const {
 //}
 
 Signal& SignalStrategy::getSignal() {
-    calculateSignal();
+
     return signal;
 }
 
 void SignalStrategy::calculateSignal() {
-    std::cout<<SAMPLE_COUNT;
     double diff = getDuration() / SAMPLE_COUNT;
     double time = getBeginTime();
     while (time < getBeginTime() + getDuration()) {
@@ -58,5 +57,22 @@ void SignalStrategy::calculateSignal() {
         time += diff;
     }
 }
+
+double SignalStrategy::calculateSignalAt(double) {
+    return 0;
+}
+
+int SignalStrategy::getSampleCount() const {
+    return SAMPLE_COUNT;
+}
+
+void SignalStrategy::setSignal(const Signal &signal) {
+    SignalStrategy::signal = signal;
+}
+
+void SignalStrategy::setSampleCount(int sampleCount) {
+    SAMPLE_COUNT = sampleCount;
+}
+
 
 

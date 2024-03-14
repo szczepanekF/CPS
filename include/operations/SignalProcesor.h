@@ -10,10 +10,12 @@ public:
 
     Signal getCalculatedSignal(std::string &operationType);
 
+    void saveSignalToBinary(const Signal& sig,const std::string& filename);
+    SignalStrategy* readSignalFromBinary(const std::string& filename);
+
 private:
 
     void addNewSignal(const Signal &signal);
-
     void removeSignal(int i);
 
     static Signal
