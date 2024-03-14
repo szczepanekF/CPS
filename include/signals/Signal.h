@@ -20,5 +20,5 @@ public:
 
     size_t size() const;
 
-    void convertToFloat(double* vals, double* time) const;
+    void convertToFloat(float* vals, float* time) const;
 };

@@ -87,7 +87,7 @@ size_t Signal::size() const {
     return signalValues.size();
 }
 
-void Signal::convertToFloat(double *vals, double *time) const {
+void Signal::convertToFloat(float *vals, float *time) const {
     for (int i = 0; i < size(); i++) {
         vals[i] = signalValues[i];
         time[i] = timeValues[i];

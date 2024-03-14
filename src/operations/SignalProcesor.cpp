@@ -62,7 +62,7 @@ void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &fi
     outFile.write(reinterpret_cast<const char *>(&dur), sizeof(dur));
     int sampleCount = strategy->getSampleCount();
     outFile.write(reinterpret_cast<const char *>(&sampleCount), sizeof(sampleCount));
-
+    std::cout<<"debug pront 1";
     // Write size of vectors
     size_t sizeX = sig.size();
     outFile.write(reinterpret_cast<const char *>(&sizeX), sizeof(sizeX));
@@ -71,6 +71,7 @@ void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &fi
     // Write the data of the vectors
     outFile.write(reinterpret_cast<const char *>(sig.signalValues.data()), sizeX * sizeof(double));
     outFile.write(reinterpret_cast<const char *>(sig.timeValues.data()), sizeX * sizeof(double));
+    std::cout<<"debug pront 2";
 
     // Close the file
     outFile.close();
