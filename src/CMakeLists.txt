@@ -21,7 +21,6 @@ add_lib(src
         signals/Signal.cpp
 
         operations/SignalProcesor.cpp
-        operations/SignalFileOperation.cpp
         )
 
 add_to_project_libs(Python3::NumPy)
