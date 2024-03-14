@@ -9,5 +9,5 @@ public:
     struct Signal getSignal() override;
 
 private:
-    static const int SAMPLE_COUNT = 10000;
+    const int SAMPLE_COUNT;
 };

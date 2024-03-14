@@ -18,9 +18,9 @@ add_lib(src
         signals/UniformNoise.cpp
         signals/UnitImpulseSignal.cpp
         signals/UnitJumpSignal.cpp
+        signals/Signal.cpp
 
-
-        operations/Calculator.cpp
+        operations/SignalProcesor.cpp
         operations/SignalFileOperation.cpp
         )
 

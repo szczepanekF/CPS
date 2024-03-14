@@ -1,11 +1,6 @@
 #pragma once
 #include <vector>
-
-struct Signal {
-    std::vector<double> timeValues;
-    std::vector<double> signalValues;
-};
-
+#include "signals/Signal.h"
 class SignalStrategy {
 public:
     SignalStrategy(double amp, double time0, double dur);
