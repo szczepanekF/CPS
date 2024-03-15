@@ -88,27 +88,24 @@ std::unique_ptr<Signal> SignalProcesor::readSignalFromBinary(const std::string &
     size_t sizeX;
     inFile.read(reinterpret_cast<char *>(&sizeX), sizeof(sizeX));
 
-
+    newSignal->signalValues.resize(sizeX);
+    newSignal->timeValues.resize(sizeX);
 
     // Read the data of the vectors
-    std::vector<double> tmp;
-    inFile.read(reinterpret_cast<char *>(tmp.data()), sizeX * sizeof(double));
+
+    inFile.read(reinterpret_cast<char *>(newSignal->signalValues.data()), sizeX * sizeof(double));
     // Resize vectors to fit the read data
-    newSignal->signalValues = tmp;
-    newSignal->timeValues.resize(sizeX);
+
 
     double diff = 1 / frequency;
     double time = bTime;
     int i = 0;
-    std::cout<<"debug2";
 
     while (time <= bTime + dur) {
         newSignal->timeValues[i] = time;
         time += diff;
         i ++;
     }
-
-    std::cout<<"debug3";
 
 
     // Close the file

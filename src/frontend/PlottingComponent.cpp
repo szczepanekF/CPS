@@ -84,14 +84,22 @@ void PlottingComponent::createButton(const char *label, int option) {
     ImGui::SetNextItemWidth(500);
     if (ImGui::Button(label)) {
 
-        SignalProcesor signalProcesor;
+
         if (option == 0) {
-            signalProcesor.saveSignalToBinary(*currentStrategy, *drawedSignal, std::string (filename)+".bin");
-        } else if (option == 1) {
-            operations.push_back(signalProcesor.readSignalFromBinary(std::string (filename)+".bin"));
+            if (currentStrategy != nullptr && drawedSignal != nullptr) {
+                signalProcesor.saveSignalToBinary(*currentStrategy, *drawedSignal, std::string (filename)+".bin");
+            } else {
+                ImGui::OpenPopup("fileError");
+            }
         } else {
             cleanUp();
-            setDrawedSignalBySignalType();
+            if (option == 1 && std::string(filename).size()) {
+                drawedSignal = signalProcesor.readSignalFromBinary(std::string (filename)+".bin");
+                signalProcesor.addNewSignal(*drawedSignal);
+            } else {
+                setDrawedSignalBySignalType();
+            }
+
             xData = new float[drawedSignal->size()];
             yData = new float[drawedSignal->size()];
             drawedSignal->convertToFloat(yData, xData);
@@ -104,7 +112,7 @@ PlottingComponent::~PlottingComponent() {
     cleanUp();
 }
 
-PlottingComponent::PlottingComponent() : filename(),
+PlottingComponent::PlottingComponent() : filename(), signalProcesor(),
                                          drawedSignal(nullptr) {
     initDrawData();
     initChecks();
@@ -334,6 +342,17 @@ void PlottingComponent::drawParameterPanel() {
     showSignalParameters();
     ImGui::End();
 }
+void PlottingComponent::createPopup(const std::string &label,const std::string &info, void (* myFunc)()) {
+    if (ImGui::BeginPopup(label.c_str())) {
+        ImGui::Text(info.c_str());
+        myFunc();
+        if (ImGui::Button("Close")) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+}
 
 void PlottingComponent::drawFilePanel() {
     ImGui::SetNextWindowPos(ImVec2(860, 20), ImGuiCond_Always);
@@ -341,6 +360,8 @@ void PlottingComponent::drawFilePanel() {
     ImGui::Begin("Buttons", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showFileOperations();
+//    createPopup("fileError", "Draw or read signal first");
+
     ImGui::End();
 }
 
@@ -353,4 +374,12 @@ void PlottingComponent::drawSignalInfoPanelIfSignalChosen() {
         drawSignalInfo();
         ImGui::End();
     }
+}
+
+
+
+void PlottingComponent::createOperationButtons() {
+
+
+
 }

@@ -1,4 +1,4 @@
-
+#pragma once
 #include "signals/SignalStrategy.h"
 #include <memory>
 #include <string>
@@ -13,11 +13,11 @@ public:
     void saveSignalToBinary(const SignalStrategy& strat, const Signal& sig,const std::string& filename);
     std::unique_ptr<Signal> readSignalFromBinary(const std::string& filename);
     std::string readSignalFromBinaryAsString(const std::string& filename);
+    void addNewSignal(const Signal &signal);
+    void removeSignal(int i);
 
 private:
 
-    void addNewSignal(const Signal &signal);
-    void removeSignal(int i);
 
     static Signal
     calculateSignalOperation(std::string &operationType, const Signal &firstSig, const Signal &secondSig);

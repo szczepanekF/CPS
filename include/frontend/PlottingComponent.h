@@ -7,9 +7,11 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "signals/SignalTypes.h"
+#include "operations/SignalProcesor.h"
 
 
 class Signal;
+
 class Parameter;
 
 class Option;
@@ -29,11 +31,14 @@ private:
     void drawPlotPanel();
 
     void drawSignalChoicePanel();
+
     void drawParameterPanel();
+
     void drawFilePanel();
 
 
     void drawSignalInfoPanelIfSignalChosen();
+
     void drawPlot();
 
     void showSignalParameters();
@@ -46,23 +51,36 @@ private:
 
     void createButton(const char *label, int option);
 
-    void handleParamsVisibility(std::unordered_set<int>& paramsToShowIndexex);
+    void handleParamsVisibility(std::unordered_set<int> &paramsToShowIndexex);
 
-    void handleChecksButtonsVisibility(bool& paramCheck);
+    void handleChecksButtonsVisibility(bool &paramCheck);
 
     void initChecks();
 
+    void cleanUp();
+
+    void initDrawData();
 
     void drawSignalInfo();
+
     void updateCheckBoxesAndParams();
+
     void setDrawedSignalBySignalType();
+
+    void createPopup(const std::string &label, const std::string &info, void (* myFunc)());
+    void createOperationButtons();
 
 
     bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
-    std::vector<bool*>checks = {&SinusoidalSignalCheck, &GaussianNoiseCheck, &ImpulseNoiseCheck, &RectangularSignalCheck, &RectangularSymmetricSignalCheck, &SinusoidalOneHalfRectifiedSignalCheck, &SinusoidalTwoHalfRectifiedSignalCheck, &TriangularSignalCheck, &UniformNoiseCheck, &UnitImpulseSignalCheck, &UnitJumpSignalCheck};
+    std::vector<bool *> checks = {&SinusoidalSignalCheck, &GaussianNoiseCheck, &ImpulseNoiseCheck,
+                                  &RectangularSignalCheck, &RectangularSymmetricSignalCheck,
+                                  &SinusoidalOneHalfRectifiedSignalCheck, &SinusoidalTwoHalfRectifiedSignalCheck,
+                                  &TriangularSignalCheck, &UniformNoiseCheck, &UnitImpulseSignalCheck,
+                                  &UnitJumpSignalCheck};
 
 
     char filename[256];
+    SignalProcesor signalProcesor;
     std::vector<Parameter> params;
     std::vector<Option> options;
     float *xData;
@@ -74,6 +92,5 @@ private:
     std::vector<std::unique_ptr<Signal>> operations;
     SIGNAL_TYPE signalType;
 
-    void cleanUp();
-    void initDrawData();
+
 };
