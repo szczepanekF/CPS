@@ -6,5 +6,6 @@ public:
     double value;
     double isVisible;
 
-    Parameter(const std::string &name, bool isVisible, double value);
+    Parameter(const std::string &name);
+    double val();
 };

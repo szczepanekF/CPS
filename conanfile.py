@@ -5,7 +5,7 @@ from conan import ConanFile
 
 class ImGuiExample(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    generators = "CMakeDeps"
+    generators = "CMakeDeps", "CMakeToolchain"
 
 
     def requirements(self):
