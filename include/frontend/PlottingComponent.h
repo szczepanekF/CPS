@@ -4,7 +4,11 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <unordered_map>
+#include "signals/SignalTypes.h"
 
+
+class Signal;
 class Parameter;
 
 class Option;
@@ -33,6 +37,9 @@ private:
     void createButton(const char *label, int option);
 
     void initChecks();
+
+
+//    Signal getSignalForSignalType();
     std::vector<bool> ampVisibility, time0Visibility, probVisibility, durationVisibility, basePeriodVisibility, freqVisibility, fillFactorVisibility, jumpTimeVisibility;
 
     bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
@@ -42,8 +49,10 @@ private:
     std::vector<Option> options;
     float *xData;
     float *yData;
+    int dataSize;
     SignalStrategy *signalStrategy;
-    std::vector<std::unique_ptr<SignalStrategy>> strategies;
+    std::unordered_map<SIGNAL_TYPE, std::unique_ptr<Signal>> map;
+    std::vector<std::unique_ptr<Signal>> strategies;
 
     void cleanUp();
 };

@@ -11,7 +11,7 @@ public:
     Signal getCalculatedSignal(std::string &operationType);
 
     void saveSignalToBinary(const Signal& sig,const std::string& filename);
-    SignalStrategy* readSignalFromBinary(const std::string& filename);
+    std::unique_ptr<Signal> readSignalFromBinary(const std::string& filename);
 
 private:
 

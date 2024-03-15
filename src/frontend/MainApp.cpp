@@ -18,13 +18,13 @@ ImVec4 clear_color;
 
 
 
-static void glfw_error_callback(int error, const char *description) {
+void MainApp::glfw_error_callback(int error, const char *description) {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
 
 
-bool isFrameInitSuccessful() {
+bool MainApp::isFrameInitSuccessful() {
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
         return false;
@@ -32,7 +32,7 @@ bool isFrameInitSuccessful() {
     glsl_version = "#version 130";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    window = glfwCreateWindow(1280, 720, "CPS zad1", nullptr, nullptr);
+    window = glfwCreateWindow(1920, 1080, "CPS zad1", nullptr, nullptr);
     if (window == nullptr) {
         return false;
     }
@@ -41,7 +41,7 @@ bool isFrameInitSuccessful() {
     return true;
 }
 
-void configureWindow() {
+void MainApp::configureWindow() {
     ImGui::CreateContext();
     ImPlot::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
@@ -55,7 +55,7 @@ void configureWindow() {
     clear_color = ImVec4(0.10f, 0.40f, 0.80f, 1.00f);
 }
 
-void render() {
+void MainApp::render() {
 // Rendering
     ImGui::Render();
     int display_w, display_h;

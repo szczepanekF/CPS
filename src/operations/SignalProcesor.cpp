@@ -54,24 +54,19 @@ void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &fi
         return;
     }
     //write parameters
-    double amp = strategy->getAmplitude();
-    outFile.write(reinterpret_cast<const char *>(&amp), sizeof(amp));
+
     double bTime = strategy->getBeginTime();
     outFile.write(reinterpret_cast<const char *>(&bTime), sizeof(bTime));
     double dur = strategy->getDuration();
     outFile.write(reinterpret_cast<const char *>(&dur), sizeof(dur));
     int sampleCount = strategy->getSampleCount();
     outFile.write(reinterpret_cast<const char *>(&sampleCount), sizeof(sampleCount));
-    std::cout<<"debug pront 1";
-    // Write size of vectors
+
     size_t sizeX = sig.size();
     outFile.write(reinterpret_cast<const char *>(&sizeX), sizeof(sizeX));
-    outFile.write(reinterpret_cast<const char *>(&sizeX), sizeof(sizeX));
 
-    // Write the data of the vectors
     outFile.write(reinterpret_cast<const char *>(sig.signalValues.data()), sizeX * sizeof(double));
-    outFile.write(reinterpret_cast<const char *>(sig.timeValues.data()), sizeX * sizeof(double));
-    std::cout<<"debug pront 2";
+
 
     // Close the file
     outFile.close();
@@ -79,38 +74,42 @@ void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &fi
     std::cout << "Vectors saved to file successfully." << std::endl;
 }
 
-SignalStrategy *SignalProcesor::readSignalFromBinary(const std::string &filename) {
+std::unique_ptr<Signal> SignalProcesor::readSignalFromBinary(const std::string &filename) {
     std::ifstream inFile(filename, std::ios::in | std::ios::binary);
     if (!inFile.is_open()) {
         std::cerr << "Error opening file for reading!" << std::endl;
-        return nullptr;
+        return {};
     }
-    double amp, bTime, dur;
+    std::unique_ptr<Signal> newSignal = std::make_unique<Signal>();
+    double bTime, dur;
     int sampleCount;
-    inFile.read(reinterpret_cast< char *>(&amp), sizeof(amp));
     inFile.read(reinterpret_cast< char *>(&bTime), sizeof(bTime));
     inFile.read(reinterpret_cast< char *>(&dur), sizeof(dur));
     inFile.read(reinterpret_cast< char *>(&sampleCount), sizeof(sampleCount));
     // Read the size of the vectors
-    size_t sizeX, sizeY;
+    size_t sizeX;
     inFile.read(reinterpret_cast<char *>(&sizeX), sizeof(sizeX));
-    inFile.read(reinterpret_cast<char *>(&sizeY), sizeof(sizeY));
 
-    Signal newSignal;
-    // Resize vectors to fit the read data
-    newSignal.signalValues.resize(sizeX);
-    newSignal.timeValues.resize(sizeY);
+
 
     // Read the data of the vectors
-    inFile.read(reinterpret_cast<char *>(newSignal.signalValues.data()), sizeX * sizeof(double));
-    inFile.read(reinterpret_cast<char *>(newSignal.timeValues.data()), sizeY * sizeof(double));
+    inFile.read(reinterpret_cast<char *>(newSignal->signalValues.data()), sizeX * sizeof(double));
+    // Resize vectors to fit the read data
+    newSignal->signalValues.resize(sizeX);
+    newSignal->timeValues.resize(sizeX);
+    double diff = dur / sampleCount;
+    double time = bTime;
+    int i = 0;
+    while (time < bTime + dur) {
+        newSignal->timeValues[i] = time;
+        time += diff;
+        i ++;
+    }
 
     // Close the file
     inFile.close();
-    SignalStrategy* newStrat = new SignalStrategy(amp,bTime, dur);
-    newStrat->setSampleCount(sampleCount);
-    newStrat->setSignal(newSignal);
-    return newStrat;
+
+    return std::move(newSignal);
 }
 
 
