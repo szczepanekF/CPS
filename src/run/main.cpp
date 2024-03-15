@@ -177,7 +177,7 @@ void createCheckbox(Option &option) {
     }
 }
 
-void createCheckbox(SignalStrategy *strategy, const char *label, bool check) {
+void createCheckbox(SignalStrategy *strategy, const char *label, bool &check) {
     if (ImGui::Checkbox(label, &check)) {
         delete signalStrategy;
         signalStrategy = strategy;
@@ -201,19 +201,19 @@ int main() {
             Parameter("Jump time", true, jumpTime),
     };
 
-    std::vector<Option> options = {
-            Option(new SinusoidalSignal(amp, time0, duration, basePeriod), "Sinusoidal signal"),
-            Option(new GaussianNoise(amp, time0, duration), "Gausian noise"),
-            Option(new ImpulseNoise(amp, time0, duration, freq, prob), "Impulse noise"),
-            Option(new RectangularSignal(amp, time0, duration, basePeriod, fillFactor), "Rectangular signal"),
-            Option(new RectangularSymmetricSignal(amp, time0, duration, basePeriod, fillFactor),"Rectangular simetric signal"),
-            Option(new SinusoidalOneHalfRectifiedSignal(amp, time0, duration, basePeriod),"Sinusoidal one half rectified signal"),
-            Option(new SinusoidalTwoHalfRectifiedSignal(amp, time0, duration, basePeriod),"Sinusoidal two half rectified signal"),
-            Option(new TriangularSignal(amp, time0, duration, basePeriod, fillFactor), "Triangular signal"),
-            Option(new UniformNoise(amp, time0, duration), "Uniform Noise"),
-            Option(new UnitImpulseSignal(amp, time0, duration, freq, jumpTime), "Unit impulse signal"),
-            Option(new UnitJumpSignal(amp, time0, duration, jumpTime), "Unit jump signal")
-    };
+//    std::vector<Option> options = {
+//            Option(new SinusoidalSignal(amp, time0, duration, basePeriod), "Sinusoidal signal"),
+//            Option(new GaussianNoise(amp, time0, duration), "Gausian noise"),
+//            Option(new ImpulseNoise(amp, time0, duration, freq, prob), "Impulse noise"),
+//            Option(new RectangularSignal(amp, time0, duration, basePeriod, fillFactor), "Rectangular signal"),
+//            Option(new RectangularSymmetricSignal(amp, time0, duration, basePeriod, fillFactor),"Rectangular simetric signal"),
+//            Option(new SinusoidalOneHalfRectifiedSignal(amp, time0, duration, basePeriod),"Sinusoidal one half rectified signal"),
+//            Option(new SinusoidalTwoHalfRectifiedSignal(amp, time0, duration, basePeriod),"Sinusoidal two half rectified signal"),
+//            Option(new TriangularSignal(amp, time0, duration, basePeriod, fillFactor), "Triangular signal"),
+//            Option(new UniformNoise(amp, time0, duration), "Uniform Noise"),
+//            Option(new UnitImpulseSignal(amp, time0, duration, freq, jumpTime), "Unit impulse signal"),
+//            Option(new UnitJumpSignal(amp, time0, duration, jumpTime), "Unit jump signal")
+//    };
     if (isFrameInitSuccessful()) {
         configureWindow();
         while (!glfwWindowShouldClose(window)) {
