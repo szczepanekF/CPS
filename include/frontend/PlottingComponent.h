@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include "signals/SignalTypes.h"
 
 
@@ -45,13 +46,19 @@ private:
 
     void createButton(const char *label, int option);
 
+    void handleParamsVisibility(std::unordered_set<int>& paramsToShowIndexex);
+
+    void handleChecksButtonsVisibility(bool& paramCheck);
+
     void initChecks();
 
     void drawSignalInfo();
     void setDrawedSignalBySignalType(SIGNAL_TYPE type);
-    std::vector<bool> ampVisibility, time0Visibility, probVisibility, durationVisibility, basePeriodVisibility, freqVisibility, fillFactorVisibility, jumpTimeVisibility;
+    void updateCheckBoxesAndParams(SIGNAL_TYPE type);
 
-    bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
+    bool SinusoidalSignalCheck=true, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
+    std::vector<bool*>checks = {&SinusoidalSignalCheck, &GaussianNoiseCheck, &ImpulseNoiseCheck, &RectangularSignalCheck, &RectangularSymmetricSignalCheck, &SinusoidalOneHalfRectifiedSignalCheck, &SinusoidalTwoHalfRectifiedSignalCheck, &TriangularSignalCheck, &UniformNoiseCheck, &UnitImpulseSignalCheck, &UnitJumpSignalCheck};
+
 
     std::string filename;
     std::vector<Parameter> params;

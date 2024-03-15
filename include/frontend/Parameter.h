@@ -4,7 +4,7 @@ class Parameter {
 public:
     std::string name;
     double value;
-    double isVisible;
+    bool isVisible;
 
     Parameter(const std::string &name);
 

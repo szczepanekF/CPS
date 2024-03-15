@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include <implot.h>
 #include <iostream>
+#include "unordered_set"
 #include "signals/allSignals.h"
 #include "frontend/Parameter.h"
 #include "frontend/Option.h"
@@ -11,7 +12,7 @@ void PlottingComponent::drawPlot() {
 
     if (ImPlot::BeginPlot("Plot")) {
         ImPlot::PlotLine("My Line Plot", xData, yData, dataSize);
-        ImPlot::PlotHistogram("Histogram",yData, dataSize, 10);
+        ImPlot::PlotHistogram("Histogram", yData, dataSize, 10);
         ImPlot::EndPlot();
     }
 }
@@ -32,7 +33,11 @@ void PlottingComponent::show() {
 void PlottingComponent::showSignalParameters() {
     std::string format = "%.2f";
     for (Parameter &parameter: params) {
-        ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1, format.c_str());
+
+        if (parameter.isVisible) {
+            ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1, format.c_str());
+        }
+
     }
 }
 
@@ -63,10 +68,10 @@ void PlottingComponent::createCheckbox(SIGNAL_TYPE type, const char *label, bool
         cleanUp();
         if (check) {
             setDrawedSignalBySignalType(type);
-            xData = new float[drawedSignal->size()];
-            yData = new float[drawedSignal->size()];
-            drawedSignal->convertToFloat(yData, xData);
-            dataSize = drawedSignal->size();
+//            xData = new float[drawedSignal->size()];
+//            yData = new float[drawedSignal->size()];
+//            drawedSignal->convertToFloat(yData, xData);
+//            dataSize = drawedSignal->size();
         } else {
             initDrawData();
         }
@@ -82,7 +87,13 @@ void PlottingComponent::createButton(const char *label, int option) {
             signalProcesor.saveSignalToBinary(*currentStrategy, *drawedSignal, "file.bin");
 //        } else if (option == 1) {
 //            signalStrategy = signalProcesor.readSignalFromBinary("file.bin");
-//        }
+
+        } else {
+            cleanUp();
+            xData = new float[drawedSignal->size()];
+            yData = new float[drawedSignal->size()];
+            drawedSignal->convertToFloat(yData, xData);
+            dataSize = drawedSignal->size();
         }
     }
 }
@@ -127,13 +138,30 @@ void PlottingComponent::initChecks() {
 
 }
 
+void PlottingComponent::handleParamsVisibility(std::unordered_set<int>& paramsToShowIndexex) {
+    for (size_t i = 0; i < params.size(); i++) {
+        if (paramsToShowIndexex.contains(i)) {
+            params[i].isVisible = true;
+        } else {
+            params[i].isVisible = false;
+        }
+    }
+}
+
+void PlottingComponent::handleChecksButtonsVisibility(bool &paramCheck) {
+    for (auto check: checks) {
+        std::cout << *check << std::endl;
+        if (check != &paramCheck) {
+            *check = false;
+        }
+    }
+}
+
 void PlottingComponent::setDrawedSignalBySignalType(SIGNAL_TYPE type) {
     SignalStrategy *strat;
     switch (type) {
         case SIN:
-            std::cout << "AASDAD";
             strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
-            std::cout << params[2].value;
             break;
         case SIN_ONE:
             strat = new SinusoidalOneHalfRectifiedSignal(params[0].value, params[1].value, params[2].value,
@@ -175,11 +203,75 @@ void PlottingComponent::setDrawedSignalBySignalType(SIGNAL_TYPE type) {
         default:
             return;
 
-
     }
 
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
     currentStrategy = std::unique_ptr<SignalStrategy>(strat);
+}
+
+
+void PlottingComponent::updateCheckBoxesAndParams(SIGNAL_TYPE type) {
+    std::unordered_set<int> paramsToShow;
+    switch (type) {
+        case SIN:
+            paramsToShow = {0, 1, 2, 3};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(SinusoidalSignalCheck);
+            break;
+        case SIN_ONE:
+            paramsToShow = {0, 1, 2, 3};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(SinusoidalOneHalfRectifiedSignalCheck);
+            break;
+        case SIN_TWO:
+            paramsToShow = {0, 1, 2, 3};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(SinusoidalTwoHalfRectifiedSignalCheck);
+            break;
+        case RECT:
+            paramsToShow = {0, 1, 2, 3, 6};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(RectangularSignalCheck);
+            break;
+        case RECT_SYMM:
+            paramsToShow = {0, 1, 2, 3, 6};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(RectangularSymmetricSignalCheck);
+            break;
+        case TRIANG:
+            paramsToShow = {0, 1, 2, 3, 6};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(TriangularSignalCheck);
+            break;
+        case UNIT_IMP:
+            paramsToShow = {0, 1, 2, 4, 7};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(UnitImpulseSignalCheck);
+            break;
+        case UNIT_JMP:
+            paramsToShow = {0, 1, 2, 7};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(UnitJumpSignalCheck);
+            break;
+        case UNITFORM_NOISE:
+            paramsToShow = {0, 1, 2};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(UniformNoiseCheck);
+            break;
+        case GAUSSIAN_NOISE:
+            paramsToShow = {0, 1, 2};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(GaussianNoiseCheck);
+            break;
+        case IMPULSE_NOISE:
+            paramsToShow = {0, 1, 2, 4, 5};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(ImpulseNoiseCheck);
+            break;
+        default:
+            return;
+
+    }
 
 }
 
