@@ -32,14 +32,14 @@ private:
 
     void showSignalChoice();
 
-    void createCheckbox(SignalStrategy *strategy, const char *label, bool &check);
+    void createCheckbox(SIGNAL_TYPE type, const char *label, bool &check);
 
     void createButton(const char *label, int option);
 
     void initChecks();
 
 
-//    Signal getSignalForSignalType();
+    void setDrawedSignalBySignalType(SIGNAL_TYPE type);
     std::vector<bool> ampVisibility, time0Visibility, probVisibility, durationVisibility, basePeriodVisibility, freqVisibility, fillFactorVisibility, jumpTimeVisibility;
 
     bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
@@ -50,9 +50,9 @@ private:
     float *xData;
     float *yData;
     int dataSize;
-    SignalStrategy *signalStrategy;
-    std::unordered_map<SIGNAL_TYPE, std::unique_ptr<Signal>> map;
-    std::vector<std::unique_ptr<Signal>> strategies;
+    std::unique_ptr<Signal> drawedSignal;
+    std::vector<std::unique_ptr<Signal>> operations;
 
     void cleanUp();
+    void initDrawData();
 };

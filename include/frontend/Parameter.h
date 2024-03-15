@@ -7,5 +7,5 @@ public:
     double isVisible;
 
     Parameter(const std::string &name);
-    double val();
+
 };

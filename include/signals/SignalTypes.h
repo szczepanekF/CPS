@@ -5,7 +5,7 @@ enum SIGNAL_TYPE {
     SIN_ONE,
     SIN_TWO,
     RECT,
-    RECT_SIMM,
+    RECT_SYMM,
     TRIANG,
     UNIT_IMP,
     UNIT_JMP,

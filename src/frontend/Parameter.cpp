@@ -5,7 +5,3 @@ Parameter::Parameter(const std::string &name) : name(name), value(0), isVisible(
 
 }
 
-
-double Parameter::val() {
-    return 0;
-}
