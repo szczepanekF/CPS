@@ -24,6 +24,15 @@ public:
     void show();
 
 private:
+
+    void drawPlotPanel();
+
+    void drawSignalChoicePanel();
+    void drawParameterPanel();
+    void drawFilePanel();
+
+
+    void drawSignalInfoPanelIfSignalChosen();
     void drawPlot();
 
     void showSignalParameters();
@@ -38,7 +47,7 @@ private:
 
     void initChecks();
 
-
+    void drawSignalInfo();
     void setDrawedSignalBySignalType(SIGNAL_TYPE type);
     std::vector<bool> ampVisibility, time0Visibility, probVisibility, durationVisibility, basePeriodVisibility, freqVisibility, fillFactorVisibility, jumpTimeVisibility;
 
@@ -51,6 +60,7 @@ private:
     float *yData;
     int dataSize;
     std::unique_ptr<Signal> drawedSignal;
+    std::unique_ptr<SignalStrategy> currentStrategy;
     std::vector<std::unique_ptr<Signal>> operations;
 
     void cleanUp();

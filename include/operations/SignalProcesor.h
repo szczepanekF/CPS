@@ -6,12 +6,13 @@
 
 class SignalProcesor {
 public:
-    SignalProcesor(std::unique_ptr<SignalStrategy> signalStrategy);
+    SignalProcesor();
 
     Signal getCalculatedSignal(std::string &operationType);
 
-    void saveSignalToBinary(const Signal& sig,const std::string& filename);
+    void saveSignalToBinary(const SignalStrategy& strat, const Signal& sig,const std::string& filename);
     std::unique_ptr<Signal> readSignalFromBinary(const std::string& filename);
+    std::string readSignalFromBinaryAsString(const std::string& filename);
 
 private:
 
@@ -21,7 +22,6 @@ private:
     static Signal
     calculateSignalOperation(std::string &operationType, const Signal &firstSig, const Signal &secondSig);
 
-    std::unique_ptr<SignalStrategy> strategy;
     std::vector<Signal> signalValues;
 };
 

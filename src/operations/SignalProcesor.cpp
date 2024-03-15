@@ -3,21 +3,19 @@
 #include <iostream>
 #include "operations/SignalProcesor.h"
 
-SignalProcesor::SignalProcesor(std::unique_ptr<SignalStrategy> signalStrategy) : strategy(std::move(signalStrategy)),
-                                                                                 signalValues() {
+SignalProcesor::SignalProcesor() : signalValues() {
 
 }
 
 
 Signal SignalProcesor::getCalculatedSignal(std::string &operationType) {
-    Signal baseSignal = strategy->getSignal();
-    Signal value;
-    value.timeValues = baseSignal.timeValues;
-    value.signalValues = baseSignal.signalValues;
+    if (signalValues.empty()) return {};
+    Signal value = signalValues[0];
 
-    for (auto &sig: signalValues) {
-        value = calculateSignalOperation(operationType, value, sig);
+    for (size_t i = 1; i < signalValues.size() - 1 ; i++) {
+        value = calculateSignalOperation(operationType, value, signalValues[i]);
     }
+
     return value;
 }
 
@@ -34,7 +32,7 @@ Signal SignalProcesor::calculateSignalOperation(std::string &operationType, cons
 
         return firstSig / secondSig;
     }
-
+    return firstSig;
 }
 
 
@@ -46,7 +44,7 @@ void SignalProcesor::addNewSignal(const Signal &signal) {
     signalValues.push_back(signal);
 }
 
-void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &filename) {
+void SignalProcesor::saveSignalToBinary(const SignalStrategy& strat, const Signal &sig, const std::string &filename) {
     // Open a binary file for writing
     std::ofstream outFile(filename, std::ios::out | std::ios::binary | std::ios::trunc);
     if (!outFile.is_open()) {
@@ -55,11 +53,11 @@ void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &fi
     }
     //write parameters
 
-    double bTime = strategy->getBeginTime();
+    double bTime = strat.getBeginTime();
     outFile.write(reinterpret_cast<const char *>(&bTime), sizeof(bTime));
-    double dur = strategy->getDuration();
+    double dur = strat.getDuration();
     outFile.write(reinterpret_cast<const char *>(&dur), sizeof(dur));
-    int sampleCount = strategy->getSampleCount();
+    int sampleCount = strat.getSampleCount();
     outFile.write(reinterpret_cast<const char *>(&sampleCount), sizeof(sampleCount));
 
     size_t sizeX = sig.size();
@@ -109,7 +107,34 @@ std::unique_ptr<Signal> SignalProcesor::readSignalFromBinary(const std::string &
     // Close the file
     inFile.close();
 
-    return std::move(newSignal);
+    return newSignal;
+}
+
+std::string SignalProcesor::readSignalFromBinaryAsString(const std::string &filename) {
+    std::string message = "Data read from file\n";
+    std::ifstream inFile(filename, std::ios::in | std::ios::binary);
+    if (!inFile.is_open()) {
+        std::cerr << "Error opening file for reading!" << std::endl;
+        return {};
+    }
+    double bTime, dur;
+    int sampleCount;
+    inFile.read(reinterpret_cast< char *>(&bTime), sizeof(bTime));
+    inFile.read(reinterpret_cast< char *>(&dur), sizeof(dur));
+    inFile.read(reinterpret_cast< char *>(&sampleCount), sizeof(sampleCount));
+    // Read the size of the vectors
+    size_t sizeX;
+    inFile.read(reinterpret_cast<char *>(&sizeX), sizeof(sizeX));
+    message += "Time 0: " + std::to_string(bTime) + "\n";
+    message += "Duration: " + std::to_string(dur) + "\n";
+    message += "Sample count: " + std::to_string(sampleCount) + "\n";
+    message += "Amplitude amount: " + std::to_string(sizeX) + "\n";
+    message += "REST DATA IS AMPLITUDE VALUES";
+
+    // Close the file
+    inFile.close();
+
+    return message;
 }
 
 

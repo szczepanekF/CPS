@@ -8,49 +8,31 @@
 
 
 void PlottingComponent::drawPlot() {
+
     if (ImPlot::BeginPlot("Plot")) {
         ImPlot::PlotLine("My Line Plot", xData, yData, dataSize);
-//        ImPlot::PlotHistogram("Histogram",xData, 2);
+        ImPlot::PlotHistogram("Histogram",yData, dataSize, 10);
         ImPlot::EndPlot();
     }
 }
 
 void PlottingComponent::show() {
 
-    ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
-    ImGui::Begin("Signals and noises", NULL,
-                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-    showSignalChoice();
 
-    ImGui::End();
+    drawSignalChoicePanel();
 
-    ImGui::SetNextWindowPos(ImVec2(440, 20), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
-    ImGui::Begin("Parameters", NULL,
-                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-    showSignalParameters();
-    ImGui::End();
+    drawParameterPanel();
 
-    ImGui::SetNextWindowPos(ImVec2(860, 20), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
-    ImGui::Begin("Buttons", NULL,
-                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-    showFileOperations();
-    ImGui::End();
+    drawFilePanel();
 
-    ImGui::SetNextWindowPos(ImVec2(20, 340), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(1240, 360), ImGuiCond_Always);
-    ImGui::Begin("Plot", NULL,
-                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-    drawPlot();
-    ImGui::End();
+    drawPlotPanel();
+    drawSignalInfoPanelIfSignalChosen();
 }
 
 void PlottingComponent::showSignalParameters() {
-    char *format = "%.2f";
+    std::string format = "%.2f";
     for (Parameter &parameter: params) {
-        ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1, format);
+        ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1, format.c_str());
     }
 }
 
@@ -94,12 +76,13 @@ void PlottingComponent::createCheckbox(SIGNAL_TYPE type, const char *label, bool
 void PlottingComponent::createButton(const char *label, int option) {
     ImGui::SetNextItemWidth(500);
     if (ImGui::Button(label)) {
-//        std::unique_ptr<SignalStrategy> sharedPtr(signalStrategy);
-//        SignalProcesor signalProcesor(std::move(sharedPtr));
+
+        SignalProcesor signalProcesor;
         if (option == 0) {
-//            signalProcesor.saveSignalToBinary(signalStrategy->getSignal(), "file.bin");
-        } else if (option == 1) {
+            signalProcesor.saveSignalToBinary(*currentStrategy, *drawedSignal, "file.bin");
+//        } else if (option == 1) {
 //            signalStrategy = signalProcesor.readSignalFromBinary("file.bin");
+//        }
         }
     }
 }
@@ -148,9 +131,9 @@ void PlottingComponent::setDrawedSignalBySignalType(SIGNAL_TYPE type) {
     SignalStrategy *strat;
     switch (type) {
         case SIN:
-            std::cout<<"AASDAD";
+            std::cout << "AASDAD";
             strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
-            std::cout<<params[2].value;
+            std::cout << params[2].value;
             break;
         case SIN_ONE:
             strat = new SinusoidalOneHalfRectifiedSignal(params[0].value, params[1].value, params[2].value,
@@ -196,11 +179,78 @@ void PlottingComponent::setDrawedSignalBySignalType(SIGNAL_TYPE type) {
     }
 
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
-    delete strat;
+    currentStrategy = std::unique_ptr<SignalStrategy>(strat);
+
 }
 
 void PlottingComponent::initDrawData() {
+    drawedSignal.reset();
     dataSize = 10;
     xData = new float[10]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    yData = new float[10]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    yData = new float[10]{1, 2, 4, 4, 4, 6, 2, 8, 2, 2};
+}
+
+void PlottingComponent::drawSignalInfo() {
+
+    std::string text1 = "Mean: " + std::to_string(drawedSignal->mean());
+    ImGui::Text(text1.c_str());
+    std::string text2 = "Absolute mean: " + std::to_string(drawedSignal->absMean());
+    ImGui::Text(text2.c_str());
+    std::string text3 = "Variance: " + std::to_string(drawedSignal->variance());
+    ImGui::Text(text3.c_str());
+    std::string text4 = "Rms: " + std::to_string(drawedSignal->rms());
+    ImGui::Text(text4.c_str());
+    std::string text5 = "Mean power: " + std::to_string(drawedSignal->meanPower());
+    ImGui::Text(text5.c_str());
+
+}
+
+void PlottingComponent::drawPlotPanel() {
+
+    ImGui::SetNextWindowPos(ImVec2(20, 340), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(1240, 360), ImGuiCond_Always);
+    ImGui::Begin("Plot", NULL,
+                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    drawPlot();
+    ImGui::End();
+
+}
+
+void PlottingComponent::drawSignalChoicePanel() {
+    ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
+    ImGui::Begin("Signals and noises", nullptr,
+                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    showSignalChoice();
+
+    ImGui::End();
+}
+
+void PlottingComponent::drawParameterPanel() {
+    ImGui::SetNextWindowPos(ImVec2(440, 20), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
+    ImGui::Begin("Parameters", nullptr,
+                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    showSignalParameters();
+    ImGui::End();
+}
+
+void PlottingComponent::drawFilePanel() {
+    ImGui::SetNextWindowPos(ImVec2(860, 20), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
+    ImGui::Begin("Buttons", nullptr,
+                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    showFileOperations();
+    ImGui::End();
+}
+
+void PlottingComponent::drawSignalInfoPanelIfSignalChosen() {
+
+    if (drawedSignal != nullptr) {
+        ImGui::SetNextWindowPos(ImVec2(1300, 340), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_Always);
+        ImGui::Begin("Signal values", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+        drawSignalInfo();
+        ImGui::End();
+    }
 }
