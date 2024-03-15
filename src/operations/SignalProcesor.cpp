@@ -57,7 +57,7 @@ void SignalProcesor::saveSignalToBinary(const SignalStrategy& strat, const Signa
     outFile.write(reinterpret_cast<const char *>(&bTime), sizeof(bTime));
     double dur = strat.getDuration();
     outFile.write(reinterpret_cast<const char *>(&dur), sizeof(dur));
-    int sampleCount = strat.getSampleCount();
+    int sampleCount = strat.getFrequency();
     outFile.write(reinterpret_cast<const char *>(&sampleCount), sizeof(sampleCount));
 
     size_t sizeX = sig.size();

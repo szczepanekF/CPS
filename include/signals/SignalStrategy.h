@@ -14,10 +14,9 @@ public:
     double getAmplitude() const;
     double getBeginTime() const;
     double getDuration() const;
-    int getSampleCount() const;
-
+    double getFrequency() const;
     void setSignal(const Signal &signal);
-    void setSampleCount(int sampleCount);
+    void setFrequency(double freq);
 
 
 protected:
@@ -25,7 +24,7 @@ protected:
 
 private:
 
-    int SAMPLE_COUNT;
+    double FREQUENCY;
 
     Signal signal;
 

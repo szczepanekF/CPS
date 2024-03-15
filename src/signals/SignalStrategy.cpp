@@ -1,6 +1,6 @@
 #include "signals/SignalStrategy.h"
 
-SignalStrategy::SignalStrategy(double amp, double time0, double dur): SAMPLE_COUNT(10000), duration(dur), beginTime(time0), amplitude(amp) {
+SignalStrategy::SignalStrategy(double amp, double time0, double dur): FREQUENCY(1000), duration(dur), beginTime(time0), amplitude(amp) {
 }
 
 double SignalStrategy::getAmplitude() const {
@@ -22,7 +22,7 @@ Signal& SignalStrategy::getSignal() {
 }
 
 void SignalStrategy::calculateSignal() {
-    double diff = getDuration() / SAMPLE_COUNT;
+    double diff = 1 / FREQUENCY;
     double time = getBeginTime();
     while (time < getBeginTime() + getDuration()) {
         signal.signalValues.push_back(calculateSignalAt(time));
@@ -35,16 +35,16 @@ double SignalStrategy::calculateSignalAt(double) {
     return 0;
 }
 
-int SignalStrategy::getSampleCount() const {
-    return SAMPLE_COUNT;
+double SignalStrategy::getFrequency() const {
+    return FREQUENCY;
 }
 
 void SignalStrategy::setSignal(const Signal &signal) {
     SignalStrategy::signal = signal;
 }
 
-void SignalStrategy::setSampleCount(int sampleCount) {
-    SAMPLE_COUNT = sampleCount;
+void SignalStrategy::setFrequency(double freq) {
+    FREQUENCY = freq;
 }
 
 

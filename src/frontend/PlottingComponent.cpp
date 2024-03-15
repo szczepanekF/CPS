@@ -143,6 +143,7 @@ void PlottingComponent::handleParamsVisibility(std::unordered_set<int>& paramsTo
         if (paramsToShowIndexex.contains(i)) {
             params[i].isVisible = true;
         } else {
+
             params[i].isVisible = false;
         }
     }

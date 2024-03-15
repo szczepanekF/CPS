@@ -3,7 +3,7 @@
 #include <cmath>
 DiscreteSignal::DiscreteSignal(double amp, double time0, double dur, double frequency)
         : SignalStrategy(amp, time0, dur) {
-    setSampleCount(std::ceil(dur * frequency));
+    setFrequency(frequency);
 }
 
 Signal &DiscreteSignal::getSignal() {
