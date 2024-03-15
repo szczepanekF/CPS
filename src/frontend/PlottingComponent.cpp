@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include <implot.h>
 #include <iostream>
+#include "unordered_set"
 #include "signals/allSignals.h"
 #include "frontend/Parameter.h"
 #include "frontend/Option.h"
@@ -50,7 +51,9 @@ void PlottingComponent::show() {
 void PlottingComponent::showSignalParameters() {
     char *format = "%.2f";
     for (Parameter &parameter: params) {
-        ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1, format);
+        if(parameter.isVisible) {
+            ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1, format);
+        }
     }
 }
 
@@ -81,10 +84,10 @@ void PlottingComponent::createCheckbox(SIGNAL_TYPE type, const char *label, bool
         cleanUp();
         if (check) {
             setDrawedSignalBySignalType(type);
-            xData = new float[drawedSignal->size()];
-            yData = new float[drawedSignal->size()];
-            drawedSignal->convertToFloat(yData, xData);
-            dataSize = drawedSignal->size();
+//            xData = new float[drawedSignal->size()];
+//            yData = new float[drawedSignal->size()];
+//            drawedSignal->convertToFloat(yData, xData);
+//            dataSize = drawedSignal->size();
         } else {
             initDrawData();
         }
@@ -100,6 +103,12 @@ void PlottingComponent::createButton(const char *label, int option) {
 //            signalProcesor.saveSignalToBinary(signalStrategy->getSignal(), "file.bin");
         } else if (option == 1) {
 //            signalStrategy = signalProcesor.readSignalFromBinary("file.bin");
+        } else {
+            cleanUp();
+            xData = new float[drawedSignal->size()];
+            yData = new float[drawedSignal->size()];
+            drawedSignal->convertToFloat(yData, xData);
+            dataSize = drawedSignal->size();
         }
     }
 }
@@ -144,59 +153,110 @@ void PlottingComponent::initChecks() {
 
 }
 
+void PlottingComponent::handleParamsVisibility(std::unordered_set<int> paramsToShowIndexex) {
+    for(int i=0; i < params.size(); i++) {
+        if(paramsToShowIndexex.contains(i)) {
+            params[i].isVisible = true;
+        } else {
+            params[i].isVisible = false;
+        }
+    }
+}
+
+void PlottingComponent::handleChecksButtonsVisibility(bool &paramCheck) {
+    for(auto check : checks) {
+        std::cout<<*check<<std::endl;
+        if(check != &paramCheck) {
+            *check = false;
+        }
+    }
+}
+
 void PlottingComponent::setDrawedSignalBySignalType(SIGNAL_TYPE type) {
     SignalStrategy *strat;
+    std::unordered_set<int> paramsToShow;
     switch (type) {
         case SIN:
-            std::cout<<"AASDAD";
             strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
-            std::cout<<params[2].value;
+            paramsToShow = {0,1,2,3};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(SinusoidalSignalCheck);
             break;
         case SIN_ONE:
             strat = new SinusoidalOneHalfRectifiedSignal(params[0].value, params[1].value, params[2].value,
                                                          params[3].value);
+            paramsToShow = {0,1,2,3};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(SinusoidalOneHalfRectifiedSignalCheck);
             break;
         case SIN_TWO:
             strat = new SinusoidalTwoHalfRectifiedSignal(params[0].value, params[1].value, params[2].value,
                                                          params[3].value);
+            paramsToShow = {0,1,2,3};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(SinusoidalTwoHalfRectifiedSignalCheck);
             break;
         case RECT:
             strat = new RectangularSignal(params[0].value, params[1].value, params[2].value, params[3].value,
                                           params[6].value);
+            paramsToShow ={0,1,2,3, 6};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(RectangularSignalCheck);
             break;
         case RECT_SYMM:
             strat = new RectangularSymmetricSignal(params[0].value, params[1].value, params[2].value, params[3].value,
                                                    params[6].value);
+            paramsToShow = {0,1,2,3, 6};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(RectangularSymmetricSignalCheck);
             break;
         case TRIANG:
             strat = new TriangularSignal(params[0].value, params[1].value, params[2].value, params[3].value,
                                          params[6].value);
+            paramsToShow = {0,1,2,3, 6};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(TriangularSignalCheck);
             break;
         case UNIT_IMP:
             strat = new UnitImpulseSignal(params[0].value, params[1].value, params[2].value, params[4].value,
                                           params[7].value);
+            paramsToShow = {0,1,2,4, 7};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(UnitImpulseSignalCheck);
             break;
         case UNIT_JMP:
             strat = new UnitJumpSignal(params[0].value, params[1].value, params[2].value, params[7].value);
+            paramsToShow = {0,1,2,7};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(UnitJumpSignalCheck);
             break;
         case UNITFORM_NOISE:
             strat = new UniformNoise(params[0].value, params[1].value, params[2].value);
+            paramsToShow = {0,1,2};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(UniformNoiseCheck);
             break;
         case GAUSSIAN_NOISE:
             strat = new GaussianNoise(params[0].value, params[1].value, params[2].value);
+            paramsToShow =  {0,1,2};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(GaussianNoiseCheck);
             break;
         case IMPULSE_NOISE:
             strat = new ImpulseNoise(params[0].value, params[1].value, params[2].value, params[4].value,
                                      params[5].value);
+            paramsToShow =  {0,1,2,4,5};
+            handleParamsVisibility(paramsToShow);
+            handleChecksButtonsVisibility(ImpulseNoiseCheck);
             break;
         default:
             return;
-
 
     }
 
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
     delete strat;
+    std::cout<<"debug"<<std::endl;
 }
 
 void PlottingComponent::initDrawData() {
