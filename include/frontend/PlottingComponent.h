@@ -82,6 +82,7 @@ private:
     char filename[256];
     SignalProcesor signalProcesor;
     std::vector<Parameter> params;
+    std::vector<std::string> filenames;
     std::vector<Option> options;
     float *xData;
     float *yData;

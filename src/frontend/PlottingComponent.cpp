@@ -11,11 +11,11 @@
 void PlottingComponent::drawPlot() {
 
     if (ImPlot::BeginPlot("Plot")) {
-        if(isSignalDiscrete) {
-            ImPlot::PlotScatter("Scatter Plot", xData, yData, dataSize);
-        } else {
-            ImPlot::PlotLine("Line Plot", xData, yData, dataSize);
-        }
+//        if(isSignalDiscrete) {
+        ImPlot::PlotScatter("Scatter Plot", xData, yData, dataSize);
+//        } else {
+        ImPlot::PlotLine("Line Plot", xData, yData, dataSize);
+//        }
         ImPlot::PlotHistogram("Histogram", yData, dataSize, 10);
         ImPlot::EndPlot();
     }
@@ -50,6 +50,11 @@ void PlottingComponent::showFileOperations() {
     createButton("Save to file", 0);
     createButton("Load from file", 1);
     createButton("Draw the plot", 2);
+
+    ImGui::Text("Loaded files:");
+    for(const std::string& loadedFilename : filenames) {
+        ImGui::Text(loadedFilename.c_str());
+    }
 }
 
 void PlottingComponent::showSignalChoice() {
@@ -87,15 +92,16 @@ void PlottingComponent::createButton(const char *label, int option) {
 
         if (option == 0) {
             if (currentStrategy != nullptr && drawedSignal != nullptr) {
-                signalProcesor.saveSignalToBinary(*currentStrategy, *drawedSignal, std::string (filename)+".bin");
+                signalProcesor.saveSignalToBinary(*currentStrategy, *drawedSignal, std::string(filename) + ".bin");
             } else {
                 ImGui::OpenPopup("fileError");
             }
         } else {
             cleanUp();
             if (option == 1 && std::string(filename).size()) {
-                drawedSignal = signalProcesor.readSignalFromBinary(std::string (filename)+".bin");
+                drawedSignal = signalProcesor.readSignalFromBinary(std::string(filename) + ".bin");
                 signalProcesor.addNewSignal(*drawedSignal);
+                filenames.push_back(strcat(filename, ".bin"));
             } else {
                 setDrawedSignalBySignalType();
             }
@@ -148,7 +154,7 @@ void PlottingComponent::initChecks() {
 
 }
 
-void PlottingComponent::handleParamsVisibility(std::unordered_set<int>& paramsToShowIndexex) {
+void PlottingComponent::handleParamsVisibility(std::unordered_set<int> &paramsToShowIndexex) {
     for (size_t i = 0; i < params.size(); i++) {
         if (paramsToShowIndexex.contains(i)) {
             params[i].isVisible = true;
@@ -215,10 +221,9 @@ void PlottingComponent::setDrawedSignalBySignalType() {
             break;
         default:
             return;
-
     }
 
-    if(dynamic_cast<DiscreteSignal*>(strat) != nullptr) {
+    if (dynamic_cast<DiscreteSignal *>(strat) != nullptr) {
         isSignalDiscrete = true;
     }
     currentStrategy = std::unique_ptr<SignalStrategy>(strat);
@@ -313,6 +318,7 @@ void PlottingComponent::drawSignalInfo() {
 
 }
 
+
 void PlottingComponent::drawPlotPanel() {
 
     ImGui::SetNextWindowPos(ImVec2(20, 340), ImGuiCond_Always);
@@ -342,7 +348,8 @@ void PlottingComponent::drawParameterPanel() {
     showSignalParameters();
     ImGui::End();
 }
-void PlottingComponent::createPopup(const std::string &label,const std::string &info, void (* myFunc)()) {
+
+void PlottingComponent::createPopup(const std::string &label, const std::string &info, void (*myFunc)()) {
     if (ImGui::BeginPopup(label.c_str())) {
         ImGui::Text(info.c_str());
         myFunc();
@@ -377,9 +384,7 @@ void PlottingComponent::drawSignalInfoPanelIfSignalChosen() {
 }
 
 
-
 void PlottingComponent::createOperationButtons() {
-
 
 
 }
