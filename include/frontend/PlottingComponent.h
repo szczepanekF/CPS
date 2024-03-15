@@ -52,23 +52,27 @@ private:
 
     void initChecks();
 
-    void drawSignalInfo();
-    void setDrawedSignalBySignalType(SIGNAL_TYPE type);
-    void updateCheckBoxesAndParams(SIGNAL_TYPE type);
 
-    bool SinusoidalSignalCheck=true, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
+    void drawSignalInfo();
+    void updateCheckBoxesAndParams();
+    void setDrawedSignalBySignalType();
+
+
+    bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
     std::vector<bool*>checks = {&SinusoidalSignalCheck, &GaussianNoiseCheck, &ImpulseNoiseCheck, &RectangularSignalCheck, &RectangularSymmetricSignalCheck, &SinusoidalOneHalfRectifiedSignalCheck, &SinusoidalTwoHalfRectifiedSignalCheck, &TriangularSignalCheck, &UniformNoiseCheck, &UnitImpulseSignalCheck, &UnitJumpSignalCheck};
 
 
-    std::string filename;
+    char filename[256];
     std::vector<Parameter> params;
     std::vector<Option> options;
     float *xData;
     float *yData;
     int dataSize;
+    bool isSignalDiscrete;
     std::unique_ptr<Signal> drawedSignal;
     std::unique_ptr<SignalStrategy> currentStrategy;
     std::vector<std::unique_ptr<Signal>> operations;
+    SIGNAL_TYPE signalType;
 
     void cleanUp();
     void initDrawData();

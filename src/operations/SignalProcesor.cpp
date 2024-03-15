@@ -57,8 +57,8 @@ void SignalProcesor::saveSignalToBinary(const SignalStrategy& strat, const Signa
     outFile.write(reinterpret_cast<const char *>(&bTime), sizeof(bTime));
     double dur = strat.getDuration();
     outFile.write(reinterpret_cast<const char *>(&dur), sizeof(dur));
-    int sampleCount = strat.getFrequency();
-    outFile.write(reinterpret_cast<const char *>(&sampleCount), sizeof(sampleCount));
+    double frequency = strat.getFrequency();
+    outFile.write(reinterpret_cast<const char *>(&frequency), sizeof(frequency));
 
     size_t sizeX = sig.size();
     outFile.write(reinterpret_cast<const char *>(&sizeX), sizeof(sizeX));
@@ -80,10 +80,10 @@ std::unique_ptr<Signal> SignalProcesor::readSignalFromBinary(const std::string &
     }
     std::unique_ptr<Signal> newSignal = std::make_unique<Signal>();
     double bTime, dur;
-    int sampleCount;
+    double frequency;
     inFile.read(reinterpret_cast< char *>(&bTime), sizeof(bTime));
     inFile.read(reinterpret_cast< char *>(&dur), sizeof(dur));
-    inFile.read(reinterpret_cast< char *>(&sampleCount), sizeof(sampleCount));
+    inFile.read(reinterpret_cast< char *>(&frequency), sizeof(frequency));
     // Read the size of the vectors
     size_t sizeX;
     inFile.read(reinterpret_cast<char *>(&sizeX), sizeof(sizeX));
@@ -91,18 +91,25 @@ std::unique_ptr<Signal> SignalProcesor::readSignalFromBinary(const std::string &
 
 
     // Read the data of the vectors
-    inFile.read(reinterpret_cast<char *>(newSignal->signalValues.data()), sizeX * sizeof(double));
+    std::vector<double> tmp;
+    inFile.read(reinterpret_cast<char *>(tmp.data()), sizeX * sizeof(double));
     // Resize vectors to fit the read data
-    newSignal->signalValues.resize(sizeX);
+    newSignal->signalValues = tmp;
     newSignal->timeValues.resize(sizeX);
-    double diff = dur / sampleCount;
+
+    double diff = 1 / frequency;
     double time = bTime;
     int i = 0;
-    while (time < bTime + dur) {
+    std::cout<<"debug2";
+
+    while (time <= bTime + dur) {
         newSignal->timeValues[i] = time;
         time += diff;
         i ++;
     }
+
+    std::cout<<"debug3";
+
 
     // Close the file
     inFile.close();
@@ -118,16 +125,16 @@ std::string SignalProcesor::readSignalFromBinaryAsString(const std::string &file
         return {};
     }
     double bTime, dur;
-    int sampleCount;
+    double frequency;
     inFile.read(reinterpret_cast< char *>(&bTime), sizeof(bTime));
     inFile.read(reinterpret_cast< char *>(&dur), sizeof(dur));
-    inFile.read(reinterpret_cast< char *>(&sampleCount), sizeof(sampleCount));
+    inFile.read(reinterpret_cast< char *>(&frequency), sizeof(frequency));
     // Read the size of the vectors
     size_t sizeX;
     inFile.read(reinterpret_cast<char *>(&sizeX), sizeof(sizeX));
     message += "Time 0: " + std::to_string(bTime) + "\n";
     message += "Duration: " + std::to_string(dur) + "\n";
-    message += "Sample count: " + std::to_string(sampleCount) + "\n";
+    message += "Sample count: " + std::to_string(frequency) + "\n";
     message += "Amplitude amount: " + std::to_string(sizeX) + "\n";
     message += "REST DATA IS AMPLITUDE VALUES";
 

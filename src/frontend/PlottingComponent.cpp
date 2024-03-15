@@ -11,7 +11,11 @@
 void PlottingComponent::drawPlot() {
 
     if (ImPlot::BeginPlot("Plot")) {
-        ImPlot::PlotLine("My Line Plot", xData, yData, dataSize);
+        if(isSignalDiscrete) {
+            ImPlot::PlotScatter("Scatter Plot", xData, yData, dataSize);
+        } else {
+            ImPlot::PlotLine("Line Plot", xData, yData, dataSize);
+        }
         ImPlot::PlotHistogram("Histogram", yData, dataSize, 10);
         ImPlot::EndPlot();
     }
@@ -42,6 +46,7 @@ void PlottingComponent::showSignalParameters() {
 }
 
 void PlottingComponent::showFileOperations() {
+    ImGui::InputText("Filename", filename, sizeof(filename));
     createButton("Save to file", 0);
     createButton("Load from file", 1);
     createButton("Draw the plot", 2);
@@ -65,14 +70,11 @@ void PlottingComponent::showSignalChoice() {
 void PlottingComponent::createCheckbox(SIGNAL_TYPE type, const char *label, bool &check) {
     ImGui::SetNextItemWidth(500);
     if (ImGui::Checkbox(label, &check)) {
-        cleanUp();
         if (check) {
-            setDrawedSignalBySignalType(type);
-//            xData = new float[drawedSignal->size()];
-//            yData = new float[drawedSignal->size()];
-//            drawedSignal->convertToFloat(yData, xData);
-//            dataSize = drawedSignal->size();
+            signalType = type;
+            updateCheckBoxesAndParams();
         } else {
+            cleanUp();
             initDrawData();
         }
     }
@@ -84,12 +86,12 @@ void PlottingComponent::createButton(const char *label, int option) {
 
         SignalProcesor signalProcesor;
         if (option == 0) {
-            signalProcesor.saveSignalToBinary(*currentStrategy, *drawedSignal, "file.bin");
-//        } else if (option == 1) {
-//            signalStrategy = signalProcesor.readSignalFromBinary("file.bin");
-
+            signalProcesor.saveSignalToBinary(*currentStrategy, *drawedSignal, std::string (filename)+".bin");
+        } else if (option == 1) {
+            operations.push_back(signalProcesor.readSignalFromBinary(std::string (filename)+".bin"));
         } else {
             cleanUp();
+            setDrawedSignalBySignalType();
             xData = new float[drawedSignal->size()];
             yData = new float[drawedSignal->size()];
             drawedSignal->convertToFloat(yData, xData);
@@ -142,6 +144,7 @@ void PlottingComponent::handleParamsVisibility(std::unordered_set<int>& paramsTo
     for (size_t i = 0; i < params.size(); i++) {
         if (paramsToShowIndexex.contains(i)) {
             params[i].isVisible = true;
+            params[i].value = 0.0;
         } else {
 
             params[i].isVisible = false;
@@ -158,11 +161,12 @@ void PlottingComponent::handleChecksButtonsVisibility(bool &paramCheck) {
     }
 }
 
-void PlottingComponent::setDrawedSignalBySignalType(SIGNAL_TYPE type) {
+void PlottingComponent::setDrawedSignalBySignalType() {
     SignalStrategy *strat;
-    switch (type) {
+    switch (signalType) {
         case SIN:
             strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
+
             break;
         case SIN_ONE:
             strat = new SinusoidalOneHalfRectifiedSignal(params[0].value, params[1].value, params[2].value,
@@ -206,14 +210,17 @@ void PlottingComponent::setDrawedSignalBySignalType(SIGNAL_TYPE type) {
 
     }
 
-    drawedSignal = std::make_unique<Signal>(strat->getSignal());
+    if(dynamic_cast<DiscreteSignal*>(strat) != nullptr) {
+        isSignalDiscrete = true;
+    }
     currentStrategy = std::unique_ptr<SignalStrategy>(strat);
+    drawedSignal = std::make_unique<Signal>(strat->getSignal());
 }
 
 
-void PlottingComponent::updateCheckBoxesAndParams(SIGNAL_TYPE type) {
+void PlottingComponent::updateCheckBoxesAndParams() {
     std::unordered_set<int> paramsToShow;
-    switch (type) {
+    switch (signalType) {
         case SIN:
             paramsToShow = {0, 1, 2, 3};
             handleParamsVisibility(paramsToShow);

@@ -24,7 +24,7 @@ Signal& SignalStrategy::getSignal() {
 void SignalStrategy::calculateSignal() {
     double diff = 1 / FREQUENCY;
     double time = getBeginTime();
-    while (time < getBeginTime() + getDuration()) {
+    while (time <= getBeginTime() + getDuration()) {
         signal.signalValues.push_back(calculateSignalAt(time));
         signal.timeValues.push_back(time);
         time += diff;
