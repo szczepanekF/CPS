@@ -5,8 +5,8 @@
 #include <implot.h>
 #include <vector>
 #include <iostream>
-#include "../bindings/imgui_impl_opengl3.h"
-#include "../bindings/imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
 #include "signals/SignalStrategy.h"
 #include "signals/SinusoidalSignal.h"
 #include "signals/GaussianNoise.h"
@@ -20,20 +20,13 @@
 #include "signals/UnitImpulseSignal.h"
 #include "signals/UnitJumpSignal.h"
 #include "operations/SignalProcesor.h"
+#include "frontend/Option.h"
+#include "frontend/Parameter.h"
 
 GLFWwindow *window;
 const char *glsl_version;
 ImVec4 clear_color;
 
-double amp;
-double time0;
-double prob;
-double duration;
-double basePeriod;
-double freq;
-double fillFactor;
-double jumpTime;
-//Signal* signal1;
 std::vector<SignalStrategy *> signalStrategies;
 SignalStrategy *signalStrategy;
 
@@ -41,9 +34,6 @@ static void glfw_error_callback(int error, const char *description) {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
-void setValue(double *var, double *value = nullptr) {
-    var = value;
-};
 
 bool isFrameInitSuccessful() {
     glfwSetErrorCallback(glfw_error_callback);
@@ -106,97 +96,174 @@ void setFrame() {
     ImGui::NewFrame();
 }
 
-void createButton(const char *label, SignalStrategy *strategy) {
+//void createButton(const char *label, SignalStrategy *strategy) {
+//    ImGui::SetNextItemWidth(500);
+////    ImGui::Begin("Button");
+//    if (ImGui::Button(label)) {
+//        delete signalStrategy;
+//        signalStrategy = strategy;
+//    }
+////    ImGui::End();
+//}
+//
+void createButton(const char *label, int option) {
     ImGui::SetNextItemWidth(500);
-//    ImGui::Begin("Button");
-    if (ImGui::Button(label)) {
-        delete signalStrategy;
-        signalStrategy = strategy;
-    }
-//    ImGui::End();
-}
-
-void createButton(const char *label, bool save) {
-    ImGui::SetNextItemWidth(500);
-//    ImGui::Begin("Button");
     if (ImGui::Button(label)) {
         std::unique_ptr<SignalStrategy> sharedPtr(signalStrategy);
         SignalProcesor signalProcesor(std::move(sharedPtr));
-        if(save){
+        if (option == 0) {
             signalProcesor.saveSignalToBinary(signalStrategy->getSignal(), "file.bin");
-        } else {
+        } else if (option == 1) {
             signalStrategy = signalProcesor.readSignalFromBinary("file.bin");
+        } else if (option == 2) {
+
         }
     }
-//    ImGui::End();
 }
 
 void createPlot() {
-    if (signalStrategy != nullptr) {
-        if (ImPlot::BeginPlot("My Plot")) {
+    if (ImPlot::BeginPlot("Plot")) {
+        float *xData;
+        float *yData;
+        int size;
+        if (signalStrategy != nullptr) {
             Signal signal1 = signalStrategy->getSignal();
-            float *xData = new float[signal1.size()];
-            float *yData = new float[signal1.size()];
+            xData = new float[signal1.size()];
+            yData = new float[signal1.size()];
+            size = signal1.size();
             signal1.convertToFloat(yData, xData);
-            ImPlot::PlotLine("My Line Plot", xData, yData, signal1.size());
-            ImPlot::EndPlot();
+        } else {
+            size = 10;
+            xData = new float[size]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+            yData = new float[size]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         }
+        ImPlot::PlotLine("My Line Plot", xData, yData, size);
+        ImPlot::EndPlot();
     }
 }
 
-void inputDataArea() {
-    ImGui::InputDouble("Enter amp", &amp, 0.1, 0.5);
-    ImGui::InputDouble("Enter duration", &duration, 0.1, 0.5);
-    ImGui::InputDouble("Enter time0", &time0, 0.1, 0.5);
-    ImGui::InputDouble("Enter base Period", &basePeriod, 0.1, 0.5);
-    ImGui::InputDouble("Enter Jump time", &jumpTime, 0.1, 0.5);
-    ImGui::InputDouble("Enter frequency", &freq, 0.1, 0.5);
-    ImGui::InputDouble("Enter fill factor", &fillFactor, 0.1, 0.5);
-    ImGui::InputDouble("Enter prob", &prob, 0.1, 0.5);
 
-}
-
-void fillTheFrame() {
-//    ImGui::SetNextWindowSize(ImVec2(1200, 700));
-    ImGui::Begin("CPS zadanie 1");
-//    , NULL,
-//                 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-    inputDataArea();
-
-    createButton("Sinusoidal signal", new SinusoidalSignal(amp,time0,duration,basePeriod));
-    createButton("Gausian noise", new GaussianNoise(amp,time0,duration));
-    createButton("Impulse noise", new ImpulseNoise(amp,time0,duration,freq,prob));
-    createButton("Rectangular signal", new RectangularSignal(amp,time0,duration,basePeriod,fillFactor));
-    createButton("Rectangular simetric signal", new RectangularSymmetricSignal(amp,time0,duration,basePeriod,fillFactor));
-    createButton("Sinusoidal one half rectified signal", new SinusoidalOneHalfRectifiedSignal(amp,time0,duration,basePeriod));
-    createButton("Sinusoidal two half rectified signal", new SinusoidalTwoHalfRectifiedSignal(amp,time0,duration,basePeriod));
-    createButton("Triangular signal", new TriangularSignal(amp,time0,duration,basePeriod,fillFactor));
-    createButton("Uniform Noise", new UniformNoise(amp, time0,duration));
-    createButton("Unit impulse signal", new UnitImpulseSignal(amp,time0,duration,freq,jumpTime));
-    createButton("Unit jump signal", new UnitJumpSignal(amp,time0,duration,jumpTime));
-//    ImGui::SetNextItemWidth(ImGui::GetWindowWidth());
-//    if (ImPlot::BeginPlot("Signal Plot")) {
-    createPlot();
-
-    createButton("Save", true);
-    createButton("Load", false);
-//    ImPlot::PlotLine(, signalStrategy->getSignal().timeValues, signalStrategy->getSignal().signalValues.size());
-//        ImPlot::EndPlot();
+//void fillTheFrame() {
+////    ImGui::SetNextWindowSize(ImVec2(1200, 700));
+//    ImGui::Begin("CPS zadanie 1");
+////    , NULL,
+////                 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+//    inputDataArea();
+//
+//
+////
+////    createPlot();
+////
+////    createButton("Save", true);
+////    createButton("Load", false);
+//    if (ImGui::Checkbox("Option 1", &option1))
+//    {
+//        if (option1)
+//        {
+//            std::cout<<"active";
+//        }
+//    }
+//
+//    ImGui::End();
 //}
-//    createTextArea();
-    ImGui::End();
+//
+//bool canBeProceeded = false;
+//}
+
+void createCheckbox(Option &option) {
+    if (ImGui::Checkbox(option.title.c_str(), &option.visibility)) {
+        delete signalStrategy;
+        signalStrategy = option.signalStrategy;
+    }
 }
 
-bool canBeProceeded = false;
+void createCheckbox(SignalStrategy *strategy, const char *label, bool check) {
+    if (ImGui::Checkbox(label, &check)) {
+        delete signalStrategy;
+        signalStrategy = strategy;
+    }
+}
 
 
 int main() {
+    double amp, time0, prob, duration, basePeriod, freq, fillFactor, jumpTime;
+    bool ampVisibility, time0Visibility, probVisibility, durationVisibility, basePeriodVisibility, freqVisibility, fillFactorVisibility, jumpTimeVisibility;
+    bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
+    std::string filename = "";
+    std::vector<Parameter> params = {
+            Parameter("Amplitude", true, amp),
+            Parameter("Start time", true, time0),
+            Parameter("Prob", true, prob),
+            Parameter("Duration", true, duration),
+            Parameter("Base period", true, basePeriod),
+            Parameter("Frequency", true, freq),
+            Parameter("Fill factor", true, fillFactor),
+            Parameter("Jump time", true, jumpTime),
+    };
+
+    std::vector<Option> options = {
+            Option(new SinusoidalSignal(amp, time0, duration, basePeriod), "Sinusoidal signal"),
+            Option(new GaussianNoise(amp, time0, duration), "Gausian noise"),
+            Option(new ImpulseNoise(amp, time0, duration, freq, prob), "Impulse noise"),
+            Option(new RectangularSignal(amp, time0, duration, basePeriod, fillFactor), "Rectangular signal"),
+            Option(new RectangularSymmetricSignal(amp, time0, duration, basePeriod, fillFactor),"Rectangular simetric signal"),
+            Option(new SinusoidalOneHalfRectifiedSignal(amp, time0, duration, basePeriod),"Sinusoidal one half rectified signal"),
+            Option(new SinusoidalTwoHalfRectifiedSignal(amp, time0, duration, basePeriod),"Sinusoidal two half rectified signal"),
+            Option(new TriangularSignal(amp, time0, duration, basePeriod, fillFactor), "Triangular signal"),
+            Option(new UniformNoise(amp, time0, duration), "Uniform Noise"),
+            Option(new UnitImpulseSignal(amp, time0, duration, freq, jumpTime), "Unit impulse signal"),
+            Option(new UnitJumpSignal(amp, time0, duration, jumpTime), "Unit jump signal")
+    };
     if (isFrameInitSuccessful()) {
         configureWindow();
         while (!glfwWindowShouldClose(window)) {
-              setFrame();
-              fillTheFrame();
-              render();
+            setFrame();
+
+            ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Always);
+            ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
+            ImGui::Begin("Signals and noises", NULL,
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+//            for (Option &option: options) {
+                createCheckbox(new SinusoidalSignal(amp, time0, duration, basePeriod), "Sinusoidal signal", SinusoidalSignalCheck);
+                createCheckbox(new GaussianNoise(amp, time0, duration), "Gausian noise", GaussianNoiseCheck);
+                createCheckbox(new ImpulseNoise(amp, time0, duration, freq, prob), "Impulse noise", ImpulseNoiseCheck);
+                createCheckbox(new RectangularSignal(amp, time0, duration, basePeriod, fillFactor), "Rectangular signal", RectangularSignalCheck);
+                createCheckbox(new RectangularSymmetricSignal(amp, time0, duration, basePeriod, fillFactor),"Rectangular simetric signal", RectangularSymmetricSignalCheck);
+                createCheckbox(new SinusoidalOneHalfRectifiedSignal(amp, time0, duration, basePeriod),"Sinusoidal one half rectified signal", SinusoidalOneHalfRectifiedSignalCheck);
+                createCheckbox(new SinusoidalTwoHalfRectifiedSignal(amp, time0, duration, basePeriod),"Sinusoidal two half rectified signal", SinusoidalTwoHalfRectifiedSignalCheck);
+                createCheckbox(new TriangularSignal(amp, time0, duration, basePeriod, fillFactor), "Triangular signal", TriangularSignalCheck);
+                createCheckbox(new UniformNoise(amp, time0, duration), "Uniform Noise", UniformNoiseCheck);
+                createCheckbox(new UnitImpulseSignal(amp, time0, duration, freq, jumpTime), "Unit impulse signal", UnitImpulseSignalCheck);
+                createCheckbox(new UnitJumpSignal(amp, time0, duration, jumpTime), "Unit jump signal", UnitJumpSignalCheck);
+//            }
+            ImGui::End();
+
+            ImGui::SetNextWindowPos(ImVec2(440, 20), ImGuiCond_Always);
+            ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
+            ImGui::Begin("Parameters", NULL,
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+            for (Parameter &parameter: params) {
+                ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1);
+            }
+            ImGui::End();
+
+            ImGui::SetNextWindowPos(ImVec2(860, 20), ImGuiCond_Always);
+            ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
+            ImGui::Begin("Buttons", NULL,
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+            createButton("Save to file", 0);
+            createButton("Load from file", 1);
+            createButton("Draw the plot", 2);
+            ImGui::End();
+
+            ImGui::SetNextWindowPos(ImVec2(20, 340), ImGuiCond_Always);
+            ImGui::SetNextWindowSize(ImVec2(1240, 360), ImGuiCond_Always);
+            ImGui::Begin("Plot", NULL,
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+            createPlot();
+            ImGui::End();
+
+            render();
         }
         clearTheMess();
     }

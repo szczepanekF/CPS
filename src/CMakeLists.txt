@@ -20,6 +20,9 @@ add_lib(src
         signals/UnitJumpSignal.cpp
         signals/Signal.cpp
 
+        frontend/Option.cpp
+        frontend/Parameter.cpp
+
         operations/SignalProcesor.cpp
         )
 
