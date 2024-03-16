@@ -137,7 +137,7 @@ std::string SignalProcesor::readSignalFromBinaryAsString(const std::string &file
     inFile.read(reinterpret_cast<char *>(&sizeX), sizeof(sizeX));
     message += "Time 0: " + std::to_string(bTime) + "\n";
     message += "Duration: " + std::to_string(dur) + "\n";
-    message += "Sample count: " + std::to_string(frequency) + "\n";
+    message += "Frequency: " + std::to_string(frequency) + "\n";
     message += "Amplitude amount: " + std::to_string(sizeX) + "\n";
     message += "REST DATA IS AMPLITUDE VALUES";
 

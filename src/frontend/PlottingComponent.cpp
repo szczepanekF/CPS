@@ -49,6 +49,7 @@ void PlottingComponent::showFileOperations() {
     ImGui::InputText("Filename", filename, sizeof(filename));
     createButton("Save to file", 0);
     createButton("Load from file", 1);
+    createButton("Load signal in text format", 3);
     createButton("Draw the plot", 2);
 
     ImGui::Text("Loaded files:");
@@ -56,7 +57,7 @@ void PlottingComponent::showFileOperations() {
         ImGui::Text(loadedFilename.c_str());
     }
 
-    createButton("File operations", 3);
+    createButton("File operations", 4);
 }
 
 void PlottingComponent::showSignalChoice() {
@@ -99,14 +100,19 @@ void PlottingComponent::createButton(const char *label, int option) {
             } else {
                 ImGui::OpenPopup("fileError");
             }
-        } else if (option == 3) {
+        } else if (option == 4) {
             ImGui::OpenPopup("operationsPopup");
-        } else {
+
+        } else if (option == 3) {
+            signalData = signalProcesor.readSignalFromBinaryAsString(std::string(filename) + ".bin");
+            ImGui::OpenPopup("sigText");
+        }
+        else {
             cleanUp();
             if (option == 1 && std::string(filename).size()) {
                 drawedSignal = signalProcesor.readSignalFromBinary(std::string(filename) + ".bin");
                 signalProcesor.addNewSignal(*drawedSignal);
-                filenames.push_back(strcat(filename, ".bin"));
+                filenames.push_back(std::string(filename) + ".bin");
                 ImGui::OpenPopup("fileSuccess");
             } else {
                 setDrawedSignalBySignalType();
@@ -371,6 +377,10 @@ void PlottingComponent::drawFilePanel() {
     createPopup("fileError", "Draw or read signal in order to save file", []() {});
     createPopup("fileSuccess", "File operation was successful on file: " + std::string(filename), [](){});
     createPopup("operationsPopup", "File operation was successful", [this]() { this->createOperationButtons(); });
+    createPopup("sigText", "Signal data in text format", [this](){
+        ImGui::Text(signalData.c_str());
+        std::cout<<signalData;
+    });
     ImGui::End();
 }
 

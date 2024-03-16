@@ -85,6 +85,7 @@ private:
     std::vector<Parameter> params;
     std::vector<std::string> filenames;
     std::vector<Option> options;
+    std::string signalData;
     float *xData;
     float *yData;
     int dataSize;
