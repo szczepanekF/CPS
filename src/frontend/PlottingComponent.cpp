@@ -8,18 +8,23 @@
 #include "frontend/Option.h"
 
 
-void PlottingComponent::drawPlot() {
-
-    if (ImPlot::BeginPlot("Plot")) {
-//        if(isSignalDiscrete) {
-        ImPlot::PlotScatter("Scatter Plot", xData, yData, dataSize);
-//        } else {
-        ImPlot::PlotLine("Line Plot", xData, yData, dataSize);
-//        }
-        ImPlot::PlotHistogram("Histogram", yData, dataSize, 10);
-        ImPlot::EndPlot();
-    }
+PlottingComponent::PlottingComponent() : filename(), signalProcesor(), bins(10), drawedSignal(nullptr) {
+    initDrawData();
+    initChecks();
+    params = {Parameter("Amplitude"),
+              Parameter("Start time"),
+              Parameter("Duration"),
+              Parameter("Base period"),
+              Parameter("Frequency"),
+              Parameter("Probability"),
+              Parameter("Fill factor"),
+              Parameter("Jump time")};
 }
+
+PlottingComponent::~PlottingComponent() {
+    cleanUp();
+}
+
 
 void PlottingComponent::show() {
 
@@ -39,6 +44,7 @@ void PlottingComponent::showSignalParameters() {
     for (Parameter &parameter: params) {
 
         if (parameter.isVisible) {
+            ImGui::SetNextItemWidth(100);
             ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1, format.c_str());
         }
 
@@ -47,17 +53,31 @@ void PlottingComponent::showSignalParameters() {
 
 void PlottingComponent::showFileOperations() {
     ImGui::InputText("Filename", filename, sizeof(filename));
+    ImGui::Spacing();
+
     createButton("Save to file", 0);
+    ImGui::SameLine();
     createButton("Load from file", 1);
     createButton("Load signal in text format", 3);
-    createButton("Draw the plot", 2);
+    ImGui::Spacing();
 
-    ImGui::Text("Loaded files:");
-    for (const std::string &loadedFilename: filenames) {
-        ImGui::Text(loadedFilename.c_str());
+    if (!filenames.empty()) {
+        ImGui::Separator();
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); // Red color
+        ImGui::Text("Loaded files:");
+
+        ImGui::PopStyleColor();
+
+        for (const std::string &loadedFilename: filenames) {
+            ImGui::Text(loadedFilename.c_str());
+        }
+        ImGui::Separator();
+        ImGui::Spacing();
+        createButton("File operations", 4);
+        ImGui::SameLine();
     }
 
-    createButton("File operations", 4);
+    createButton("Unload files and clear signal", 5);
 }
 
 void PlottingComponent::showSignalChoice() {
@@ -100,16 +120,19 @@ void PlottingComponent::createButton(const char *label, int option) {
             } else {
                 ImGui::OpenPopup("fileError");
             }
-        } else if (option == 4) {
-            ImGui::OpenPopup("operationsPopup");
-
         } else if (option == 3) {
             signalData = signalProcesor.readSignalFromBinaryAsString(std::string(filename) + ".bin");
             ImGui::OpenPopup("sigText");
-        }
-        else {
+        } else if (option == 4) {
+            ImGui::OpenPopup("operationsPopup");
+        } else if (option == 5) {
             cleanUp();
-            if (option == 1 && std::string(filename).size()) {
+            filenames.clear();
+            signalProcesor.clearSignals();
+            initDrawData();
+        } else {
+            cleanUp();
+            if (option == 1 && !std::string(filename).empty()) {
                 drawedSignal = signalProcesor.readSignalFromBinary(std::string(filename) + ".bin");
                 signalProcesor.addNewSignal(*drawedSignal);
                 filenames.push_back(std::string(filename) + ".bin");
@@ -122,25 +145,9 @@ void PlottingComponent::createButton(const char *label, int option) {
     }
 }
 
-PlottingComponent::~PlottingComponent() {
-    cleanUp();
-}
-
-PlottingComponent::PlottingComponent() : filename(), signalProcesor(),
-                                         drawedSignal(nullptr) {
-    initDrawData();
-    initChecks();
-    params = {Parameter("Amplitude"),
-              Parameter("Start time"),
-              Parameter("Duration"),
-              Parameter("Base period"),
-              Parameter("Frequency"),
-              Parameter("Probability"),
-              Parameter("Fill factor"),
-              Parameter("Jump time")};
-}
 
 void PlottingComponent::cleanUp() {
+    drawedSignal.reset();
     delete[] xData;
     delete[] yData;
     dataSize = 0;
@@ -230,9 +237,6 @@ void PlottingComponent::setDrawedSignalBySignalType() {
             return;
     }
 
-    if (dynamic_cast<DiscreteSignal *>(strat) != nullptr) {
-        isSignalDiscrete = true;
-    }
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
     delete strat;
 }
@@ -330,9 +334,10 @@ void PlottingComponent::drawPlotPanel() {
 
     ImGui::SetNextWindowPos(ImVec2(20, 340), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(1240, 360), ImGuiCond_Always);
-    ImGui::Begin("Plot", NULL,
+    ImGui::Begin("Plot", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     drawPlot();
+    binInput();
     ImGui::End();
 
 }
@@ -353,6 +358,7 @@ void PlottingComponent::drawParameterPanel() {
     ImGui::Begin("Parameters", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showSignalParameters();
+    createButton("Draw the plot", 2);
     ImGui::End();
 }
 
@@ -376,11 +382,11 @@ void PlottingComponent::drawFilePanel() {
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showFileOperations();
     createPopup("fileError", "Draw or read signal in order to save file", []() {});
-    createPopup("fileSuccess", "File operation was successful on file: " + std::string(filename), [](){});
+    createPopup("fileSuccess", "File operation was successful on file: " + std::string(filename), []() {});
     createPopup("operationsPopup", "File operation was successful", [this]() { this->createOperationButtons(); });
-    createPopup("sigText", "Signal data in text format", [this](){
+    createPopup("sigText", "Signal data in text format", [this]() {
         ImGui::Text(signalData.c_str());
-        std::cout<<signalData;
+        std::cout << signalData;
     });
     ImGui::End();
 }
@@ -421,4 +427,23 @@ void PlottingComponent::setDrawedSignalData() {
     yData = new float[drawedSignal->size()];
     drawedSignal->convertToFloat(yData, xData);
     dataSize = drawedSignal->size();
+}
+
+void PlottingComponent::drawPlot() {
+
+    if (ImPlot::BeginPlot("Plot")) {
+        ImPlot::PlotScatter("Scatter Plot", xData, yData, dataSize);
+        ImPlot::PlotLine("Line Plot", xData, yData, dataSize);
+        ImPlot::PlotHistogram("Histogram", yData, dataSize, bins);
+        ImPlot::EndPlot();
+    }
+}
+
+void PlottingComponent::binInput() {
+    ImGui::SetNextItemWidth(100);
+    ImGui::InputInt("Bins",&bins);
+
+    if (bins < 5) bins = 5;
+
+    if (bins > 20) bins = 20;
 }

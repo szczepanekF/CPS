@@ -71,6 +71,7 @@ private:
     void createPopup(const std::string &label, const std::string &info, const std::function<void()>& func);
     void createOperationButtons();
     void setDrawedSignalData();
+    void binInput();
 
     bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
     std::vector<bool *> checks = {&SinusoidalSignalCheck, &GaussianNoiseCheck, &ImpulseNoiseCheck,
@@ -89,7 +90,7 @@ private:
     float *xData;
     float *yData;
     int dataSize;
-    bool isSignalDiscrete;
+    int bins;
     std::unique_ptr<Signal> drawedSignal;
     std::vector<std::unique_ptr<Signal>> operations;
     SIGNAL_TYPE signalType;

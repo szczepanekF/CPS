@@ -38,9 +38,7 @@ Signal SignalProcesor::calculateSignalOperation(std::string &operationType, cons
 }
 
 
-void SignalProcesor::removeSignal(int i) {
-    signalValues.erase(signalValues.begin() + i);
-}
+
 
 void SignalProcesor::addNewSignal(const Signal &signal) {
     signalValues.push_back(signal);
@@ -145,6 +143,10 @@ std::string SignalProcesor::readSignalFromBinaryAsString(const std::string &file
     inFile.close();
 
     return message;
+}
+
+void SignalProcesor::clearSignals() {
+    signalValues.clear();
 }
 
 

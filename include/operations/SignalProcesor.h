@@ -14,7 +14,7 @@ public:
     std::unique_ptr<Signal> readSignalFromBinary(const std::string& filename);
     std::string readSignalFromBinaryAsString(const std::string& filename);
     void addNewSignal(const Signal &signal);
-    void removeSignal(int i);
+    void clearSignals();
 
 private:
 
