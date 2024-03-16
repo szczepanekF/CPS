@@ -234,6 +234,7 @@ void PlottingComponent::setDrawedSignalBySignalType() {
         isSignalDiscrete = true;
     }
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
+    delete strat;
 }
 
 
