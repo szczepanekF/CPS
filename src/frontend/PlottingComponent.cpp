@@ -52,9 +52,11 @@ void PlottingComponent::showFileOperations() {
     createButton("Draw the plot", 2);
 
     ImGui::Text("Loaded files:");
-    for(const std::string& loadedFilename : filenames) {
+    for (const std::string &loadedFilename: filenames) {
         ImGui::Text(loadedFilename.c_str());
     }
+
+    createButton("File operations", 3);
 }
 
 void PlottingComponent::showSignalChoice() {
@@ -91,25 +93,25 @@ void PlottingComponent::createButton(const char *label, int option) {
 
 
         if (option == 0) {
-            if (currentStrategy != nullptr && drawedSignal != nullptr) {
-                signalProcesor.saveSignalToBinary(*currentStrategy, *drawedSignal, std::string(filename) + ".bin");
+            if (drawedSignal != nullptr) {
+                signalProcesor.saveSignalToBinary(*drawedSignal, std::string(filename) + ".bin");
+                ImGui::OpenPopup("fileSuccess");
             } else {
                 ImGui::OpenPopup("fileError");
             }
+        } else if (option == 3) {
+            ImGui::OpenPopup("operationsPopup");
         } else {
             cleanUp();
             if (option == 1 && std::string(filename).size()) {
                 drawedSignal = signalProcesor.readSignalFromBinary(std::string(filename) + ".bin");
                 signalProcesor.addNewSignal(*drawedSignal);
                 filenames.push_back(strcat(filename, ".bin"));
+                ImGui::OpenPopup("fileSuccess");
             } else {
                 setDrawedSignalBySignalType();
             }
-
-            xData = new float[drawedSignal->size()];
-            yData = new float[drawedSignal->size()];
-            drawedSignal->convertToFloat(yData, xData);
-            dataSize = drawedSignal->size();
+            setDrawedSignalData();
         }
     }
 }
@@ -168,7 +170,6 @@ void PlottingComponent::handleParamsVisibility(std::unordered_set<int> &paramsTo
 
 void PlottingComponent::handleChecksButtonsVisibility(bool &paramCheck) {
     for (auto check: checks) {
-        std::cout << *check << std::endl;
         if (check != &paramCheck) {
             *check = false;
         }
@@ -226,7 +227,6 @@ void PlottingComponent::setDrawedSignalBySignalType() {
     if (dynamic_cast<DiscreteSignal *>(strat) != nullptr) {
         isSignalDiscrete = true;
     }
-    currentStrategy = std::unique_ptr<SignalStrategy>(strat);
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
 }
 
@@ -349,10 +349,11 @@ void PlottingComponent::drawParameterPanel() {
     ImGui::End();
 }
 
-void PlottingComponent::createPopup(const std::string &label, const std::string &info, void (*myFunc)()) {
+void
+PlottingComponent::createPopup(const std::string &label, const std::string &info, const std::function<void()> &func) {
     if (ImGui::BeginPopup(label.c_str())) {
         ImGui::Text(info.c_str());
-        myFunc();
+        func();
         if (ImGui::Button("Close")) {
             ImGui::CloseCurrentPopup();
         }
@@ -367,8 +368,9 @@ void PlottingComponent::drawFilePanel() {
     ImGui::Begin("Buttons", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showFileOperations();
-//    createPopup("fileError", "Draw or read signal first");
-
+    createPopup("fileError", "Draw or read signal in order to save file", []() {});
+    createPopup("fileSuccess", "File operation was successful on file: " + std::string(filename), [](){});
+    createPopup("operationsPopup", "File operation was successful", [this]() { this->createOperationButtons(); });
     ImGui::End();
 }
 
@@ -385,6 +387,27 @@ void PlottingComponent::drawSignalInfoPanelIfSignalChosen() {
 
 
 void PlottingComponent::createOperationButtons() {
+    std::array<std::string, 4> arr = {"add", "subtract", "multiply", "divide"};
+    for (auto operation: arr) {
+        if (ImGui::Button(operation.c_str())) {
+            Signal signal = signalProcesor.getCalculatedSignal(operation);
+            if (signal.size()) {
+                cleanUp();
+                drawedSignal = std::make_unique<Signal>(signal);
+                setDrawedSignalData();
+                ImGui::CloseCurrentPopup();
+            }
 
 
+        }
+    }
+
+
+}
+
+void PlottingComponent::setDrawedSignalData() {
+    xData = new float[drawedSignal->size()];
+    yData = new float[drawedSignal->size()];
+    drawedSignal->convertToFloat(yData, xData);
+    dataSize = drawedSignal->size();
 }

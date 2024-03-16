@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <functional>
 #include "signals/SignalTypes.h"
 #include "operations/SignalProcesor.h"
 
@@ -67,9 +68,9 @@ private:
 
     void setDrawedSignalBySignalType();
 
-    void createPopup(const std::string &label, const std::string &info, void (* myFunc)());
+    void createPopup(const std::string &label, const std::string &info, const std::function<void()>& func);
     void createOperationButtons();
-
+    void setDrawedSignalData();
 
     bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
     std::vector<bool *> checks = {&SinusoidalSignalCheck, &GaussianNoiseCheck, &ImpulseNoiseCheck,
@@ -89,7 +90,6 @@ private:
     int dataSize;
     bool isSignalDiscrete;
     std::unique_ptr<Signal> drawedSignal;
-    std::unique_ptr<SignalStrategy> currentStrategy;
     std::vector<std::unique_ptr<Signal>> operations;
     SIGNAL_TYPE signalType;
 

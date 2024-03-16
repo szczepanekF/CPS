@@ -10,7 +10,7 @@ public:
 
     Signal getCalculatedSignal(std::string &operationType);
 
-    void saveSignalToBinary(const SignalStrategy& strat, const Signal& sig,const std::string& filename);
+    void saveSignalToBinary(const Signal& sig, const std::string& filename);
     std::unique_ptr<Signal> readSignalFromBinary(const std::string& filename);
     std::string readSignalFromBinaryAsString(const std::string& filename);
     void addNewSignal(const Signal &signal);

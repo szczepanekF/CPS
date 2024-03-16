@@ -1,6 +1,8 @@
 #include <utility>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
+#include <ranges>
 #include "operations/SignalProcesor.h"
 
 SignalProcesor::SignalProcesor() : signalValues() {
@@ -12,7 +14,7 @@ Signal SignalProcesor::getCalculatedSignal(std::string &operationType) {
     if (signalValues.empty()) return {};
     Signal value = signalValues[0];
 
-    for (size_t i = 1; i < signalValues.size() - 1 ; i++) {
+    for (size_t i = 1; i < signalValues.size() ; i++) {
         value = calculateSignalOperation(operationType, value, signalValues[i]);
     }
 
@@ -44,7 +46,7 @@ void SignalProcesor::addNewSignal(const Signal &signal) {
     signalValues.push_back(signal);
 }
 
-void SignalProcesor::saveSignalToBinary(const SignalStrategy& strat, const Signal &sig, const std::string &filename) {
+void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &filename) {
     // Open a binary file for writing
     std::ofstream outFile(filename, std::ios::out | std::ios::binary | std::ios::trunc);
     if (!outFile.is_open()) {
@@ -52,12 +54,18 @@ void SignalProcesor::saveSignalToBinary(const SignalStrategy& strat, const Signa
         return;
     }
     //write parameters
+    double bTime = 0;
+    double dur = 0;
+    double frequency = 0;
+    if (!sig.timeValues.empty()) {
 
-    double bTime = strat.getBeginTime();
+    }
+    bTime = sig.timeValues[0];
     outFile.write(reinterpret_cast<const char *>(&bTime), sizeof(bTime));
-    double dur = strat.getDuration();
+    dur = sig.timeValues.back() -  sig.timeValues[0];
     outFile.write(reinterpret_cast<const char *>(&dur), sizeof(dur));
-    double frequency = strat.getFrequency();
+    double time = bTime + 1;
+    frequency = std::distance(sig.timeValues.begin(), std::ranges::find_if(sig.timeValues, [time](double val) {return time <= val;} )) ;
     outFile.write(reinterpret_cast<const char *>(&frequency), sizeof(frequency));
 
     size_t sizeX = sig.size();
@@ -68,8 +76,6 @@ void SignalProcesor::saveSignalToBinary(const SignalStrategy& strat, const Signa
 
     // Close the file
     outFile.close();
-
-    std::cout << "Vectors saved to file successfully." << std::endl;
 }
 
 std::unique_ptr<Signal> SignalProcesor::readSignalFromBinary(const std::string &filename) {
