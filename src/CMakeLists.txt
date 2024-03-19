@@ -22,6 +22,10 @@ add_lib(src
         signals/UnitImpulseSignal.cpp
         signals/UnitJumpSignal.cpp
         signals/Signal.cpp
+        signals/Sampling.cpp
+        signals/Quantization.cpp
+        signals/QuantizationRounded.cpp
+        signals/QuantizationClipped.cpp
         operations/SignalProcesor.cpp
 
         frontend/Option.cpp

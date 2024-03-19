@@ -4,14 +4,14 @@
 
 class SignalStrategy {
 public:
-    SignalStrategy(double amp, double time0, double dur);
+    SignalStrategy(double time0, double dur);
 
     virtual ~SignalStrategy() = default;
 
     virtual double calculateSignalAt(double time);
 
     virtual Signal &getSignal();
-    double getAmplitude() const;
+
     double getBeginTime() const;
     double getDuration() const;
     double getFrequency() const;
@@ -30,5 +30,5 @@ private:
 
     double duration;
     double beginTime;
-    double amplitude;
+
 };

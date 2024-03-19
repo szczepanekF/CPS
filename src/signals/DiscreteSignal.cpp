@@ -1,12 +1,15 @@
 
 #include "signals/DiscreteSignal.h"
 #include <cmath>
-DiscreteSignal::DiscreteSignal(double amp, double time0, double dur, double frequency)
-        : SignalStrategy(amp, time0, dur) {
+
+DiscreteSignal::DiscreteSignal(double time0, double dur, double frequency)
+        : SignalStrategy(time0, dur) {
 
     setFrequency(frequency);
 
 }
+
+
 
 Signal &DiscreteSignal::getSignal() {
     calculateSignal();

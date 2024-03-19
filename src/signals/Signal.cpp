@@ -71,7 +71,6 @@ double Signal::variance() const {
 }
 
 double Signal::meanPower() const {
-    double meanVal = mean();
     double sum = 0;
     for(auto val : signalValues) {
         sum += std::pow(val, 2);

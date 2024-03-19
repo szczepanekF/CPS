@@ -1,11 +1,9 @@
 #include "signals/SignalStrategy.h"
 
-SignalStrategy::SignalStrategy(double amp, double time0, double dur): FREQUENCY(1000), duration(dur), beginTime(time0), amplitude(amp) {
+SignalStrategy::SignalStrategy( double time0, double dur): FREQUENCY(1000), duration(dur), beginTime(time0) {
 }
 
-double SignalStrategy::getAmplitude() const {
-    return amplitude;
-}
+
 
 double SignalStrategy::getBeginTime() const {
     return beginTime;
