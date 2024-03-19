@@ -7,36 +7,37 @@ find_package(implot REQUIRED)
 
 add_lib(src
         SOURCES
-        signals/ContinousSignal.cpp
-        signals/DiscreteSignal.cpp
-        signals/GaussianNoise.cpp
-        signals/ImpulseNoise.cpp
-        signals/RectangularSignal.cpp
-        signals/RectangularSymmetricSignal.cpp
-        signals/SignalStrategy.cpp
-        signals/SinusoidalSignal.cpp
-        signals/SinusoidalOneHalfRectifiedSignal.cpp
-        signals/SinusoidalTwoHalfRectifiedSignal.cpp
-        signals/TriangularSignal.cpp
-        signals/UniformNoise.cpp
-        signals/UnitImpulseSignal.cpp
-        signals/UnitJumpSignal.cpp
-        signals/Signal.cpp
-        signals/Sampling.cpp
-        signals/Quantization.cpp
-        signals/QuantizationRounded.cpp
-        signals/QuantizationClipped.cpp
+        signals/baseSignals/ContinousSignal.cpp
+        signals/baseSignals/DiscreteSignal.cpp
+        signals/baseSignals/GaussianNoise.cpp
+        signals/baseSignals/ImpulseNoise.cpp
+        signals/baseSignals/RectangularSignal.cpp
+        signals/baseSignals/RectangularSymmetricSignal.cpp
+        signals/baseSignals/SignalStrategy.cpp
+        signals/baseSignals/SinusoidalSignal.cpp
+        signals/baseSignals/SinusoidalOneHalfRectifiedSignal.cpp
+        signals/baseSignals/SinusoidalTwoHalfRectifiedSignal.cpp
+        signals/baseSignals/TriangularSignal.cpp
+        signals/baseSignals/UniformNoise.cpp
+        signals/baseSignals/UnitImpulseSignal.cpp
+        signals/baseSignals/UnitJumpSignal.cpp
+        signals/baseSignals/Signal.cpp
+        signals/ADC/Sampling.cpp
+        signals/ADC/Quantization.cpp
+        signals/ADC/QuantizationRounded.cpp
+        signals/ADC/QuantizationClipped.cpp
+        signals/DAC/ReconstructionZeroOrderHold.cpp
+        signals/DAC/ReconstructionFirstOrderHold.cpp
+        signals/DAC/ReconstructionSincBased.cpp
         operations/SignalProcesor.cpp
 
         frontend/Option.cpp
         frontend/Parameter.cpp
-
-
         frontend/MainApp.cpp
         frontend/PlottingComponent.cpp
-
         bindings/imgui_impl_glfw.cpp
         bindings/imgui_impl_opengl3.cpp
+
         DEPENDS
         Python3::NumPy
         imgui::imgui

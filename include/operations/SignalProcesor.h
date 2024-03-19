@@ -1,5 +1,5 @@
 #pragma once
-#include "signals/SignalStrategy.h"
+#include "signals/baseSignals/SignalStrategy.h"
 #include <memory>
 #include <string>
 #include <unordered_map>

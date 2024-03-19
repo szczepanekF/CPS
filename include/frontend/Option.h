@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "signals/SignalStrategy.h"
+#include "signals/baseSignals/SignalStrategy.h"
 
 class Option {
 public:
