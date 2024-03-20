@@ -332,8 +332,8 @@ void PlottingComponent::drawSignalInfo() {
 
 void PlottingComponent::drawPlotPanel() {
 
-    ImGui::SetNextWindowPos(ImVec2(20, 340), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(1240, 360), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(50, 450), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(1600, 500), ImGuiCond_Always);
     ImGui::Begin("Plot", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     drawPlot();
@@ -343,7 +343,7 @@ void PlottingComponent::drawPlotPanel() {
 }
 
 void PlottingComponent::drawSignalChoicePanel() {
-    ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(50, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
     ImGui::Begin("Signals and noises", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -353,7 +353,7 @@ void PlottingComponent::drawSignalChoicePanel() {
 }
 
 void PlottingComponent::drawParameterPanel() {
-    ImGui::SetNextWindowPos(ImVec2(440, 20), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(500, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
     ImGui::Begin("Parameters", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -376,7 +376,7 @@ PlottingComponent::createPopup(const std::string &label, const std::string &info
 }
 
 void PlottingComponent::drawFilePanel() {
-    ImGui::SetNextWindowPos(ImVec2(860, 20), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(950, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
     ImGui::Begin("Buttons", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -394,9 +394,9 @@ void PlottingComponent::drawFilePanel() {
 void PlottingComponent::drawSignalInfoPanelIfSignalChosen() {
 
     if (drawedSignal != nullptr) {
-        ImGui::SetNextWindowPos(ImVec2(1300, 340), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(1400, 100), ImGuiCond_Always);
         ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_Always);
-        ImGui::Begin("Signal values", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+        ImGui::Begin("Calculated signal parameters", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
         drawSignalInfo();
         ImGui::End();
     }
@@ -430,7 +430,6 @@ void PlottingComponent::setDrawedSignalData() {
 }
 
 void PlottingComponent::drawPlot() {
-
     if (ImPlot::BeginPlot("Plot")) {
         ImPlot::PlotScatter("Scatter Plot", xData, yData, dataSize);
         ImPlot::PlotLine("Line Plot", xData, yData, dataSize);

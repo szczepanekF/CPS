@@ -14,7 +14,7 @@
 GLFWwindow *window;
 const char *glsl_version;
 ImVec4 clear_color;
-
+int display_w, display_h;
 
 
 
@@ -32,7 +32,7 @@ bool MainApp::isFrameInitSuccessful() {
     glsl_version = "#version 130";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    window = glfwCreateWindow(1920, 1080, "CPS zad1", nullptr, nullptr);
+    window = glfwCreateWindow(1920, 1080, "CPS", nullptr, nullptr);
     if (window == nullptr) {
         return false;
     }
@@ -58,7 +58,6 @@ void MainApp::configureWindow() {
 void MainApp::render() {
 // Rendering
     ImGui::Render();
-    int display_w, display_h;
     glfwGetFramebufferSize(window, &display_w, &display_h);
     glViewport(0, 0, display_w, display_h);
     glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w,
@@ -96,7 +95,26 @@ void MainApp::run() {
         configureWindow();
         while (!glfwWindowShouldClose(window)) {
             setFrame();
-            comp.show();
+            ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+            ImGui::SetNextWindowSize(ImVec2(display_w, display_h), ImGuiCond_Always);
+            ImGui::Begin("Assignments", nullptr,
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+            if (ImGui::BeginTabBar("MyTabBar"))
+            {
+                if (ImGui::BeginTabItem("Assignment 1"))
+                {
+                    comp.show();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Assignment 2"))
+                {
+                    ImGui::Text("There will be content of Assignment 2");
+                    ImGui::EndTabItem();
+                }
+                ImGui::EndTabBar();
+            }
+
+            ImGui::End();
             render();
         }
         clear();
