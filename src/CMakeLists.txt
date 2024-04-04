@@ -35,6 +35,8 @@ add_lib(src
         frontend/Parameter.cpp
         frontend/MainApp.cpp
         frontend/PlottingComponent.cpp
+        frontend/AcConversionComponent.cpp
+        frontend/Operation.cpp
         bindings/imgui_impl_glfw.cpp
         bindings/imgui_impl_opengl3.cpp
 

@@ -1,6 +1,7 @@
 
 #include "frontend/MainApp.h"
 #include "frontend/PlottingComponent.h"
+#include "frontend/AcConversionComponent.h"
 #include "imgui.h"
 #include <implot.h>
 #include <GLFW/glfw3.h>
@@ -91,6 +92,7 @@ void setFrame() {
 
 void MainApp::run() {
     PlottingComponent comp;
+    AcConversionComponent conCom;
     if (isFrameInitSuccessful()) {
         configureWindow();
         while (!glfwWindowShouldClose(window)) {
@@ -108,7 +110,8 @@ void MainApp::run() {
                 }
                 if (ImGui::BeginTabItem("Assignment 2"))
                 {
-                    ImGui::Text("There will be content of Assignment 2");
+//                    ImGui::Text("There will be content of Assignment 2");
+                    conCom.show();
                     ImGui::EndTabItem();
                 }
                 ImGui::EndTabBar();
