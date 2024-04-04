@@ -45,7 +45,7 @@ public:
 
     void setValues(const std::vector<double> &sigVals, const std::vector<double> &timeVals);
 
-    void convertToFloat(float *vals, float *time) const;
+//    void convertToFloat(float *vals, float *time) const;
 
 
 private:

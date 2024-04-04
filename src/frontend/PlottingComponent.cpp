@@ -6,6 +6,8 @@
 #include "signals/allSignals.h"
 #include "frontend/Parameter.h"
 #include "frontend/Option.h"
+#include "frontend/AcConversionComponent.h"
+#include "frontend/PlotComponent.h"
 
 
 PlottingComponent::PlottingComponent() : filename(), signalProcesor(), bins(10), drawedSignal(nullptr) {
@@ -35,7 +37,6 @@ void PlottingComponent::show() {
 
     drawFilePanel();
 
-//    drawPlotPanel();
     drawSignalInfoPanelIfSignalChosen();
 }
 
@@ -140,7 +141,6 @@ void PlottingComponent::createButton(const char *label, int option) {
             } else {
                 setDrawedSignalBySignalType();
             }
-            setDrawedSignalData();
         }
     }
 }
@@ -190,7 +190,7 @@ void PlottingComponent::handleChecksButtonsVisibility(bool &paramCheck) {
 }
 
 void PlottingComponent::setDrawedSignalBySignalType() {
-    SignalStrategy *strat;
+    SignalStrategy* strat;
     switch (signalType) {
         case SIN:
             strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
@@ -234,13 +234,13 @@ void PlottingComponent::setDrawedSignalBySignalType() {
                                      params[5].value);
             break;
         default:
-            if(dynamic_cast<DiscreteSignal*>(strat)) mode = "C/A";
-            else mode = "A/C";
+//            if(dynamic_cast<DiscreteSignal*>(strat)) mode = "C/A";
+//            else mode = "A/C";
             return;
     }
+    PlotComponent::getInstance()->addSignal(strat->getSignal());
+    AcConversionComponent::setMainSignalStrategy(std::unique_ptr<SignalStrategy>(strat));
 
-    drawedSignal = std::make_unique<Signal>(strat->getSignal());
-    delete strat;
 }
 
 
@@ -402,43 +402,12 @@ void PlottingComponent::createOperationButtons() {
             Signal signal = signalProcesor.getCalculatedSignal(operation);
             if (signal.size()) {
                 cleanUp();
+                //TODO FIX
                 drawedSignal = std::make_unique<Signal>(signal);
-                setDrawedSignalData();
                 ImGui::CloseCurrentPopup();
             }
-
-
         }
     }
-
-
-}
-
-void PlottingComponent::setDrawedSignalData() {
-    xData = new float[drawedSignal->size()];
-    yData = new float[drawedSignal->size()];
-    drawedSignal->convertToFloat(yData, xData);
-    dataSize = drawedSignal->size();
-}
-
-float *PlottingComponent::getXData() const {
-    return xData;
-}
-
-float *PlottingComponent::getYData() const {
-    return yData;
-}
-
-int PlottingComponent::getDataSize() const {
-    return dataSize;
-}
-
-int PlottingComponent::getBins() const {
-    return bins;
-}
-
-const std::string &PlottingComponent::getMode() const {
-    return mode;
 }
 
 

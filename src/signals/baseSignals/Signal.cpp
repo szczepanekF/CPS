@@ -87,12 +87,12 @@ size_t Signal::size() const {
     return signalValues.size();
 }
 
-void Signal::convertToFloat(float *vals, float *time) const {
-    for (size_t i = 0; i < size(); i++) {
-        vals[i] = signalValues[i];
-        time[i] = timeValues[i];
-    }
-}
+//void Signal::convertToFloat(float *vals, float *time) const {
+//    for (size_t i = 0; i < size(); i++) {
+//        vals[i] = signalValues[i];
+//        time[i] = timeValues[i];
+//    }
+//}
 
 double Signal::meanSquaredError(Signal other) const {
     if (other.size() != size()) {

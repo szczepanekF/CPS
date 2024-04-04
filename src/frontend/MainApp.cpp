@@ -81,7 +81,7 @@ void MainApp::clear() {
 
 
 
-void setFrame() {
+void MainApp::setFrame() {
     glfwPollEvents();
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -120,12 +120,9 @@ void MainApp::run() {
             }
 
             ImGui::End();
-            ToDrawSignal toDrawSignal (comp.getXData(), comp.getYData(), comp.getDataSize(), comp.getBins(), "plot1");
             float x[] = {1, 2, 3, 4, 5};
             float y[] = {1, 4, 9, 16, 25};
-            ToDrawSignal toDrawSignal1 (x, y, 5, 10, "plot2");
-            plotComp->addToDrawSignal(toDrawSignal);
-            plotComp->addToDrawSignal(toDrawSignal1);
+
             plotComp->drawPlotPanel();
             render();
         }

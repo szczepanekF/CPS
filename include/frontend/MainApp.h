@@ -14,6 +14,6 @@ private:
     bool isFrameInitSuccessful();
 
     void configureWindow();
-
+    void setFrame();
     void render();
 };

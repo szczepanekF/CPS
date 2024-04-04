@@ -1,7 +1,9 @@
 #include "frontend/PlotComponent.h"
 #include "imgui.h"
+#include "signals/baseSignals/SignalStrategy.h"
 #include <implot.h>
 #include <iostream>
+#include <memory>
 
 PlotComponent *PlotComponent::getInstance() {
     if(instance == nullptr) {
@@ -13,18 +15,25 @@ PlotComponent *PlotComponent::getInstance() {
 PlotComponent *PlotComponent::instance = nullptr;
 
 void PlotComponent::drawPlotPanel() {
-
+    int bins = 10;
     ImGui::SetNextWindowPos(ImVec2(50, 450), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(1600, 500), ImGuiCond_Always);
     ImGui::Begin("Plot", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     if (ImPlot::BeginPlot("Plot")) {
-        if(!toDrawSignals.empty()) {
-            for(auto toDrawSignal : toDrawSignals) {
-                drawPlot(toDrawSignal.getXData(), toDrawSignal.getYData(), toDrawSignal.getDataSize(), toDrawSignal.getBins(), toDrawSignal.getName());
+        if(!signals.empty()) {
+
+            for(auto toDrawSignal : signals) {
+                const auto& sigVals = toDrawSignal.getSignalValues();
+                const auto& timeVals = toDrawSignal.getTimeValues();
+
+                std::vector<float> xs(timeVals.begin(), timeVals.end());
+                std::vector<float> ys(sigVals.begin(), sigVals.end());
+                drawPlot(xs.data(),ys.data(), toDrawSignal.size(), 10, "TEST");
             }
         }
-        binInput(toDrawSignals.front().getBins());
+
+//        binInput(bins);
         ImPlot::EndPlot();
     }
 //    drawPlot(xData, yData, dataSize, bins);
@@ -32,9 +41,6 @@ void PlotComponent::drawPlotPanel() {
     ImGui::End();
 }
 
-void PlotComponent::addToDrawSignal(ToDrawSignal &toDrawSignal) {
-    toDrawSignals.push_back(toDrawSignal);
-}
 
 void PlotComponent::drawPlot(float* xData, float *yData, int dataSize, int bins, std::string name) {
 //    if (ImPlot::BeginPlot("Plot")) {
@@ -55,6 +61,13 @@ void PlotComponent::binInput(int bins) {
     if (bins > 20) bins = 20;
 }
 
-PlotComponent::PlotComponent() = default;
+void PlotComponent::addSignal(const Signal& signal) {
+    signals.push_back(signal);
+}
+
+
+PlotComponent::PlotComponent() : signals() {
+
+};
 
 

@@ -7,6 +7,14 @@ AcConversionComponent::AcConversionComponent() : samplingFrequency(0.0), quantiz
     initializeOperations();
 }
 
+
+std::unique_ptr<SignalStrategy> AcConversionComponent::mainSignalStrategy = nullptr;
+
+void AcConversionComponent::setMainSignalStrategy(std::unique_ptr<SignalStrategy> signalStrategy) {
+    mainSignalStrategy = std::move(signalStrategy);
+}
+
+
 void AcConversionComponent::initializeOperations() {
     auto *operation1 = new Operation(SAMPL, "Próbkowanie równomierne", "A/C");
     auto *operation2 = new Operation(QUANT1, "Kwantyzacja równomierna z obcięciem", "A/C");
@@ -69,3 +77,4 @@ void AcConversionComponent::drawCalculatedMeasuresPanel() const {
     ImGui::Text(("Maksymalna róznica = " + std::to_string(MD)).c_str());
     ImGui::End();
 }
+

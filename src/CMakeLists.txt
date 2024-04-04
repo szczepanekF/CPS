@@ -38,7 +38,7 @@ add_lib(src
         frontend/AcConversionComponent.cpp
         frontend/Operation.cpp
         frontend/PlotComponent.cpp
-        frontend/ToDrawSignal.cpp
+
         bindings/imgui_impl_glfw.cpp
         bindings/imgui_impl_opengl3.cpp
 

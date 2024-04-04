@@ -27,13 +27,6 @@ public:
 
     void show();
 
-    float *getXData() const;
-
-    float *getYData() const;
-
-    int getDataSize() const;
-
-    int getBins() const;
 
 private:
 
@@ -78,7 +71,6 @@ private:
 
     void createPopup(const std::string &label, const std::string &info, const std::function<void()>& func);
     void createOperationButtons();
-    void setDrawedSignalData();
 //    void binInput();
 
     bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
@@ -100,8 +92,6 @@ private:
     int dataSize;
     int bins;
     std::string mode;
-public:
-    const std::string &getMode() const;
 
 private:
     std::unique_ptr<Signal> drawedSignal;
