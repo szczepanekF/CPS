@@ -8,25 +8,25 @@ ReconstructionSincBased::ReconstructionSincBased(std::unique_ptr<DiscreteSignal>
 }
 
 double ReconstructionSincBased::calculateSignalAt(double time) {
-    double period = 1 / strategy->getFrequency();
-    int sampleCount = static_cast<int> (getDuration() * strategy->getFrequency());
-    int nearestSampleInd = static_cast<int> (std::floor(time - getBeginTime()) * strategy->getFrequency());
-    int left = nearestSampleInd - N / 2;
-    int right = nearestSampleInd * N;
-    if (left < 0) {
-        left = 0;
-        right = right - left;
-        right = std::min(sampleCount, right);
-
-    } else if (right > sampleCount) {
-        right = sampleCount;
-        left = left - (right - sampleCount);
-        left = std::max(0, left);
+    double diff = 1 / strategy->getFrequency();
+    double endTime = getBeginTime() + getDuration();
+    double left = time - diff * N / 2;
+    double right = time + diff * N;
+    if (left < getBeginTime()) {
+        right = right - (left - getBeginTime());
+        right = std::min(endTime, right);
+        left = getBeginTime();
+    } else if (right > endTime) {
+        left = left - (right - endTime);
+        left = std::max(getBeginTime(), left);
+        right = getBeginTime() + getDuration();
     }
     double sum = 0;
     while (left <= right) {
-        sum += strategy->calculateSignalAt(left * period) * sinc(time / period - left);
-        left++;
+        //TODO CHECK THIS AS WELL
+        sum += strategy->calculateSignalAt(left) *
+               sinc(time * strategy->getFrequency() - std::floor((left - getBeginTime()) * strategy->getFrequency()));
+        left += diff;
     }
 
     return strategy->calculateSignalAt(time);
