@@ -1,7 +1,6 @@
 #include "frontend/AcConversionComponent.h"
 #include "imgui.h"
-#include <implot.h>
-#include <iostream>
+
 
 AcConversionComponent::AcConversionComponent() : samplingFrequency(0.0), quantizationLimit(0.0), MSE(0.0), SNR(0.0),
                                                  PSNR(0.0), MD(0.0) {
@@ -9,12 +8,12 @@ AcConversionComponent::AcConversionComponent() : samplingFrequency(0.0), quantiz
 }
 
 void AcConversionComponent::initializeOperations() {
-    Operation *operation1 = new Operation(SAMPL, "Próbkowanie równomierne");
-    Operation *operation2 = new Operation(QUANT1, "Kwantyzacja równomierna z obcięciem");
-    Operation *operation3 = new Operation(QUANT2, "Kwantyzacja równomierna z zaokraglaniem");
-    Operation *operation4 = new Operation(EXTRA, "Ekstrapolacja zerowego rzedu");
-    Operation *operation5 = new Operation(INTER, "Interpolacja pierwszego rzedu");
-    Operation *operation6 = new Operation(REC, "Rekonstrukcja w oparciu o funkcje sinc");
+    auto *operation1 = new Operation(SAMPL, "Próbkowanie równomierne", "A/C");
+    auto *operation2 = new Operation(QUANT1, "Kwantyzacja równomierna z obcięciem", "A/C");
+    auto *operation3 = new Operation(QUANT2, "Kwantyzacja równomierna z zaokraglaniem", "A/C");
+    auto *operation4 = new Operation(EXTRA, "Ekstrapolacja zerowego rzedu", "C/A");
+    auto *operation5 = new Operation(INTER, "Interpolacja pierwszego rzedu", "C/A");
+    auto *operation6 = new Operation(REC, "Rekonstrukcja w oparciu o funkcje sinc", "C/A");
     operations = {
             operation1,
             operation2,
@@ -29,7 +28,6 @@ void AcConversionComponent::show() {
     drawOperationChoicePanel();
     drawInputParametersPanel();
     drawCalculatedMeasuresPanel();
-//    drawPlotPanel();
 }
 
 void AcConversionComponent::drawOperationChoicePanel() {
@@ -43,7 +41,7 @@ void AcConversionComponent::drawOperationChoicePanel() {
             for (auto differentOpeartion: operations) {
                 if (differentOpeartion != opeartion) differentOpeartion->setIsActive(false);
             }
-        };
+        }
     }
     ImGui::End();
 }
@@ -60,7 +58,7 @@ void AcConversionComponent::drawInputParametersPanel() {
     ImGui::End();
 }
 
-void AcConversionComponent::drawCalculatedMeasuresPanel() {
+void AcConversionComponent::drawCalculatedMeasuresPanel() const {
     ImGui::SetNextWindowPos(ImVec2(1100, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
     ImGui::Begin("Calculated Measures", nullptr,

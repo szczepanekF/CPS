@@ -11,7 +11,7 @@ public:
 private:
     void drawOperationChoicePanel();
     void drawInputParametersPanel();
-    void drawCalculatedMeasuresPanel();
+    void drawCalculatedMeasuresPanel() const;
 //    void drawPlotPanel();
     void initializeOperations();
     std::vector<Operation*> operations;

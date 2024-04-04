@@ -35,7 +35,7 @@ void PlottingComponent::show() {
 
     drawFilePanel();
 
-    drawPlotPanel();
+//    drawPlotPanel();
     drawSignalInfoPanelIfSignalChosen();
 }
 
@@ -234,6 +234,8 @@ void PlottingComponent::setDrawedSignalBySignalType() {
                                      params[5].value);
             break;
         default:
+            if(dynamic_cast<DiscreteSignal*>(strat)) mode = "C/A";
+            else mode = "A/C";
             return;
     }
 
@@ -330,17 +332,7 @@ void PlottingComponent::drawSignalInfo() {
 }
 
 
-void PlottingComponent::drawPlotPanel() {
 
-    ImGui::SetNextWindowPos(ImVec2(50, 450), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(1600, 500), ImGuiCond_Always);
-    ImGui::Begin("Plot", nullptr,
-                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-    drawPlot();
-    binInput();
-    ImGui::End();
-
-}
 
 void PlottingComponent::drawSignalChoicePanel() {
     ImGui::SetNextWindowPos(ImVec2(50, 100), ImGuiCond_Always);
@@ -429,20 +421,25 @@ void PlottingComponent::setDrawedSignalData() {
     dataSize = drawedSignal->size();
 }
 
-void PlottingComponent::drawPlot() {
-    if (ImPlot::BeginPlot("Plot")) {
-        ImPlot::PlotScatter("Scatter Plot", xData, yData, dataSize);
-        ImPlot::PlotLine("Line Plot", xData, yData, dataSize);
-        ImPlot::PlotHistogram("Histogram", yData, dataSize, bins);
-        ImPlot::EndPlot();
-    }
+float *PlottingComponent::getXData() const {
+    return xData;
 }
 
-void PlottingComponent::binInput() {
-    ImGui::SetNextItemWidth(100);
-    ImGui::InputInt("Bins",&bins);
-
-    if (bins < 5) bins = 5;
-
-    if (bins > 20) bins = 20;
+float *PlottingComponent::getYData() const {
+    return yData;
 }
+
+int PlottingComponent::getDataSize() const {
+    return dataSize;
+}
+
+int PlottingComponent::getBins() const {
+    return bins;
+}
+
+const std::string &PlottingComponent::getMode() const {
+    return mode;
+}
+
+
+

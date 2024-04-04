@@ -2,6 +2,7 @@
 #include "frontend/MainApp.h"
 #include "frontend/PlottingComponent.h"
 #include "frontend/AcConversionComponent.h"
+#include "frontend/PlotComponent.h"
 #include "imgui.h"
 #include <implot.h>
 #include <GLFW/glfw3.h>
@@ -93,12 +94,13 @@ void setFrame() {
 void MainApp::run() {
     PlottingComponent comp;
     AcConversionComponent conCom;
+    PlotComponent *plotComp = PlotComponent::getInstance();
     if (isFrameInitSuccessful()) {
         configureWindow();
         while (!glfwWindowShouldClose(window)) {
             setFrame();
             ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-            ImGui::SetNextWindowSize(ImVec2(display_w, display_h), ImGuiCond_Always);
+            ImGui::SetNextWindowSize(ImVec2(display_w, 430), ImGuiCond_Always);
             ImGui::Begin("Assignments", nullptr,
                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
             if (ImGui::BeginTabBar("MyTabBar"))
@@ -118,6 +120,13 @@ void MainApp::run() {
             }
 
             ImGui::End();
+            ToDrawSignal toDrawSignal (comp.getXData(), comp.getYData(), comp.getDataSize(), comp.getBins(), "plot1");
+            float x[] = {1, 2, 3, 4, 5};
+            float y[] = {1, 4, 9, 16, 25};
+            ToDrawSignal toDrawSignal1 (x, y, 5, 10, "plot2");
+            plotComp->addToDrawSignal(toDrawSignal);
+            plotComp->addToDrawSignal(toDrawSignal1);
+            plotComp->drawPlotPanel();
             render();
         }
         clear();
