@@ -22,18 +22,17 @@ void PlotComponent::drawPlotPanel() {
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     if (ImPlot::BeginPlot("Plot")) {
         if(!signals.empty()) {
-
+            int iterationNumber = 0;
             for(auto toDrawSignal : signals) {
                 const auto& sigVals = toDrawSignal.getSignalValues();
                 const auto& timeVals = toDrawSignal.getTimeValues();
 
                 std::vector<float> xs(timeVals.begin(), timeVals.end());
                 std::vector<float> ys(sigVals.begin(), sigVals.end());
-                drawPlot(xs.data(),ys.data(), toDrawSignal.size(), 10, "TEST");
+                drawPlots(xs.data(),ys.data(), toDrawSignal.size(), 10, iterationNumber);
             }
+        binInput(bins);
         }
-
-//        binInput(bins);
         ImPlot::EndPlot();
     }
 //    drawPlot(xData, yData, dataSize, bins);
@@ -42,12 +41,12 @@ void PlotComponent::drawPlotPanel() {
 }
 
 
-void PlotComponent::drawPlot(float* xData, float *yData, int dataSize, int bins, std::string name) {
+void PlotComponent::drawPlots(float* xData, float *yData, int dataSize, int bins, int signalNumber) {
 //    if (ImPlot::BeginPlot("Plot")) {
-//        ImPlot::PlotScatter("Scatter Plot", xData, yData, dataSize);
-        ImPlot::PlotLine(name.c_str(), xData, yData, dataSize);
-//        ImPlot::PlotHistogram("Histogram", yData, dataSize, bins);
-//        ImPlot::EndPlot();
+        ImPlot::PlotScatter(("Scatter Plot " + std::to_string(signalNumber)).c_str(), xData, yData, dataSize);
+        ImPlot::PlotLine(("Line Plot " + std::to_string(signalNumber)).c_str(), xData, yData, dataSize);
+        ImPlot::PlotHistogram(("Histogram " + std::to_string(signalNumber)).c_str(), yData, dataSize, bins);
+//        ImPlot::EndPlot();s
 //    }
 }
 
