@@ -1,8 +1,7 @@
 #include "signals/baseSignals/SignalStrategy.h"
 
-SignalStrategy::SignalStrategy( double time0, double dur): FREQUENCY(1000), duration(dur), beginTime(time0) {
+SignalStrategy::SignalStrategy(double time0, double dur) : FREQUENCY(1000), duration(dur), beginTime(time0) {
 }
-
 
 
 double SignalStrategy::getBeginTime() const {
@@ -13,9 +12,7 @@ double SignalStrategy::getDuration() const {
     return duration;
 }
 
-
-Signal& SignalStrategy::getSignal() {
-
+Signal &SignalStrategy::getSignal() {
     return signal;
 }
 
@@ -23,8 +20,7 @@ void SignalStrategy::calculateSignal() {
     double diff = 1 / FREQUENCY;
     double time = getBeginTime();
     while (time <= getBeginTime() + getDuration()) {
-        signal.signalValues.push_back(calculateSignalAt(time));
-        signal.timeValues.push_back(time);
+        signal.push_back(calculateSignalAt(time), time);
         time += diff;
     }
 }
