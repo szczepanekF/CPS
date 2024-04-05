@@ -6,15 +6,22 @@
 class PlotComponent {
 public:
     static PlotComponent* getInstance();
-    void drawPlotPanel();
-    void addSignal(const Signal& signal);
+    void show();
 
+    void addSignal(const Signal& signal);
+    void clearSignals();
 private:
     PlotComponent();
-    void drawPlots(float* xData, float *yData, int dataSize, int bins, int signalNumber);
-    void binInput(int bins);
+
+    void showPlotPanel();
+    void showSignals();
+    void drawDataPlots(float* xData, float *yData, size_t dataSize, size_t signalNumber);
+    void binInput();
+
+
     static PlotComponent* instance;
     std::vector<Signal> signals;
+    int bins;
 
 
 

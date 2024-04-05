@@ -1,6 +1,6 @@
 
 #include "frontend/MainApp.h"
-#include "frontend/PlottingComponent.h"
+#include "frontend/SignalManagementComponent.h"
 #include "frontend/AcConversionComponent.h"
 #include "frontend/PlotComponent.h"
 #include "imgui.h"
@@ -92,7 +92,7 @@ void MainApp::setFrame() {
 
 
 void MainApp::run() {
-    PlottingComponent comp;
+    SignalManagementComponent comp;
     AcConversionComponent conCom;
     PlotComponent *plotComp = PlotComponent::getInstance();
     if (isFrameInitSuccessful()) {
@@ -123,7 +123,7 @@ void MainApp::run() {
             float x[] = {1, 2, 3, 4, 5};
             float y[] = {1, 4, 9, 16, 25};
 
-            plotComp->drawPlotPanel();
+            plotComp->show();
             render();
         }
         clear();

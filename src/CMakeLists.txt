@@ -34,7 +34,7 @@ add_lib(src
         frontend/Option.cpp
         frontend/Parameter.cpp
         frontend/MainApp.cpp
-        frontend/PlottingComponent.cpp
+        frontend/SignalManagementComponent.cpp
         frontend/AcConversionComponent.cpp
         frontend/Operation.cpp
         frontend/PlotComponent.cpp

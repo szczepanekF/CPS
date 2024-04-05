@@ -19,18 +19,16 @@ class Option;
 
 class SignalStrategy;
 
-class PlottingComponent {
+class SignalManagementComponent {
 public:
-    PlottingComponent();
+    SignalManagementComponent();
 
-    virtual ~PlottingComponent();
+    virtual ~SignalManagementComponent();
 
     void show();
 
 
 private:
-
-//    void drawPlotPanel();
 
     void drawSignalChoicePanel();
 
@@ -38,10 +36,7 @@ private:
 
     void drawFilePanel();
 
-
     void drawSignalInfoPanelIfSignalChosen();
-
-//    void drawPlot();
 
     void showSignalParameters();
 
@@ -61,7 +56,6 @@ private:
 
     void cleanUp();
 
-    void initDrawData();
 
     void drawSignalInfo();
 
@@ -71,7 +65,8 @@ private:
 
     void createPopup(const std::string &label, const std::string &info, const std::function<void()>& func);
     void createOperationButtons();
-//    void binInput();
+
+    void updateOtherComponents(SignalStrategy* strat);
 
     bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
     std::vector<bool *> checks = {&SinusoidalSignalCheck, &GaussianNoiseCheck, &ImpulseNoiseCheck,
@@ -83,17 +78,11 @@ private:
 
     char filename[256];
     SignalProcesor signalProcesor;
-    std::vector<Parameter> params;
     std::vector<std::string> filenames;
+    std::vector<Parameter> params;
     std::vector<Option> options;
     std::string signalData;
-    float *xData;
-    float *yData;
-    int dataSize;
-    int bins;
-    std::string mode;
 
-private:
     std::unique_ptr<Signal> drawedSignal;
     std::vector<std::unique_ptr<Signal>> operations;
     SIGNAL_TYPE signalType;

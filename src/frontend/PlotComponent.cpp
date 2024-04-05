@@ -5,68 +5,70 @@
 #include <iostream>
 #include <memory>
 
+PlotComponent *PlotComponent::instance = nullptr;
+
 PlotComponent *PlotComponent::getInstance() {
-    if(instance == nullptr) {
+    if (instance == nullptr) {
         instance = new PlotComponent();
     }
     return instance;
 }
 
-PlotComponent *PlotComponent::instance = nullptr;
+PlotComponent::PlotComponent() : signals(), bins(10) {
 
-void PlotComponent::drawPlotPanel() {
-    int bins = 10;
+}
+
+void PlotComponent::show() {
+
     ImGui::SetNextWindowPos(ImVec2(50, 450), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(1600, 500), ImGuiCond_Always);
     ImGui::Begin("Plot", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-    if (ImPlot::BeginPlot("Plot")) {
-        if(!signals.empty()) {
-            int iterationNumber = 0;
-            for(auto toDrawSignal : signals) {
-                const auto& sigVals = toDrawSignal.getSignalValues();
-                const auto& timeVals = toDrawSignal.getTimeValues();
-
-                std::vector<float> xs(timeVals.begin(), timeVals.end());
-                std::vector<float> ys(sigVals.begin(), sigVals.end());
-                drawPlots(xs.data(),ys.data(), toDrawSignal.size(), 10, iterationNumber);
-            }
-        binInput(bins);
-        }
-        ImPlot::EndPlot();
-    }
-//    drawPlot(xData, yData, dataSize, bins);
-//    binInput(bins);
+    showPlotPanel();
     ImGui::End();
 }
 
 
-void PlotComponent::drawPlots(float* xData, float *yData, int dataSize, int bins, int signalNumber) {
-//    if (ImPlot::BeginPlot("Plot")) {
-        ImPlot::PlotScatter(("Scatter Plot " + std::to_string(signalNumber)).c_str(), xData, yData, dataSize);
-        ImPlot::PlotLine(("Line Plot " + std::to_string(signalNumber)).c_str(), xData, yData, dataSize);
-        ImPlot::PlotHistogram(("Histogram " + std::to_string(signalNumber)).c_str(), yData, dataSize, bins);
-//        ImPlot::EndPlot();s
-//    }
-}
-
-
-void PlotComponent::binInput(int bins) {
+void PlotComponent::binInput() {
     ImGui::SetNextItemWidth(100);
-    ImGui::InputInt("Bins",&bins);
-
-    if (bins < 5) bins = 5;
-
-    if (bins > 20) bins = 20;
+    ImGui::InputInt("Bins", &bins);
+    bins = std::max(5, std::min(20, bins));
 }
 
-void PlotComponent::addSignal(const Signal& signal) {
-    signals.push_back(signal);
+void PlotComponent::addSignal(const Signal &signal) {
+    if (!signal.empty()) {
+        signals.push_back(signal);
+    }
 }
 
+void PlotComponent::clearSignals() {
+    signals.clear();
+}
 
-PlotComponent::PlotComponent() : signals() {
+void PlotComponent::showPlotPanel() {
+    if (ImPlot::BeginPlot("Plot")) {
+        if (!signals.empty()) {
+            showSignals();
+            binInput();
+        }
+        ImPlot::EndPlot();
+    }
+}
 
-};
+void PlotComponent::showSignals() {
+    for (size_t i = 0; i < signals.size(); i++) {
+        const auto &sigVals = signals[i].getSignalValues();
+        const auto &timeVals = signals[i].getTimeValues();
+        std::vector<float> xs(timeVals.begin(), timeVals.end());
+        std::vector<float> ys(sigVals.begin(), sigVals.end());
+        drawDataPlots(xs.data(), ys.data(), signals[i].size(), i);
+    }
+}
+
+void PlotComponent::drawDataPlots(float *xData, float *yData, size_t dataSize, size_t signalNumber) {
+    ImPlot::PlotScatter(("Scatter Plot " + std::to_string(signalNumber)).c_str(), xData, yData, dataSize);
+    ImPlot::PlotLine(("Line Plot " + std::to_string(signalNumber)).c_str(), xData, yData, dataSize);
+    ImPlot::PlotHistogram(("Histogram " + std::to_string(signalNumber)).c_str(), yData, dataSize, bins);
+}
 
 

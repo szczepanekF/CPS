@@ -1,4 +1,4 @@
-#include "frontend/PlottingComponent.h"
+#include "frontend/SignalManagementComponent.h"
 #include "imgui.h"
 #include <implot.h>
 #include <iostream>
@@ -10,8 +10,7 @@
 #include "frontend/PlotComponent.h"
 
 
-PlottingComponent::PlottingComponent() : filename(), signalProcesor(), bins(10), drawedSignal(nullptr) {
-    initDrawData();
+SignalManagementComponent::SignalManagementComponent() : filename(), signalProcesor(), drawedSignal(nullptr) {
     initChecks();
     params = {Parameter("Amplitude"),
               Parameter("Start time"),
@@ -23,36 +22,28 @@ PlottingComponent::PlottingComponent() : filename(), signalProcesor(), bins(10),
               Parameter("Jump time")};
 }
 
-PlottingComponent::~PlottingComponent() {
+SignalManagementComponent::~SignalManagementComponent() {
     cleanUp();
 }
 
 
-void PlottingComponent::show() {
-
-
+void SignalManagementComponent::show() {
     drawSignalChoicePanel();
-
     drawParameterPanel();
-
     drawFilePanel();
-
     drawSignalInfoPanelIfSignalChosen();
 }
 
-void PlottingComponent::showSignalParameters() {
-    std::string format = "%.2f";
+void SignalManagementComponent::showSignalParameters() {
     for (Parameter &parameter: params) {
-
         if (parameter.isVisible) {
             ImGui::SetNextItemWidth(100);
-            ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1, format.c_str());
+            ImGui::InputDouble(parameter.name.c_str(), &parameter.value, 0.1, 1, "%.2f");
         }
-
     }
 }
 
-void PlottingComponent::showFileOperations() {
+void SignalManagementComponent::showFileOperations() {
     ImGui::InputText("Filename", filename, sizeof(filename));
     ImGui::Spacing();
 
@@ -81,7 +72,7 @@ void PlottingComponent::showFileOperations() {
     createButton("Unload files and clear signal", 5);
 }
 
-void PlottingComponent::showSignalChoice() {
+void SignalManagementComponent::showSignalChoice() {
     createCheckbox(SIN, "Sinusoidal signal", SinusoidalSignalCheck);
     createCheckbox(GAUSSIAN_NOISE, "Gausian noise", GaussianNoiseCheck);
     createCheckbox(IMPULSE_NOISE, "Impulse noise", ImpulseNoiseCheck);
@@ -96,7 +87,7 @@ void PlottingComponent::showSignalChoice() {
 }
 
 
-void PlottingComponent::createCheckbox(SIGNAL_TYPE type, const char *label, bool &check) {
+void SignalManagementComponent::createCheckbox(SIGNAL_TYPE type, const char *label, bool &check) {
     ImGui::SetNextItemWidth(500);
     if (ImGui::Checkbox(label, &check)) {
         if (check) {
@@ -104,16 +95,13 @@ void PlottingComponent::createCheckbox(SIGNAL_TYPE type, const char *label, bool
             updateCheckBoxesAndParams();
         } else {
             cleanUp();
-            initDrawData();
         }
     }
 }
 
-void PlottingComponent::createButton(const char *label, int option) {
+void SignalManagementComponent::createButton(const char *label, int option) {
     ImGui::SetNextItemWidth(500);
     if (ImGui::Button(label)) {
-
-
         if (option == 0) {
             if (drawedSignal != nullptr) {
                 signalProcesor.saveSignalToBinary(*drawedSignal, std::string(filename) + ".bin");
@@ -130,31 +118,31 @@ void PlottingComponent::createButton(const char *label, int option) {
             cleanUp();
             filenames.clear();
             signalProcesor.clearSignals();
-            initDrawData();
+            AcConversionComponent::setMainSignalStrategy(nullptr);
+            PlotComponent::getInstance()->clearSignals();
         } else {
             cleanUp();
             if (option == 1 && !std::string(filename).empty()) {
                 drawedSignal = signalProcesor.readSignalFromBinary(std::string(filename) + ".bin");
                 signalProcesor.addNewSignal(*drawedSignal);
+                // TODO tutaj zakładamy że nie można DA/AD konwersji na wczytanych plikach robić
+                updateOtherComponents(nullptr);
                 filenames.push_back(std::string(filename) + ".bin");
                 ImGui::OpenPopup("fileSuccess");
             } else {
+                cleanUp();
+
                 setDrawedSignalBySignalType();
             }
         }
     }
 }
 
-
-void PlottingComponent::cleanUp() {
+void SignalManagementComponent::cleanUp() {
     drawedSignal.reset();
-    delete[] xData;
-    delete[] yData;
-    dataSize = 0;
 }
 
-
-void PlottingComponent::initChecks() {
+void SignalManagementComponent::initChecks() {
     SinusoidalSignalCheck = false;
     GaussianNoiseCheck = false;
     ImpulseNoiseCheck = false;
@@ -169,7 +157,7 @@ void PlottingComponent::initChecks() {
 
 }
 
-void PlottingComponent::handleParamsVisibility(std::unordered_set<int> &paramsToShowIndexex) {
+void SignalManagementComponent::handleParamsVisibility(std::unordered_set<int> &paramsToShowIndexex) {
     for (size_t i = 0; i < params.size(); i++) {
         if (paramsToShowIndexex.contains(i)) {
             params[i].isVisible = true;
@@ -181,15 +169,15 @@ void PlottingComponent::handleParamsVisibility(std::unordered_set<int> &paramsTo
     }
 }
 
-void PlottingComponent::handleChecksButtonsVisibility(bool &paramCheck) {
-    for (auto check: checks) {
+void SignalManagementComponent::handleChecksButtonsVisibility(bool &paramCheck) {
+    for (auto check : checks) {
         if (check != &paramCheck) {
             *check = false;
         }
     }
 }
 
-void PlottingComponent::setDrawedSignalBySignalType() {
+void SignalManagementComponent::setDrawedSignalBySignalType() {
     SignalStrategy* strat;
     switch (signalType) {
         case SIN:
@@ -234,17 +222,15 @@ void PlottingComponent::setDrawedSignalBySignalType() {
                                      params[5].value);
             break;
         default:
-//            if(dynamic_cast<DiscreteSignal*>(strat)) mode = "C/A";
-//            else mode = "A/C";
             return;
     }
-    PlotComponent::getInstance()->addSignal(strat->getSignal());
-    AcConversionComponent::setMainSignalStrategy(std::unique_ptr<SignalStrategy>(strat));
-
+    PlotComponent::getInstance()->clearSignals();
+    drawedSignal = std::make_unique<Signal>(strat->getSignal());
+    updateOtherComponents(strat);
 }
 
 
-void PlottingComponent::updateCheckBoxesAndParams() {
+void SignalManagementComponent::updateCheckBoxesAndParams() {
     std::unordered_set<int> paramsToShow;
     switch (signalType) {
         case SIN:
@@ -309,15 +295,7 @@ void PlottingComponent::updateCheckBoxesAndParams() {
 
 }
 
-void PlottingComponent::initDrawData() {
-    drawedSignal.reset();
-    dataSize = 10;
-    xData = new float[10]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    yData = new float[10]{1, 2, 4, 4, 4, 6, 2, 8, 2, 2};
-}
-
-void PlottingComponent::drawSignalInfo() {
-
+void SignalManagementComponent::drawSignalInfo() {
     std::string text1 = "Mean: " + std::to_string(drawedSignal->mean());
     ImGui::Text(text1.c_str());
     std::string text2 = "Absolute mean: " + std::to_string(drawedSignal->absMean());
@@ -328,13 +306,12 @@ void PlottingComponent::drawSignalInfo() {
     ImGui::Text(text4.c_str());
     std::string text5 = "Mean power: " + std::to_string(drawedSignal->meanPower());
     ImGui::Text(text5.c_str());
-
 }
 
 
 
 
-void PlottingComponent::drawSignalChoicePanel() {
+void SignalManagementComponent::drawSignalChoicePanel() {
     ImGui::SetNextWindowPos(ImVec2(50, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
     ImGui::Begin("Signals and noises", nullptr,
@@ -344,7 +321,7 @@ void PlottingComponent::drawSignalChoicePanel() {
     ImGui::End();
 }
 
-void PlottingComponent::drawParameterPanel() {
+void SignalManagementComponent::drawParameterPanel() {
     ImGui::SetNextWindowPos(ImVec2(500, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
     ImGui::Begin("Parameters", nullptr,
@@ -355,7 +332,7 @@ void PlottingComponent::drawParameterPanel() {
 }
 
 void
-PlottingComponent::createPopup(const std::string &label, const std::string &info, const std::function<void()> &func) {
+SignalManagementComponent::createPopup(const std::string &label, const std::string &info, const std::function<void()> &func) {
     if (ImGui::BeginPopup(label.c_str())) {
         ImGui::Text(info.c_str());
         func();
@@ -364,10 +341,9 @@ PlottingComponent::createPopup(const std::string &label, const std::string &info
         }
         ImGui::EndPopup();
     }
-
 }
 
-void PlottingComponent::drawFilePanel() {
+void SignalManagementComponent::drawFilePanel() {
     ImGui::SetNextWindowPos(ImVec2(950, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
     ImGui::Begin("Buttons", nullptr,
@@ -383,7 +359,7 @@ void PlottingComponent::drawFilePanel() {
     ImGui::End();
 }
 
-void PlottingComponent::drawSignalInfoPanelIfSignalChosen() {
+void SignalManagementComponent::drawSignalInfoPanelIfSignalChosen() {
 
     if (drawedSignal != nullptr) {
         ImGui::SetNextWindowPos(ImVec2(1400, 100), ImGuiCond_Always);
@@ -395,19 +371,25 @@ void PlottingComponent::drawSignalInfoPanelIfSignalChosen() {
 }
 
 
-void PlottingComponent::createOperationButtons() {
+void SignalManagementComponent::createOperationButtons() {
     std::array<std::string, 4> arr = {"add", "subtract", "multiply", "divide"};
     for (auto operation: arr) {
         if (ImGui::Button(operation.c_str())) {
             Signal signal = signalProcesor.getCalculatedSignal(operation);
-            if (signal.size()) {
+            if (!signal.empty()) {
                 cleanUp();
-                //TODO FIX
                 drawedSignal = std::make_unique<Signal>(signal);
+                // TODO tutaj zakładamy że nie można DA/AD konwersji na wczytanych plikach robić
+                updateOtherComponents(nullptr);
                 ImGui::CloseCurrentPopup();
             }
         }
     }
+}
+
+void SignalManagementComponent::updateOtherComponents(SignalStrategy *strat) {
+    AcConversionComponent::setMainSignalStrategy(std::unique_ptr<SignalStrategy>(strat));
+    PlotComponent::getInstance()->addSignal(*drawedSignal);
 }
 
 
