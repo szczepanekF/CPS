@@ -1,5 +1,5 @@
 
-#include "signals/ADC/Quantization.h"
+#include "signals/signalConversion//ADC/Quantization.h"
 #include <limits>
 #include <algorithm>
 

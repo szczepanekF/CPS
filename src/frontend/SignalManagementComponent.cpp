@@ -1,12 +1,10 @@
 #include "frontend/SignalManagementComponent.h"
 #include "imgui.h"
-#include <implot.h>
 #include <iostream>
 #include "unordered_set"
-#include "signals/allSignals.h"
+#include "signals/allBaseSignals.h"
 #include "frontend/Parameter.h"
-#include "frontend/Option.h"
-#include "frontend/AcConversionComponent.h"
+#include "frontend/ConversionComponent.h"
 #include "frontend/PlotComponent.h"
 
 
@@ -93,6 +91,7 @@ void SignalManagementComponent::createCheckbox(SIGNAL_TYPE type, const char *lab
         if (check) {
             signalType = type;
             updateCheckBoxesAndParams();
+
         } else {
             cleanUp();
         }
@@ -118,7 +117,7 @@ void SignalManagementComponent::createButton(const char *label, int option) {
             cleanUp();
             filenames.clear();
             signalProcesor.clearSignals();
-            AcConversionComponent::setMainSignalStrategy(nullptr);
+            ConversionComponent::setMainSignalStrategy(nullptr);
             PlotComponent::getInstance()->clearSignals();
         } else {
             cleanUp();
@@ -388,7 +387,7 @@ void SignalManagementComponent::createOperationButtons() {
 }
 
 void SignalManagementComponent::updateOtherComponents(SignalStrategy *strat) {
-    AcConversionComponent::setMainSignalStrategy(std::unique_ptr<SignalStrategy>(strat));
+    ConversionComponent::setMainSignalStrategy(std::unique_ptr<SignalStrategy>(strat));
     PlotComponent::getInstance()->addSignal(*drawedSignal);
 }
 

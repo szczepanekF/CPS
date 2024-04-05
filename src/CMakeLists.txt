@@ -22,20 +22,19 @@ add_lib(src
         signals/baseSignals/UnitImpulseSignal.cpp
         signals/baseSignals/UnitJumpSignal.cpp
         signals/baseSignals/Signal.cpp
-        signals/ADC/Sampling.cpp
-        signals/ADC/Quantization.cpp
-        signals/ADC/QuantizationRounded.cpp
-        signals/ADC/QuantizationClipped.cpp
-        signals/DAC/ReconstructionZeroOrderHold.cpp
-        signals/DAC/ReconstructionFirstOrderHold.cpp
-        signals/DAC/ReconstructionSincBased.cpp
+        signals/signalConversion/ADC/Sampling.cpp
+        signals/signalConversion/ADC/Quantization.cpp
+        signals/signalConversion/ADC/QuantizationRounded.cpp
+        signals/signalConversion/ADC/QuantizationClipped.cpp
+        signals/signalConversion/DAC/ReconstructionZeroOrderHold.cpp
+        signals/signalConversion/DAC/ReconstructionFirstOrderHold.cpp
+        signals/signalConversion/DAC/ReconstructionSincBased.cpp
         operations/SignalProcesor.cpp
-
-        frontend/Option.cpp
+        
         frontend/Parameter.cpp
         frontend/MainApp.cpp
         frontend/SignalManagementComponent.cpp
-        frontend/AcConversionComponent.cpp
+        frontend/ConversionComponent.cpp
         frontend/Operation.cpp
         frontend/PlotComponent.cpp
 

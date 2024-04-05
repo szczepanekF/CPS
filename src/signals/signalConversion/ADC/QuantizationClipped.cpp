@@ -1,6 +1,6 @@
 
 #include <cmath>
-#include "signals/ADC/QuantizationClipped.h"
+#include "signals/signalConversion/ADC/QuantizationClipped.h"
 
 QuantizationClipped::QuantizationClipped(std::unique_ptr<Sampling> strategy, int quantizationLevels)
         : Quantization(std::move(strategy), quantizationLevels) {}

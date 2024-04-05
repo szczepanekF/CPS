@@ -25,6 +25,9 @@ void PlotComponent::show() {
     ImGui::Begin("Plot", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showPlotPanel();
+    if (!signals.empty()) {
+        binInput();
+    }
     ImGui::End();
 }
 
@@ -47,10 +50,7 @@ void PlotComponent::clearSignals() {
 
 void PlotComponent::showPlotPanel() {
     if (ImPlot::BeginPlot("Plot")) {
-        if (!signals.empty()) {
-            showSignals();
-            binInput();
-        }
+        showSignals();
         ImPlot::EndPlot();
     }
 }

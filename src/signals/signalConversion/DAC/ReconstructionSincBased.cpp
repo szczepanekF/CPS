@@ -1,6 +1,6 @@
 
 #include <cmath>
-#include "signals/DAC/ReconstructionSincBased.h"
+#include "signals/signalConversion/DAC/ReconstructionSincBased.h"
 
 ReconstructionSincBased::ReconstructionSincBased(std::unique_ptr<DiscreteSignal> strategy, int n)
         : ContinousSignal(strategy->getBeginTime(), strategy->getDuration()), N(n), strategy(std::move(strategy)) {

@@ -80,7 +80,6 @@ private:
     SignalProcesor signalProcesor;
     std::vector<std::string> filenames;
     std::vector<Parameter> params;
-    std::vector<Option> options;
     std::string signalData;
 
     std::unique_ptr<Signal> drawedSignal;

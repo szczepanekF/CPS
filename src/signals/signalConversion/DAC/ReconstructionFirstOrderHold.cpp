@@ -1,6 +1,6 @@
 
 #include <cmath>
-#include "signals/DAC/ReconstructionFirstOrderHold.h"
+#include "signals/signalConversion/DAC/ReconstructionFirstOrderHold.h"
 
 ReconstructionFirstOrderHold::ReconstructionFirstOrderHold(std::unique_ptr<DiscreteSignal> strategy)
         : ContinousSignal(strategy->getBeginTime(), strategy->getDuration()), strategy(std::move(strategy)) {

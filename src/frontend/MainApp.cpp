@@ -1,7 +1,7 @@
 
 #include "frontend/MainApp.h"
 #include "frontend/SignalManagementComponent.h"
-#include "frontend/AcConversionComponent.h"
+#include "frontend/ConversionComponent.h"
 #include "frontend/PlotComponent.h"
 #include "imgui.h"
 #include <implot.h>
@@ -93,7 +93,7 @@ void MainApp::setFrame() {
 
 void MainApp::run() {
     SignalManagementComponent comp;
-    AcConversionComponent conCom;
+    ConversionComponent conCom;
     PlotComponent *plotComp = PlotComponent::getInstance();
     if (isFrameInitSuccessful()) {
         configureWindow();

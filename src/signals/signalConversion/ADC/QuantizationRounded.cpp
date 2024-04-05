@@ -1,6 +1,6 @@
 
 #include <cmath>
-#include "signals/ADC/QuantizationRounded.h"
+#include "signals/signalConversion/ADC/QuantizationRounded.h"
 
 QuantizationRounded::QuantizationRounded(std::unique_ptr<Sampling> strategy, int quantizationLevels)
         : Quantization(std::move(strategy), quantizationLevels) {}

@@ -16,15 +16,14 @@ const char *Operation::getName() const {
     return name;
 }
 
-void Operation::setName(const char *name) {
-    Operation::name = name;
+Operation::Operation(OPERATION_TYPE type, const char *name) : name(name), isActive(false), type(type)
+{}
+
+OPERATION_TYPE Operation::getType() const {
+    return type;
 }
 
-Operation::Operation(OPERATION_TYPE type, const char *name, std::string mode) : name(name), isActive(false), type(type), mode(mode) {}
 
-const std::string &Operation::getMode() const {
-    return mode;
-}
 
 
 

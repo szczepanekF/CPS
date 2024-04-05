@@ -6,9 +6,10 @@
 #include <memory>
 
 class ReconstructionZeroOrderHold : public ContinousSignal {
-    ReconstructionZeroOrderHold(std::unique_ptr<DiscreteSignal> strategy);
 
 public:
+    ReconstructionZeroOrderHold(std::unique_ptr<DiscreteSignal> strategy);
+
     double calculateSignalAt(double time) override;
 
 private:
