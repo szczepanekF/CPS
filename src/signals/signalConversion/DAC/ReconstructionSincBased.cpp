@@ -1,5 +1,6 @@
 
 #include <cmath>
+#include <iostream>
 #include "signals/signalConversion/DAC/ReconstructionSincBased.h"
 
 ReconstructionSincBased::ReconstructionSincBased(std::unique_ptr<DiscreteSignal> strategy, int n)
@@ -12,16 +13,20 @@ double ReconstructionSincBased::calculateSignalAt(double time) {
     int sampleCount = static_cast<int> (getDuration() * strategy->getFrequency());
     int nearestSampleInd = static_cast<int> (std::floor(time - getBeginTime()) * strategy->getFrequency());
     int left = nearestSampleInd - N / 2;
-    int right = nearestSampleInd * N;
+    int right = left + N;
+
+
     if (left < 0) {
-        left = 0;
         right = right - left;
+        left = 0;
         right = std::min(sampleCount, right);
 
     } else if (right > sampleCount) {
-        right = sampleCount;
         left = left - (right - sampleCount);
+
+        right = sampleCount;
         left = std::max(0, left);
+
     }
     double sum = 0;
     while (left <= right) {
@@ -29,7 +34,7 @@ double ReconstructionSincBased::calculateSignalAt(double time) {
         left++;
     }
 
-    return strategy->calculateSignalAt(time);
+    return sum;
 }
 
 double ReconstructionSincBased::sinc(double time) {

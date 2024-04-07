@@ -20,6 +20,7 @@ Signal &SignalStrategy::getSignal() {
 void SignalStrategy::calculateSignal() {
     double diff = 1 / FREQUENCY;
     double time = getBeginTime();
+
     while (time <= getBeginTime() + getDuration()) {
         signal.push_back(calculateSignalAt(time), time);
         time += diff;
@@ -27,7 +28,6 @@ void SignalStrategy::calculateSignal() {
 }
 
 double SignalStrategy::calculateSignalAt(double) {
-    std::cout<<"SS" << "\n";
     return 0;
 }
 

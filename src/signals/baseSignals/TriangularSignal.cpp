@@ -9,6 +9,7 @@ double TriangularSignal::calculateSignalAt(double time) {
     double period = getBasePeriod();
     double timeToPeriodRatio = (time - beginTime) / period;
     int periodNumber = floor(timeToPeriodRatio);
+
     if (timeToPeriodRatio - periodNumber < getFillFactor()) {
         return getAmplitude() * (timeToPeriodRatio - periodNumber) / getFillFactor();
     }

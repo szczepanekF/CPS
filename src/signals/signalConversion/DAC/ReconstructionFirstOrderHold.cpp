@@ -1,5 +1,6 @@
 
 #include <cmath>
+#include <iostream>
 #include "signals/signalConversion/DAC/ReconstructionFirstOrderHold.h"
 
 ReconstructionFirstOrderHold::ReconstructionFirstOrderHold(std::unique_ptr<DiscreteSignal> strategy)
@@ -9,10 +10,12 @@ ReconstructionFirstOrderHold::ReconstructionFirstOrderHold(std::unique_ptr<Discr
 
 double ReconstructionFirstOrderHold::calculateSignalAt(double time) {
     double period = 1 / strategy->getFrequency();
-    double part = (time - getBeginTime()) / period - std::floor((time - getBeginTime()) / period);
-    if (time + period > getDuration()) {
+    if (time + period > getBeginTime() + getDuration()) {
         return strategy->calculateSignalAt(time);
     }
+//    std::cout<<strategy->calculateSignalAt(time);
+    double part = (time - getBeginTime()) / period - std::floor((time - getBeginTime()) / period);
+    std::cout<<strategy->calculateSignalAt(time + period) - strategy->calculateSignalAt(time) << '\n';
     return (strategy->calculateSignalAt(time + period) - strategy->calculateSignalAt(time)) * part +
            strategy->calculateSignalAt(time);
 }

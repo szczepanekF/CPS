@@ -9,7 +9,7 @@ SinusoidalSignal::SinusoidalSignal(double amp, double time0, double dur, double 
 
 
 double SinusoidalSignal::calculateSignalAt(double time) {
-    std::cout<<"SINUS" << "\n";
+
     double angularSpeed = (2 * M_PI) / getBasePeriod();
     double timeDifference = time - getBeginTime();
     return getAmplitude() * sin(angularSpeed * timeDifference);

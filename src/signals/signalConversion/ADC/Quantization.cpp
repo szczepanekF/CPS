@@ -2,6 +2,7 @@
 #include "signals/signalConversion//ADC/Quantization.h"
 #include <limits>
 #include <algorithm>
+#include <iostream>
 
 Quantization::Quantization(std::unique_ptr<Sampling> strategy, int quantLevelCount)
         : DiscreteSignal(strategy->getBeginTime(), strategy->getDuration(), strategy->getFrequency()),
@@ -11,7 +12,7 @@ Quantization::Quantization(std::unique_ptr<Sampling> strategy, int quantLevelCou
 
 
 double Quantization::calculateSignalAt(double time) {
-    double valToClip = (time - levels.front()) / (levels.back() - levels.front()) * (levels.size() - 1);
+    double valToClip = (strategy->calculateSignalAt(time) - levels.front()) / (levels.back() - levels.front()) * (levels.size() - 1);
 
     int index = typicalFunction(valToClip);
 
@@ -35,7 +36,6 @@ void Quantization::initQuantizationLevels(int quantLevelCount) {
     levels.resize(quantLevelCount);
 
     std::ranges::generate(levels, [min, step, i = 0]()mutable { return min + (i++) * step; });
-
 }
 
 

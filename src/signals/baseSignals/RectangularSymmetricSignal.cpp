@@ -12,7 +12,7 @@ double RectangularSymmetricSignal::calculateSignalAt(double time) {
     double period = getBasePeriod();
     double timeToPeriodRatio = (time - beginTime) / period;
     int periodNumber = floor(timeToPeriodRatio);
-    if (timeToPeriodRatio - periodNumber < getFillFactor()) {
+    if (timeToPeriodRatio - periodNumber <= getFillFactor()) {
         return getAmplitude();
     }
     return -getAmplitude();

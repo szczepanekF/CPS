@@ -226,8 +226,10 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
         default:
             return;
     }
+
     PlotComponent::getInstance()->clearSignals();
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
+
     updateOtherComponents(strat);
 }
 

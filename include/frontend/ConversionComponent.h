@@ -24,6 +24,9 @@ private:
     void setChosenDacStrategy();
     void setChosenAdcStrategy();
 
+    void unsetMeasures();
+    void setMeasures();
+
     std::vector<Operation> operations;
     int sampleCount;
     double samplingFrequency;

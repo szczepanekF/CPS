@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include "frontend/ConversionComponent.h"
 #include "imgui.h"
 #include "signals/baseSignals/DiscreteSignal.h"
@@ -63,11 +64,11 @@ void ConversionComponent::drawInputParametersPanel() {
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 
     std::string parameter = "Sampling frequency";
-    if (isMainSignalStrategyDiscrete() && getSelectedOperationType() == REC_SINC) {
+    if (getSelectedOperationType() == REC_SINC) {
         parameter = "N";
         ImGui::SetNextItemWidth(100);
         ImGui::InputDouble(parameter.c_str(), &samplingFrequency, 0.1, 1, "%.2f");
-    } else {
+    } else if (!isMainSignalStrategyDiscrete()) {
         ImGui::SetNextItemWidth(100);
         ImGui::InputDouble(parameter.c_str(), &samplingFrequency, 0.1, 1, "%.2f");
         if (getSelectedOperationType() != SAMPL) {
@@ -76,7 +77,7 @@ void ConversionComponent::drawInputParametersPanel() {
         }
 
     }
-    if(ImGui::Button("Draw signal")) {
+    if (ImGui::Button("Draw signal")) {
         setConversionSignal();
         PlotComponent::getInstance()->addSignal(mainSignalStrategy->getSignal());
 
@@ -145,52 +146,71 @@ void ConversionComponent::setConversionSignal() {
 }
 
 void ConversionComponent::setChosenAdcStrategy() {
-    SignalStrategy *strat;
+    std::unique_ptr<SignalStrategy> strat;
     OPERATION_TYPE type = getSelectedOperationType();
-    auto *mainSignal = dynamic_cast<ContinousSignal *>(mainSignalStrategy.get());
+    std::unique_ptr<ContinousSignal> mainSignal = std::unique_ptr<ContinousSignal>(
+            dynamic_cast<ContinousSignal *>(mainSignalStrategy.release()));
+    std::unique_ptr<Sampling> sampling = std::make_unique<Sampling>(std::move(mainSignal), samplingFrequency);
     switch (type) {
         case SAMPL:
-            strat = new Sampling(std::unique_ptr<ContinousSignal>(mainSignal), samplingFrequency);
+            strat = std::move(sampling);
             break;
         case QUANT_CLIPPED: {
-            auto *sampling = new Sampling(std::unique_ptr<ContinousSignal>(mainSignal), samplingFrequency);
-            strat = new QuantizationClipped(std::unique_ptr<Sampling>(sampling), quantizationLimit);
+            strat = std::make_unique<QuantizationClipped>(std::move(sampling), quantizationLimit);
             break;
         }
         case QUANT_ROUND: {
-            auto *sampling = new Sampling(std::unique_ptr<ContinousSignal>(mainSignal), samplingFrequency);
-            strat = new QuantizationRounded(std::unique_ptr<Sampling>(sampling), quantizationLimit);
+            strat = std::make_unique<QuantizationRounded>(std::move(sampling), quantizationLimit);
             break;
         }
         default:
             throw std::logic_error("INVALID TYPE");
     }
-    mainSignalStrategy = std::unique_ptr<SignalStrategy> (strat);
+    setMainSignalStrategy(std::move(strat));
+    std::ranges::for_each(operations, [](auto &oper) { oper.setIsActive(false); });
 }
 
 void ConversionComponent::setChosenDacStrategy() {
-    SignalStrategy *strat;
+    std::unique_ptr<SignalStrategy> strat;
     OPERATION_TYPE type = getSelectedOperationType();
-    DiscreteSignal *mainSignal = dynamic_cast<DiscreteSignal *>(mainSignalStrategy.get());
+    std::unique_ptr<DiscreteSignal> mainSignal = std::unique_ptr<DiscreteSignal>(
+            dynamic_cast<DiscreteSignal *>(mainSignalStrategy.release()));
+
     switch (type) {
         case REC_FOH:
-            strat = new ReconstructionFirstOrderHold(std::unique_ptr<DiscreteSignal>(mainSignal));
+            strat = std::make_unique<ReconstructionFirstOrderHold>(std::move(mainSignal));
             break;
         case REC_ZOH:
-            strat = new ReconstructionZeroOrderHold(std::unique_ptr<DiscreteSignal>(mainSignal));
+            strat = std::make_unique<ReconstructionZeroOrderHold>(std::move(mainSignal));
             break;
         case REC_SINC:
-            strat = new ReconstructionSincBased(std::unique_ptr<DiscreteSignal>(mainSignal),
-                                                samplingFrequency);
+            strat = std::make_unique<ReconstructionSincBased>(std::move(mainSignal), samplingFrequency);
             break;
         default:
             throw std::logic_error("INVALID TYPE");
     }
-    mainSignalStrategy = std::unique_ptr<SignalStrategy> (strat);
+    setMainSignalStrategy(std::move(strat));
+    std::ranges::for_each(operations, [](auto &oper) { oper.setIsActive(false); });
 }
 
 bool ConversionComponent::isOperationSelected() {
-    return std::ranges::any_of(operations, [] (auto& operation) {return operation.getIsActive();});
+    return std::ranges::any_of(operations, [](auto &operation) { return operation.getIsActive(); });
+}
+
+void ConversionComponent::unsetMeasures() {
+    MSE = 0;
+    SNR = 0;
+    PSNR = 0;
+    MD = 0;
+}
+
+void ConversionComponent::setMeasures() {
+    Signal sig = mainSignalStrategy->getSignal();
+//    MSE = sig.meanSquaredError();
+//    SNR = sig.signalToNoiseRatio();
+//    PSNR = sig.peakSignalToNoiseRatio();
+//    MD = sig.maxDifference();
+
 }
 
 
