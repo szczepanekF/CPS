@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include "signals/signalConversion/ADC/Sampling.h"
 
 Sampling::Sampling(std::unique_ptr<ContinousSignal> strategy, double sampleRate)
@@ -9,6 +10,9 @@ Sampling::Sampling(std::unique_ptr<ContinousSignal> strategy, double sampleRate)
 
 
 double Sampling::calculateSignalAt(double time) {
-    return strategy->calculateSignalAt(time);
+    std::cout<<"TEST";
+    strategy->getSignal();
+    return 0;
+//    return strategy->calculateSignalAt(time);
 }
 

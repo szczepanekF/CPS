@@ -1,3 +1,4 @@
+#include <iostream>
 #include "signals/baseSignals/SignalStrategy.h"
 
 SignalStrategy::SignalStrategy(double time0, double dur) : FREQUENCY(1000), duration(dur), beginTime(time0) {
@@ -26,6 +27,7 @@ void SignalStrategy::calculateSignal() {
 }
 
 double SignalStrategy::calculateSignalAt(double) {
+    std::cout<<"SS" << "\n";
     return 0;
 }
 

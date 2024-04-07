@@ -19,17 +19,21 @@ private:
     void drawRadioButton(size_t operationInd);
     bool isOperationDiscrete(OPERATION_TYPE type);
     OPERATION_TYPE getSelectedOperationType();
-    void drawConvertedSignal();
-    static bool isMainSignalStrategyDiscrete();
+    bool isOperationSelected();
+    void setConversionSignal();
+    void setChosenDacStrategy();
+    void setChosenAdcStrategy();
+
     std::vector<Operation> operations;
     int sampleCount;
     double samplingFrequency;
-    double quantizationLimit;
+    int quantizationLimit;
     double MSE;
     double SNR;
     double PSNR;
     double MD;
 
+    static bool isMainSignalStrategyDiscrete();
     static std::unique_ptr<SignalStrategy> mainSignalStrategy;
 };
 

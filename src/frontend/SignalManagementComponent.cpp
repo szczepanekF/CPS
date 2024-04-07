@@ -122,6 +122,9 @@ void SignalManagementComponent::createButton(const char *label, int option) {
         } else {
             cleanUp();
             if (option == 1 && !std::string(filename).empty()) {
+                if (filenames.empty()) {
+                    PlotComponent::getInstance()->clearSignals();
+                }
                 drawedSignal = signalProcesor.readSignalFromBinary(std::string(filename) + ".bin");
                 signalProcesor.addNewSignal(*drawedSignal);
                 // TODO tutaj zakładamy że nie można DA/AD konwersji na wczytanych plikach robić
@@ -377,6 +380,7 @@ void SignalManagementComponent::createOperationButtons() {
             Signal signal = signalProcesor.getCalculatedSignal(operation);
             if (!signal.empty()) {
                 cleanUp();
+                PlotComponent::getInstance()->clearSignals();
                 drawedSignal = std::make_unique<Signal>(signal);
                 // TODO tutaj zakładamy że nie można DA/AD konwersji na wczytanych plikach robić
                 updateOtherComponents(nullptr);
