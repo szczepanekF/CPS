@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "signals/baseSignals/DiscreteSignal.h"
 #include "signals/signalConversion/allConversionSignals.h"
+#include "frontend/PlotComponent.h"
 
 
 ConversionComponent::ConversionComponent() : samplingFrequency(0.0), quantizationLimit(0.0), MSE(0.0), SNR(0.0),
@@ -19,12 +20,12 @@ void ConversionComponent::setMainSignalStrategy(std::unique_ptr<SignalStrategy> 
 
 void ConversionComponent::initializeOperations() {
     operations = {
-            Operation(SAMPL, "Próbkowanie równomierne"),
-            Operation(QUANT_CLIPPED, "Kwantyzacja równomierna z obcięciem"),
-            Operation(QUANT_ROUND, "Kwantyzacja równomierna z zaokraglaniem"),
-            Operation(REC_ZOH, "Ekstrapolacja zerowego rzedu"),
-            Operation(REC_FOH, "Interpolacja pierwszego rzedu"),
-            Operation(REC_SINC, "Rekonstrukcja w oparciu o funkcje sinc")
+            Operation(SAMPL, "Even sampling"),
+            Operation(QUANT_CLIPPED, "Even quantization with cutting"),
+            Operation(QUANT_ROUND, "Even quantization with rounding"),
+            Operation(REC_ZOH, "Zero-order extrapolation"),
+            Operation(REC_FOH, "First-order interpolation"),
+            Operation(REC_SINC, "Sin function based reconstruction")
     };
 }
 
@@ -57,10 +58,10 @@ void ConversionComponent::drawInputParametersPanel() {
 
     ImGui::SetNextWindowPos(ImVec2(550, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
-    ImGui::Begin("Parametry", nullptr,
+    ImGui::Begin("Conversion parameters", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 
-    std::string parameter = "Czestotliwosc probkowania";
+    std::string parameter = "Sampling frequency";
     if (isMainSignalStrategyDiscrete()) {
         const auto& it = std::ranges::find_if(operations, [] (auto& oper) {
             return oper.getType() == REC_SINC;
@@ -73,10 +74,12 @@ void ConversionComponent::drawInputParametersPanel() {
     } else {
         ImGui::SetNextItemWidth(100);
         ImGui::InputDouble(parameter.c_str(), &samplingFrequency);
+        ImGui::SetNextItemWidth(100);
+        ImGui::InputDouble("Quantization limit", &quantizationLimit);
     }
-
-    ImGui::SetNextItemWidth(100);
-    ImGui::InputDouble("Próg kwantyzacji", &quantizationLimit);
+    if(ImGui::Button("Draw signal")) {
+        PlotComponent::getInstance()->addSignal(mainSignalStrategy->getSignal());
+    }
     ImGui::End();
 }
 
@@ -85,10 +88,10 @@ void ConversionComponent::drawCalculatedMeasuresPanel() const {
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
     ImGui::Begin("Calculated Measures", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-    ImGui::Text(("Blad sredniokwadratowy = " + std::to_string(MSE)).c_str());
-    ImGui::Text(("Stosunek sygnaª - szum = " + std::to_string(SNR)).c_str());
-    ImGui::Text(("Szczytowy stosunek sygnal - szum = " + std::to_string(PSNR)).c_str());
-    ImGui::Text(("Maksymalna róznica = " + std::to_string(MD)).c_str());
+    ImGui::Text(("Mean square error = " + std::to_string(MSE)).c_str());
+    ImGui::Text(("Signal - noise ratio = " + std::to_string(SNR)).c_str());
+    ImGui::Text(("Peaked signal - noise ratio = " + std::to_string(PSNR)).c_str());
+    ImGui::Text(("Max difference = " + std::to_string(MD)).c_str());
     ImGui::End();
 }
 

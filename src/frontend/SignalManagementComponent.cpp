@@ -323,7 +323,7 @@ void SignalManagementComponent::drawSignalChoicePanel() {
 void SignalManagementComponent::drawParameterPanel() {
     ImGui::SetNextWindowPos(ImVec2(500, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
-    ImGui::Begin("Parameters", nullptr,
+    ImGui::Begin("Signal parameters", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showSignalParameters();
     createButton("Draw the plot", 2);
