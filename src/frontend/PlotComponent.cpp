@@ -72,3 +72,4 @@ void PlotComponent::drawDataPlots(float *xData, float *yData, size_t dataSize, s
 }
 
 
+

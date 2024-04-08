@@ -8,7 +8,9 @@
 #include "frontend/PlotComponent.h"
 
 
-SignalManagementComponent::SignalManagementComponent() : filename(), signalProcesor(), drawedSignal(nullptr) {
+SignalManagementComponent::SignalManagementComponent(std::shared_ptr<Mediator> med)
+        : Component(med), filename(), signalProcesor(), drawedSignal(nullptr) {
+    addToMediator();
     initChecks();
     params = {Parameter("Amplitude"),
               Parameter("Start time"),
@@ -18,10 +20,6 @@ SignalManagementComponent::SignalManagementComponent() : filename(), signalProce
               Parameter("Probability"),
               Parameter("Fill factor"),
               Parameter("Jump time")};
-}
-
-SignalManagementComponent::~SignalManagementComponent() {
-    cleanUp();
 }
 
 
@@ -117,18 +115,17 @@ void SignalManagementComponent::createButton(const char *label, int option) {
             cleanUp();
             filenames.clear();
             signalProcesor.clearSignals();
-            ConversionComponent::setMainSignalStrategy(nullptr);
-            PlotComponent::getInstance()->clearSignals();
+            clearSignals();
         } else {
             cleanUp();
             if (option == 1 && !std::string(filename).empty()) {
                 if (filenames.empty()) {
-                    PlotComponent::getInstance()->clearSignals();
+                    clearSignals();
                 }
                 drawedSignal = signalProcesor.readSignalFromBinary(std::string(filename) + ".bin");
                 signalProcesor.addNewSignal(*drawedSignal);
                 // TODO tutaj zakładamy że nie można DA/AD konwersji na wczytanych plikach robić
-                updateOtherComponents(nullptr);
+                addSignal(nullptr, *drawedSignal);
                 filenames.push_back(std::string(filename) + ".bin");
                 ImGui::OpenPopup("fileSuccess");
             } else {
@@ -172,7 +169,7 @@ void SignalManagementComponent::handleParamsVisibility(std::unordered_set<int> &
 }
 
 void SignalManagementComponent::handleChecksButtonsVisibility(bool &paramCheck) {
-    for (auto check : checks) {
+    for (auto check: checks) {
         if (check != &paramCheck) {
             *check = false;
         }
@@ -180,7 +177,7 @@ void SignalManagementComponent::handleChecksButtonsVisibility(bool &paramCheck) 
 }
 
 void SignalManagementComponent::setDrawedSignalBySignalType() {
-    SignalStrategy* strat;
+    SignalStrategy *strat;
     switch (signalType) {
         case SIN:
             strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
@@ -227,10 +224,9 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
             return;
     }
 
-    PlotComponent::getInstance()->clearSignals();
+    clearSignals();
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
-
-    updateOtherComponents(strat);
+    addSignal(std::unique_ptr<SignalStrategy> (strat), *drawedSignal);
 }
 
 
@@ -313,8 +309,6 @@ void SignalManagementComponent::drawSignalInfo() {
 }
 
 
-
-
 void SignalManagementComponent::drawSignalChoicePanel() {
     ImGui::SetNextWindowPos(ImVec2(50, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
@@ -336,7 +330,8 @@ void SignalManagementComponent::drawParameterPanel() {
 }
 
 void
-SignalManagementComponent::createPopup(const std::string &label, const std::string &info, const std::function<void()> &func) {
+SignalManagementComponent::createPopup(const std::string &label, const std::string &info,
+                                       const std::function<void()> &func) {
     if (ImGui::BeginPopup(label.c_str())) {
         ImGui::Text(info.c_str());
         func();
@@ -382,20 +377,16 @@ void SignalManagementComponent::createOperationButtons() {
             Signal signal = signalProcesor.getCalculatedSignal(operation);
             if (!signal.empty()) {
                 cleanUp();
-                PlotComponent::getInstance()->clearSignals();
+                clearSignals();
                 drawedSignal = std::make_unique<Signal>(signal);
                 // TODO tutaj zakładamy że nie można DA/AD konwersji na wczytanych plikach robić
-                updateOtherComponents(nullptr);
+                addSignal(nullptr, *drawedSignal);
                 ImGui::CloseCurrentPopup();
             }
         }
     }
 }
 
-void SignalManagementComponent::updateOtherComponents(SignalStrategy *strat) {
-    ConversionComponent::setMainSignalStrategy(std::unique_ptr<SignalStrategy>(strat));
-    PlotComponent::getInstance()->addSignal(*drawedSignal);
-}
 
 
 

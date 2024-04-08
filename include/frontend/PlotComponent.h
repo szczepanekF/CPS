@@ -10,6 +10,7 @@ public:
 
     void addSignal(const Signal& signal);
     void clearSignals();
+
 private:
     PlotComponent();
 

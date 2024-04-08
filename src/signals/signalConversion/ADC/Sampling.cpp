@@ -11,8 +11,7 @@ Sampling::Sampling(std::unique_ptr<ContinousSignal> strategy, double sampleRate)
 
 
 double Sampling::calculateSignalAt(double time) {
-    double period = 1 / getFrequency();
-    int nearestSample = round((time - getBeginTime()) / period );
-    return strategy->calculateSignalAt(nearestSample * period + getBeginTime());
+
+    return strategy->calculateSignalAt(time);
 }
 

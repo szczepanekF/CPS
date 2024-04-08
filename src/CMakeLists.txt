@@ -26,6 +26,7 @@ add_lib(src
         signals/signalConversion/ADC/Quantization.cpp
         signals/signalConversion/ADC/QuantizationRounded.cpp
         signals/signalConversion/ADC/QuantizationClipped.cpp
+        signals/signalConversion/DAC/Reconstruction.cpp
         signals/signalConversion/DAC/ReconstructionZeroOrderHold.cpp
         signals/signalConversion/DAC/ReconstructionFirstOrderHold.cpp
         signals/signalConversion/DAC/ReconstructionSincBased.cpp
@@ -37,9 +38,11 @@ add_lib(src
         frontend/ConversionComponent.cpp
         frontend/Operation.cpp
         frontend/PlotComponent.cpp
+        frontend/Component.cpp
 
         bindings/imgui_impl_glfw.cpp
         bindings/imgui_impl_opengl3.cpp
+        mediator/SignalMediator.cpp
 
         DEPENDS
         Python3::NumPy

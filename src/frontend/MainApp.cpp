@@ -11,6 +11,7 @@
 #include <iostream>
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"
+#include "mediator/SignalMediator.h"
 
 
 GLFWwindow *window;
@@ -92,8 +93,14 @@ void MainApp::setFrame() {
 
 
 void MainApp::run() {
-    SignalManagementComponent comp;
-    ConversionComponent conCom;
+    std::shared_ptr<SignalMediator> mediator = std::make_shared<SignalMediator>();
+    std::cout<<1 << " ";
+    SignalManagementComponent comp(mediator);
+    std::cout<<2 << " ";
+
+    ConversionComponent conCom(mediator);
+    std::cout<<3 << " ";
+
     PlotComponent *plotComp = PlotComponent::getInstance();
     if (isFrameInitSuccessful()) {
         configureWindow();
@@ -105,14 +112,14 @@ void MainApp::run() {
                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
             if (ImGui::BeginTabBar("MyTabBar"))
             {
-                if (ImGui::BeginTabItem("Assignment 1"))
+                if (ImGui::BeginTabItem("Signal creation"))
                 {
                     comp.show();
                     ImGui::EndTabItem();
                 }
-                if (ImGui::BeginTabItem("Assignment 2"))
+
+                if (ImGui::BeginTabItem("Signal conversion"))
                 {
-//                    ImGui::Text("There will be content of Assignment 2");
                     conCom.show();
                     ImGui::EndTabItem();
                 }

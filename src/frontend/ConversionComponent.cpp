@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <utility>
 #include "frontend/ConversionComponent.h"
 #include "imgui.h"
 #include "signals/baseSignals/DiscreteSignal.h"
@@ -7,15 +8,16 @@
 #include "frontend/PlotComponent.h"
 
 
-ConversionComponent::ConversionComponent() : samplingFrequency(0.0), quantizationLimit(0.0), MSE(0.0), SNR(0.0),
-                                             PSNR(0.0), MD(0.0) {
+ConversionComponent::ConversionComponent(std::shared_ptr<Mediator> mediator)
+        : Component(std::move(mediator)), samplingFrequency(0.0), quantizationLimit(0.0),
+          measuresSet(false), MSE(0.0), SNR(0.0), PSNR(0.0), MD(0.0) {
+    addToMediator();
     initializeOperations();
 }
 
 
-std::unique_ptr<SignalStrategy> ConversionComponent::mainSignalStrategy = nullptr;
-
 void ConversionComponent::setMainSignalStrategy(std::unique_ptr<SignalStrategy> signalStrategy) {
+    unsetMeasures();
     mainSignalStrategy = std::move(signalStrategy);
 }
 
@@ -37,7 +39,9 @@ void ConversionComponent::show() {
         if (isOperationSelected()) {
             drawInputParametersPanel();
         }
-        drawCalculatedMeasuresPanel();
+        if (measuresSet) {
+            drawCalculatedMeasuresPanel();
+        }
     }
 }
 
@@ -79,8 +83,6 @@ void ConversionComponent::drawInputParametersPanel() {
     }
     if (ImGui::Button("Draw signal")) {
         setConversionSignal();
-        PlotComponent::getInstance()->addSignal(mainSignalStrategy->getSignal());
-
     }
     ImGui::End();
 }
@@ -100,6 +102,11 @@ void ConversionComponent::drawCalculatedMeasuresPanel() const {
 bool ConversionComponent::isMainSignalStrategyDiscrete() {
     return dynamic_cast<DiscreteSignal *> (mainSignalStrategy.get()) != nullptr;
 }
+
+bool ConversionComponent::isMainSignalStrategyReconstruction() {
+    return dynamic_cast<Reconstruction *> (mainSignalStrategy.get()) != nullptr;
+}
+
 
 bool ConversionComponent::isOperationDiscrete(OPERATION_TYPE type) {
     switch (type) {
@@ -138,16 +145,32 @@ OPERATION_TYPE ConversionComponent::getSelectedOperationType() {
 }
 
 void ConversionComponent::setConversionSignal() {
+    std::unique_ptr<SignalStrategy> strat{};
     if (isMainSignalStrategyDiscrete()) {
-        setChosenDacStrategy();
+        strat = getChosenDacStrategy();
     } else {
-        setChosenAdcStrategy();
+        strat = getChosenAdcStrategy();
     }
+
+    Signal& sig = strat->getSignal();
+    addSignal(std::move(strat), sig);
+
+    if (isMainSignalStrategyReconstruction()) {
+        setMeasures();
+
+    }
+
+
+    std::ranges::for_each(operations, [](auto &oper) { oper.setIsActive(false); });
 }
 
-void ConversionComponent::setChosenAdcStrategy() {
+
+std::unique_ptr<SignalStrategy> ConversionComponent::getChosenAdcStrategy() {
     std::unique_ptr<SignalStrategy> strat;
     OPERATION_TYPE type = getSelectedOperationType();
+
+    baseSignal = std::make_unique<Signal>(mainSignalStrategy->getSignal());
+
     std::unique_ptr<ContinousSignal> mainSignal = std::unique_ptr<ContinousSignal>(
             dynamic_cast<ContinousSignal *>(mainSignalStrategy.release()));
     std::unique_ptr<Sampling> sampling = std::make_unique<Sampling>(std::move(mainSignal), samplingFrequency);
@@ -164,13 +187,15 @@ void ConversionComponent::setChosenAdcStrategy() {
             break;
         }
         default:
+            baseSignal.reset();
             throw std::logic_error("INVALID TYPE");
     }
-    setMainSignalStrategy(std::move(strat));
-    std::ranges::for_each(operations, [](auto &oper) { oper.setIsActive(false); });
+    return strat;
 }
 
-void ConversionComponent::setChosenDacStrategy() {
+
+std::unique_ptr<SignalStrategy> ConversionComponent::getChosenDacStrategy() {
+    std::cout<<"getDAC";
     std::unique_ptr<SignalStrategy> strat;
     OPERATION_TYPE type = getSelectedOperationType();
     std::unique_ptr<DiscreteSignal> mainSignal = std::unique_ptr<DiscreteSignal>(
@@ -189,8 +214,7 @@ void ConversionComponent::setChosenDacStrategy() {
         default:
             throw std::logic_error("INVALID TYPE");
     }
-    setMainSignalStrategy(std::move(strat));
-    std::ranges::for_each(operations, [](auto &oper) { oper.setIsActive(false); });
+    return strat;
 }
 
 bool ConversionComponent::isOperationSelected() {
@@ -198,6 +222,7 @@ bool ConversionComponent::isOperationSelected() {
 }
 
 void ConversionComponent::unsetMeasures() {
+    measuresSet = false;
     MSE = 0;
     SNR = 0;
     PSNR = 0;
@@ -205,13 +230,22 @@ void ConversionComponent::unsetMeasures() {
 }
 
 void ConversionComponent::setMeasures() {
-    Signal sig = mainSignalStrategy->getSignal();
-//    MSE = sig.meanSquaredError();
-//    SNR = sig.signalToNoiseRatio();
-//    PSNR = sig.peakSignalToNoiseRatio();
-//    MD = sig.maxDifference();
+    auto recSig = mainSignalStrategy->getSignal();
+    std::cout<<"MEASURES"<<'\n';
+    if (baseSignal == nullptr) {
+        std::cout<<"base null"<<'\n';
+
+    } else if (recSig.size() == 0) {
+        std::cout<<"recSig 0";
+    }
+    measuresSet = true;
+    MSE = baseSignal->meanSquaredError(recSig);
+    SNR = baseSignal->signalToNoiseRatio(recSig);
+    PSNR = baseSignal->peakSignalToNoiseRatio(recSig);
+    MD = baseSignal->maxDifference(recSig);
 
 }
+
 
 
 

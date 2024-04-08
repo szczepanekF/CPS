@@ -9,25 +9,19 @@
 #include <functional>
 #include "signals/SignalTypes.h"
 #include "operations/SignalProcesor.h"
-
+#include "Component.h"
+#include "Parameter.h"
 
 class Signal;
 
-class Parameter;
-
-class Option;
 
 class SignalStrategy;
 
-class SignalManagementComponent {
+class SignalManagementComponent : public Component {
 public:
-    SignalManagementComponent();
+    explicit SignalManagementComponent(std::shared_ptr<Mediator> mediator);
 
-    virtual ~SignalManagementComponent();
-
-    void show();
-
-
+    void show() override;
 private:
 
     void drawSignalChoicePanel();
@@ -66,7 +60,7 @@ private:
     void createPopup(const std::string &label, const std::string &info, const std::function<void()>& func);
     void createOperationButtons();
 
-    void updateOtherComponents(SignalStrategy* strat);
+//    void updateOtherComponents(SignalStrategy* strat);
 
     bool SinusoidalSignalCheck, GaussianNoiseCheck, ImpulseNoiseCheck, RectangularSignalCheck, RectangularSymmetricSignalCheck, SinusoidalOneHalfRectifiedSignalCheck, SinusoidalTwoHalfRectifiedSignalCheck, TriangularSignalCheck, UniformNoiseCheck, UnitImpulseSignalCheck, UnitJumpSignalCheck;
     std::vector<bool *> checks = {&SinusoidalSignalCheck, &GaussianNoiseCheck, &ImpulseNoiseCheck,

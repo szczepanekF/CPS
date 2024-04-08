@@ -3,9 +3,10 @@
 
 #include "signals/baseSignals/ContinousSignal.h"
 #include "signals/baseSignals/DiscreteSignal.h"
+#include "Reconstruction.h"
 #include <memory>
 
-class ReconstructionSincBased : public ContinousSignal {
+class ReconstructionSincBased : public Reconstruction {
 
 
 public:
@@ -16,6 +17,4 @@ public:
 private:
     static double sinc(double time);
     int N;
-    std::unique_ptr<DiscreteSignal> strategy;
-
 };

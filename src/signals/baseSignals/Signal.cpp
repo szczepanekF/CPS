@@ -87,13 +87,6 @@ size_t Signal::size() const {
     return signalValues.size();
 }
 
-//void Signal::convertToFloat(float *vals, float *time) const {
-//    for (size_t i = 0; i < size(); i++) {
-//        vals[i] = signalValues[i];
-//        time[i] = timeValues[i];
-//    }
-//}
-
 double Signal::meanSquaredError(Signal other) const {
     if (other.size() != size()) {
         throw std::logic_error("Signals do not match size");
@@ -135,6 +128,7 @@ double Signal::maxDifference(Signal other) const {
     double max = 0;
     for (size_t i = 0; i < size(); i++) {
         max = std::max(max, std::abs(signalValues[i] - other.signalValues[i]));
+
     }
     return max;
 }

@@ -3,13 +3,13 @@
 #include <iostream>
 #include "signals/signalConversion/DAC/ReconstructionZeroOrderHold.h"
 ReconstructionZeroOrderHold::ReconstructionZeroOrderHold(std::unique_ptr<DiscreteSignal> strategy)
-        : ContinousSignal(strategy->getBeginTime(), strategy->getDuration()), strategy(std::move(strategy)) {
+        : Reconstruction(std::move(strategy)) {
 
 }
 
 double ReconstructionZeroOrderHold::calculateSignalAt(double time) {
-
-
-    return strategy->calculateSignalAt(time);
+    double period = 1 / strategy->getFrequency();
+    double nearestSampleTime = std::floor((time - getBeginTime()) / period) * period + getBeginTime();
+    return strategy->calculateSignalAt(nearestSampleTime);
 }
 

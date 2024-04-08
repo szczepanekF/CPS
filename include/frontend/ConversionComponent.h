@@ -3,14 +3,16 @@
 #include <memory>
 #include "Operation.h"
 #include "signals/baseSignals/SignalStrategy.h"
+#include "Component.h"
+#include "mediator/Mediator.h"
 
-class ConversionComponent {
-
+class ConversionComponent : public Component{
 public:
-    ConversionComponent();
 
-    void show();
-    static void setMainSignalStrategy(std::unique_ptr<SignalStrategy> signalStrategy);
+    explicit ConversionComponent(std::shared_ptr<Mediator> mediator);
+
+    void show() override;
+    void setMainSignalStrategy(std::unique_ptr<SignalStrategy> signalStrategy);
 private:
     void drawOperationChoicePanel();
     void drawInputParametersPanel();
@@ -21,23 +23,28 @@ private:
     OPERATION_TYPE getSelectedOperationType();
     bool isOperationSelected();
     void setConversionSignal();
-    void setChosenDacStrategy();
-    void setChosenAdcStrategy();
+    std::unique_ptr<SignalStrategy> getChosenDacStrategy();
+    std::unique_ptr<SignalStrategy> getChosenAdcStrategy();
 
     void unsetMeasures();
     void setMeasures();
 
+    bool isMainSignalStrategyDiscrete();
+    bool isMainSignalStrategyReconstruction();
     std::vector<Operation> operations;
-    int sampleCount;
     double samplingFrequency;
     int quantizationLimit;
+
+    bool measuresSet;
     double MSE;
     double SNR;
     double PSNR;
     double MD;
 
-    static bool isMainSignalStrategyDiscrete();
-    static std::unique_ptr<SignalStrategy> mainSignalStrategy;
+    std::unique_ptr<Signal> baseSignal;
+
+
+    std::unique_ptr<SignalStrategy> mainSignalStrategy;
 };
 
 
