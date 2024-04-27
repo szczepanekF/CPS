@@ -12,7 +12,7 @@ public:
     double calculateSignalAt(double time) override;
 
 private:
-    virtual int typicalFunction(double value) = 0;
+    virtual double typicalFunction(double& value) = 0;
     void initQuantizationLevels(int levels);
     std::vector<double> levels;
     std::unique_ptr<Sampling> strategy;

@@ -195,7 +195,6 @@ std::unique_ptr<SignalStrategy> ConversionComponent::getChosenAdcStrategy() {
 
 
 std::unique_ptr<SignalStrategy> ConversionComponent::getChosenDacStrategy() {
-    std::cout<<"getDAC";
     std::unique_ptr<SignalStrategy> strat;
     OPERATION_TYPE type = getSelectedOperationType();
     std::unique_ptr<DiscreteSignal> mainSignal = std::unique_ptr<DiscreteSignal>(
@@ -231,12 +230,9 @@ void ConversionComponent::unsetMeasures() {
 
 void ConversionComponent::setMeasures() {
     auto recSig = mainSignalStrategy->getSignal();
-    std::cout<<"MEASURES"<<'\n';
-    if (baseSignal == nullptr) {
-        std::cout<<"base null"<<'\n';
-
-    } else if (recSig.size() == 0) {
-        std::cout<<"recSig 0";
+    if (baseSignal == nullptr || recSig.empty()) {
+        unsetMeasures();
+        return;
     }
     measuresSet = true;
     MSE = baseSignal->meanSquaredError(recSig);

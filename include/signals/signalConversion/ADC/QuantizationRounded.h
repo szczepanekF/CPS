@@ -7,5 +7,5 @@ public:
     QuantizationRounded(std::unique_ptr<Sampling> strategy, int quantizationLevels);
 
 private:
-    int typicalFunction(double value) override;
+    double typicalFunction(double& value) override;
 };

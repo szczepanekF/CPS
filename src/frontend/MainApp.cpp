@@ -94,13 +94,8 @@ void MainApp::setFrame() {
 
 void MainApp::run() {
     std::shared_ptr<SignalMediator> mediator = std::make_shared<SignalMediator>();
-    std::cout<<1 << " ";
     SignalManagementComponent comp(mediator);
-    std::cout<<2 << " ";
-
     ConversionComponent conCom(mediator);
-    std::cout<<3 << " ";
-
     PlotComponent *plotComp = PlotComponent::getInstance();
     if (isFrameInitSuccessful()) {
         configureWindow();

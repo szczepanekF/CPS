@@ -11,10 +11,12 @@ ReconstructionFirstOrderHold::ReconstructionFirstOrderHold(std::unique_ptr<Discr
 double ReconstructionFirstOrderHold::calculateSignalAt(double time) {
 
     double period = 1 / strategy->getFrequency();
-    if (time + period > getBeginTime() + getDuration()) {
-        return strategy->calculateSignalAt(time);
-    }
+
     double nearestSampleTime = std::floor((time - getBeginTime()) / period) * period + getBeginTime();
+    if (nearestSampleTime + period > getBeginTime() + getDuration()) {
+
+        return strategy->calculateSignalAt(nearestSampleTime);
+    }
     double part = (time - getBeginTime()) / period - std::floor((time - getBeginTime()) / period);
     return (strategy->calculateSignalAt(nearestSampleTime + period) -
             strategy->calculateSignalAt(nearestSampleTime)) * part +

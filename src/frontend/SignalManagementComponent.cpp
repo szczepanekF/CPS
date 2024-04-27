@@ -353,7 +353,6 @@ void SignalManagementComponent::drawFilePanel() {
     createPopup("operationsPopup", "File operation was successful", [this]() { this->createOperationButtons(); });
     createPopup("sigText", "Signal data in text format", [this]() {
         ImGui::Text(signalData.c_str());
-        std::cout << signalData;
     });
     ImGui::End();
 }

@@ -1,6 +1,7 @@
 
 #include "signals/signalConversion//ADC/Quantization.h"
 #include <limits>
+#include <cmath>
 #include <algorithm>
 #include <iostream>
 
@@ -12,10 +13,11 @@ Quantization::Quantization(std::unique_ptr<Sampling> strategy, int quantLevelCou
 
 
 double Quantization::calculateSignalAt(double time) {
-    double valToClip = (strategy->calculateSignalAt(time) - levels.front()) / (levels.back() - levels.front()) * (levels.size() - 1);
+    double valToClip =
+            (strategy->calculateSignalAt(time) - levels.front()) / (levels.back() - levels.front()) *
+            (levels.size() - 1);
 
-    int index = typicalFunction(valToClip);
-
+    int index = static_cast<int> (typicalFunction(valToClip));
     return levels[index];
 }
 
