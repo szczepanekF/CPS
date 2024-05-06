@@ -11,10 +11,12 @@ ReconstructionSincBased::ReconstructionSincBased(std::unique_ptr<DiscreteSignal>
 double ReconstructionSincBased::calculateSignalAt(double time) {
     double period = 1 / strategy->getFrequency();
     int sampleCount = static_cast<int> (getDuration() * strategy->getFrequency());
-    int nearestSampleInd = static_cast<int> (std::floor(time - getBeginTime()) * strategy->getFrequency());
-    int left = nearestSampleInd - N / 2;
-    int right = left + N;
 
+    int nearestSampleInd = static_cast<int> (std::floor((time - getBeginTime()) * strategy->getFrequency()));
+
+    int left = nearestSampleInd - N / 2;
+
+    int right = left + N;
 
     if (left < 0) {
         right = right - left;
@@ -30,6 +32,7 @@ double ReconstructionSincBased::calculateSignalAt(double time) {
     }
     double sum = 0;
     while (left <= right) {
+
         sum += strategy->calculateSignalAt(left * period) * sinc(time / period - left);
         left++;
     }
