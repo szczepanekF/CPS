@@ -7,7 +7,7 @@ class ImpulseNoise : public DiscreteSignal {
 public:
     ImpulseNoise(double amp, double time0, double dur, double freq, double prob);
 
-    double calculateSignalAt(double time) override;
+    double calculateSignalAtSample(int n) override;
 
     ~ImpulseNoise() override = default;
 private:

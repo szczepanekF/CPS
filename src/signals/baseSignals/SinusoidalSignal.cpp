@@ -1,6 +1,6 @@
 #include "signals/baseSignals/SinusoidalSignal.h"
 #include <cmath>
-#include <iostream>
+
 
 SinusoidalSignal::SinusoidalSignal(double amp, double time0, double dur, double basePeriod)
         : ContinousSignal(time0, dur), amplitude(amp), basePeriod(basePeriod) {

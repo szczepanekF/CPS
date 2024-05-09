@@ -1,6 +1,6 @@
 #include "frontend/SignalManagementComponent.h"
 #include "imgui.h"
-#include <iostream>
+
 #include "unordered_set"
 #include "signals/allBaseSignals.h"
 #include "frontend/Parameter.h"

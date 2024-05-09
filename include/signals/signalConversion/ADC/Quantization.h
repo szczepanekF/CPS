@@ -9,7 +9,8 @@ class Quantization : public DiscreteSignal {
 public:
     Quantization(std::unique_ptr<Sampling> strategy, int quantizationLevels);
 
-    double calculateSignalAt(double time) override;
+
+    double calculateSignalAtSample(int n) override;
 
 private:
     virtual double typicalFunction(double& value) = 0;

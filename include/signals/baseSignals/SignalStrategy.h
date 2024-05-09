@@ -14,19 +14,19 @@ public:
 
     double getBeginTime() const;
     double getDuration() const;
+
     double getFrequency() const;
-    void setSignal(const Signal &signal);
     void setFrequency(double freq);
 
 
-protected:
-    void calculateSignal();
+    virtual void calculateSignal();
+
 
 private:
-
+    Signal signal;
     double FREQUENCY;
 
-    Signal signal;
+
 
     double duration;
     double beginTime;

@@ -2,7 +2,7 @@
 #include "imgui.h"
 #include "signals/baseSignals/SignalStrategy.h"
 #include <implot.h>
-#include <iostream>
+
 #include <memory>
 
 PlotComponent *PlotComponent::instance = nullptr;

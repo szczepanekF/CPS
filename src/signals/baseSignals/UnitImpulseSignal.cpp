@@ -8,10 +8,9 @@ UnitImpulseSignal::UnitImpulseSignal(double amp, double time0, double dur, doubl
 
 }
 
-double UnitImpulseSignal::calculateSignalAt(double time) {
-    int currentJumpNumber = std::floor((time - getBeginTime()) * getFrequency());
-
-    return currentJumpNumber == (jumpTime - 1) ? amplitude : 0;
+double UnitImpulseSignal::calculateSignalAtSample(int n) {
+    return n == (jumpTime - 1) ? amplitude : 0;
 }
+
 
 

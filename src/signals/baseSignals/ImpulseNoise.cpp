@@ -2,7 +2,7 @@
 #include "signals/baseSignals/ImpulseNoise.h"
 #include <random>
 
-double ImpulseNoise::calculateSignalAt(double) {
+double ImpulseNoise::calculateSignalAtSample(int) {
     std::random_device rand_dev;
     std::mt19937 generator(rand_dev());
     std::uniform_real_distribution<double> distr(0.0, 1.0);

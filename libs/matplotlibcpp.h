@@ -10,7 +10,7 @@
 #include <numeric>
 #include <algorithm>
 #include <stdexcept>
-#include <iostream>
+
 #include <cstdint> // <cstdint> requires c++11 support
 #include <functional>
 #include <string> // std::stod

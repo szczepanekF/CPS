@@ -1,6 +1,6 @@
 
 #include <cmath>
-#include <iostream>
+
 #include "signals/signalConversion/DAC/ReconstructionSincBased.h"
 
 ReconstructionSincBased::ReconstructionSincBased(std::unique_ptr<DiscreteSignal> strategy, int n)

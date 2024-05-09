@@ -8,3 +8,4 @@ QuantizationRounded::QuantizationRounded(std::unique_ptr<Sampling> strategy, int
 double QuantizationRounded::typicalFunction(double& value) {
     return std::round(value);
 }
+

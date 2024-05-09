@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include "signals/baseSignals/SignalStrategy.h"
 
 SignalStrategy::SignalStrategy(double time0, double dur) : FREQUENCY(1000), duration(dur), beginTime(time0) {
@@ -33,10 +33,6 @@ double SignalStrategy::calculateSignalAt(double) {
 
 double SignalStrategy::getFrequency() const {
     return FREQUENCY;
-}
-
-void SignalStrategy::setSignal(const Signal &signal) {
-    SignalStrategy::signal = signal;
 }
 
 void SignalStrategy::setFrequency(double freq) {

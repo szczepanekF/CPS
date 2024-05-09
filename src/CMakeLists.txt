@@ -31,7 +31,19 @@ add_lib(src
         signals/signalConversion/DAC/ReconstructionFirstOrderHold.cpp
         signals/signalConversion/DAC/ReconstructionSincBased.cpp
         operations/SignalProcesor.cpp
-        
+
+        signals/filters/ConvolutionSignal.cpp
+        signals/filters/CorrelationSignal.cpp
+        signals/filters/LowPassFilter.cpp
+        signals/filters/HighPassFilter.cpp
+        signals/filters/BandPassFilter.cpp
+
+        windows/Window.cpp
+        windows/HammingWindow.cpp
+        windows/HanningWindow.cpp
+        windows/BlackmanWindow.cpp
+        windows/RectangularWindow.cpp
+
         frontend/Parameter.cpp
         frontend/MainApp.cpp
         frontend/SignalManagementComponent.cpp

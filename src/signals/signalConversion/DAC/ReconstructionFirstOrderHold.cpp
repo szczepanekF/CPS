@@ -1,6 +1,6 @@
 
 #include <cmath>
-#include <iostream>
+
 #include "signals/signalConversion/DAC/ReconstructionFirstOrderHold.h"
 
 ReconstructionFirstOrderHold::ReconstructionFirstOrderHold(std::unique_ptr<DiscreteSignal> strategy)

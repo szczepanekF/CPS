@@ -46,13 +46,13 @@ void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &fi
     if (sig.empty()) {
         throw std::logic_error("Signal empty");
     }
-    // Open a binary file for writing
+
     std::ofstream outFile(filename, std::ios::out | std::ios::binary | std::ios::trunc);
     if (!outFile.is_open()) {
         std::cerr << "Error opening file for writing!" << std::endl;
         return;
     }
-    //write parameters
+
     double bTime = sig.getTimeValues().front();
     double dur = sig.getTimeValues().back() - sig.getTimeValues().front();
     double frequency = 0;
@@ -69,8 +69,6 @@ void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &fi
 
     outFile.write(reinterpret_cast<const char *>(sig.getSignalValues().data()), sizeX * sizeof(double));
 
-
-    // Close the file
     outFile.close();
 }
 
@@ -105,7 +103,7 @@ std::unique_ptr<Signal> SignalProcesor::readSignalFromBinary(const std::string &
         time += diff;
         i++;
     }
-    // Close the file
+
     newSignal->setValues(sigVals, timeVals);
     return newSignal;
 }
@@ -122,7 +120,6 @@ std::string SignalProcesor::readSignalFromBinaryAsString(const std::string &file
     inFile.read(reinterpret_cast< char *>(&bTime), sizeof(bTime));
     inFile.read(reinterpret_cast< char *>(&dur), sizeof(dur));
     inFile.read(reinterpret_cast< char *>(&frequency), sizeof(frequency));
-    // Read the size of the vectors
     size_t sizeX;
     inFile.read(reinterpret_cast<char *>(&sizeX), sizeof(sizeX));
     message += "Time 0: " + std::to_string(bTime) + "\n";
@@ -131,7 +128,6 @@ std::string SignalProcesor::readSignalFromBinaryAsString(const std::string &file
     message += "Amplitude amount: " + std::to_string(sizeX) + "\n";
     message += "REST DATA IS AMPLITUDE VALUES";
 
-    // Close the file
     inFile.close();
 
     return message;

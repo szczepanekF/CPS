@@ -1,6 +1,6 @@
 
 #include <cmath>
-#include <iostream>
+
 #include "signals/signalConversion/DAC/ReconstructionZeroOrderHold.h"
 ReconstructionZeroOrderHold::ReconstructionZeroOrderHold(std::unique_ptr<DiscreteSignal> strategy)
         : Reconstruction(std::move(strategy)) {
