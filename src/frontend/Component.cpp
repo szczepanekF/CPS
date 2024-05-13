@@ -9,6 +9,10 @@ void Component::addSignal(std::unique_ptr<SignalStrategy> strat, Signal& sig) {
     mediator->addSignal(this, std::move(strat), sig);
 }
 
+void Component::addSignalToConvFilterCor(std::unique_ptr<SignalStrategy> strat) {
+    mediator->addSignalToConFilterConv(this, std::move(strat));
+}
+
 void Component::clearSignals() {
     mediator->clearSignals(this);
 }

@@ -2,6 +2,7 @@
 #include "frontend/MainApp.h"
 #include "frontend/SignalManagementComponent.h"
 #include "frontend/ConversionComponent.h"
+#include "frontend/ConvFilterCorComponent.h"
 #include "frontend/PlotComponent.h"
 #include "imgui.h"
 #include <implot.h>
@@ -94,8 +95,11 @@ void MainApp::setFrame() {
 
 void MainApp::run() {
     std::shared_ptr<SignalMediator> mediator = std::make_shared<SignalMediator>();
+
     SignalManagementComponent comp(mediator);
     ConversionComponent conCom(mediator);
+    ConvFilterCorComponent convFilterCorComponent(mediator);
+
     PlotComponent *plotComp = PlotComponent::getInstance();
     if (isFrameInitSuccessful()) {
         configureWindow();
@@ -116,6 +120,12 @@ void MainApp::run() {
                 if (ImGui::BeginTabItem("Signal conversion"))
                 {
                     conCom.show();
+                    ImGui::EndTabItem();
+                }
+
+                if(ImGui::BeginTabItem("Assignment 3 label (TODO)"))
+                {
+                    convFilterCorComponent.show();
                     ImGui::EndTabItem();
                 }
                 ImGui::EndTabBar();

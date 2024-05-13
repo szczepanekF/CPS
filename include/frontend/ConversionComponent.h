@@ -1,9 +1,12 @@
+#pragma once
+
 #include <vector>
 #include <string>
 #include <memory>
 #include "Operation.h"
 #include "signals/baseSignals/SignalStrategy.h"
 #include "Component.h"
+#include "ConvFilterCorComponent.h"
 #include "mediator/Mediator.h"
 
 class ConversionComponent : public Component{
@@ -42,9 +45,9 @@ private:
     double MD;
 
     std::unique_ptr<Signal> baseSignal;
-
-
     std::unique_ptr<SignalStrategy> mainSignalStrategy;
+    std::unique_ptr<SignalStrategy>conFilterConvSignalStrategy{};
+
 };
 
 

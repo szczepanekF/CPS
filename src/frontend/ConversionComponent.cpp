@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include <utility>
+#include <iostream>
 #include "frontend/ConversionComponent.h"
 #include "imgui.h"
 #include "signals/baseSignals/DiscreteSignal.h"
@@ -10,7 +11,7 @@
 
 ConversionComponent::ConversionComponent(std::shared_ptr<Mediator> mediator)
         : Component(std::move(mediator)), samplingFrequency(0.0), quantizationLimit(0.0),
-          measuresSet(false), MSE(0.0), SNR(0.0), PSNR(0.0), MD(0.0) {
+          measuresSet(false), MSE(0.0), SNR(0.0), PSNR(0.0), MD(0.0){
     addToMediator();
     initializeOperations();
 }
@@ -41,6 +42,10 @@ void ConversionComponent::show() {
         }
         if (measuresSet) {
             drawCalculatedMeasuresPanel();
+        }
+        ImGui::SetCursorPos(ImVec2(1500, 400));
+        if (ImGui::Button("Add to operations")) {
+            addSignalToConvFilterCor(std::move(conFilterConvSignalStrategy));
         }
     }
 }
@@ -147,13 +152,18 @@ OPERATION_TYPE ConversionComponent::getSelectedOperationType() {
 void ConversionComponent::setConversionSignal() {
     std::unique_ptr<SignalStrategy> strat{};
     if (isMainSignalStrategyDiscrete()) {
-        strat = getChosenDacStrategy();
+        conFilterConvSignalStrategy = getChosenDacStrategy();
+//        strat = getChosenDacStrategy();
     } else {
-        strat = getChosenAdcStrategy();
+        conFilterConvSignalStrategy = getChosenAdcStrategy();
+//        strat = getChosenAdcStrategy();
     }
 
-    Signal& sig = strat->getSignal();
-    addSignal(std::move(strat), sig);
+//    Signal& sig = strat->getSignal();
+    Signal& sig = conFilterConvSignalStrategy->getSignal();
+//    addSignal(std::move(strat), sig);
+    addSignal(std::move(conFilterConvSignalStrategy), sig);
+
 
     if (isMainSignalStrategyReconstruction()) {
         setMeasures();

@@ -44,6 +44,14 @@ void PlotComponent::addSignal(const Signal &signal) {
     }
 }
 
+Signal PlotComponent::getSignal(int position) {
+    if(position == -1) {
+        return signals.back();
+    } else {
+        return signals.at(position);
+    }
+}
+
 void PlotComponent::clearSignals() {
     signals.clear();
 }

@@ -9,6 +9,7 @@ public:
     void show();
 
     void addSignal(const Signal& signal);
+    Signal getSignal(int position = -1);
     void clearSignals();
 
 private:
