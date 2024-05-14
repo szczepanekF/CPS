@@ -21,7 +21,7 @@ void SignalStrategy::calculateSignal() {
     double diff = 1 / FREQUENCY;
     double time = getBeginTime();
 
-    while (time <= getBeginTime() + getDuration()) {
+    while (time < getBeginTime() + getDuration()) {
         signal.push_back(calculateSignalAt(time), time);
         time += diff;
     }
@@ -37,6 +37,14 @@ double SignalStrategy::getFrequency() const {
 
 void SignalStrategy::setFrequency(double freq) {
     FREQUENCY = freq;
+}
+
+void SignalStrategy::setDuration(double newDuration) {
+    duration = newDuration;
+}
+
+void SignalStrategy::setBeginTime(double time0) {
+    beginTime = time0;
 }
 
 

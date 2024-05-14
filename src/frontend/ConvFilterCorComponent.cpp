@@ -23,7 +23,6 @@ void ConvFilterCorComponent::addSignalStrategy(std::unique_ptr<SignalStrategy> s
         std::unique_ptr<DiscreteSignal> discreteSignal = std::unique_ptr<DiscreteSignal>(
                 dynamic_cast<DiscreteSignal *>(signalStrategy.release()));
         signalStrategies.push_back(std::move(discreteSignal));
-        std::cout << signalStrategies.size();
     } else {
         std::cout << "error";
     }
@@ -60,7 +59,6 @@ void ConvFilterCorComponent::drawOperationPanel() {
         std::cout << "option";
     }
     if (ImGui::Button("Draw signal")) {
-        std::cout << signalStrategies.size();
         switch (selectedOperation) {
             case 0:
                 auto convolutionSignal = new ConvolutionSignal(std::move(signalStrategies.at(0)),

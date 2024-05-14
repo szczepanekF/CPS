@@ -12,6 +12,9 @@ public:
 
     void calculateSignal() override;
 
+
+    void setNumberOfSamples(int numberOfSamples);
+
     virtual double calculateSignalAtSample(int n) = 0;
 
     virtual int getNumberOfSamples() const;

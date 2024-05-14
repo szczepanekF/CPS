@@ -13,20 +13,24 @@ public:
     virtual Signal &getSignal();
 
     double getBeginTime() const;
+
     double getDuration() const;
 
     double getFrequency() const;
+
     void setFrequency(double freq);
 
 
     virtual void calculateSignal();
 
+    void setBeginTime(double beginTime);
+
+protected:
+    void setDuration(double newDuration);
 
 private:
     Signal signal;
     double FREQUENCY;
-
-
 
     double duration;
     double beginTime;

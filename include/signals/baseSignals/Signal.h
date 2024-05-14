@@ -4,6 +4,7 @@
 
 class Signal {
 
+
 public:
     const std::vector<double> &getTimeValues() const;
 

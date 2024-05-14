@@ -9,7 +9,7 @@
 #include "frontend/ConversionComponent.h"
 #include "frontend/ConvFilterCorComponent.h"
 
-void SignalMediator::addSignal(Component *comp, std::unique_ptr<SignalStrategy> strat, Signal &sig) {
+void SignalMediator::addSignal(Component *, std::unique_ptr<SignalStrategy> strat, Signal &sig) {
     plotComponent->addSignal(sig);
     convComponent->setMainSignalStrategy(std::move(strat));
 }
@@ -45,8 +45,8 @@ void SignalMediator::addComponent(Component *comp) {
 }
 
 SignalMediator::SignalMediator() : convComponent(nullptr), plotComponent(PlotComponent::getInstance()),
-                                   managementComponent(nullptr), mainStrategy(nullptr), signals(),
-                                   convFilterCorComponent(nullptr) {
+                                   managementComponent(nullptr), convFilterCorComponent(nullptr), mainStrategy(nullptr),
+                                   signals() {
 
 }
 

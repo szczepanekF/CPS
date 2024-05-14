@@ -1,3 +1,5 @@
+#include <iostream>
+#include <utility>
 #include "frontend/SignalManagementComponent.h"
 #include "imgui.h"
 
@@ -6,10 +8,11 @@
 #include "frontend/Parameter.h"
 #include "frontend/ConversionComponent.h"
 #include "frontend/PlotComponent.h"
+#include "simulation/SimulatedSignal.h"
 
 
 SignalManagementComponent::SignalManagementComponent(std::shared_ptr<Mediator> med)
-        : Component(med), filename(), signalProcesor(), drawedSignal(nullptr) {
+        : Component(std::move(med)), filename(), signalProcesor(), drawedSignal(nullptr) {
     addToMediator();
     initChecks();
     params = {Parameter("Amplitude"),
@@ -122,9 +125,9 @@ void SignalManagementComponent::createButton(const char *label, int option) {
                 if (filenames.empty()) {
                     clearSignals();
                 }
+                clearSignals();
                 drawedSignal = signalProcesor.readSignalFromBinary(std::string(filename) + ".bin");
                 signalProcesor.addNewSignal(*drawedSignal);
-                // TODO tutaj zakładamy że nie można DA/AD konwersji na wczytanych plikach robić
                 addSignal(nullptr, *drawedSignal);
                 filenames.push_back(std::string(filename) + ".bin");
                 ImGui::OpenPopup("fileSuccess");
@@ -180,8 +183,9 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
     SignalStrategy *strat;
     switch (signalType) {
         case SIN:
-            strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
+//            strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
 
+            strat = new SimulatedSignal(params[1].value, params[2].value, params[3].value);
             break;
         case SIN_ONE:
             strat = new SinusoidalOneHalfRectifiedSignal(params[0].value, params[1].value, params[2].value,
@@ -226,6 +230,8 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
 
     clearSignals();
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
+
+
     addSignal(std::unique_ptr<SignalStrategy> (strat), *drawedSignal);
 }
 
