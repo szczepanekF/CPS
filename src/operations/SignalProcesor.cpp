@@ -1,4 +1,4 @@
-#include <utility>
+
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -57,17 +57,20 @@ void SignalProcesor::saveSignalToBinary(const Signal &sig, const std::string &fi
     double dur = sig.getTimeValues().back() - sig.getTimeValues().front();
     double frequency = 0;
 
-    outFile.write(reinterpret_cast<const char *>(&bTime), sizeof(bTime));
-    outFile.write(reinterpret_cast<const char *>(&dur), sizeof(dur));
+    outFile.write(reinterpret_cast< char *>(&bTime), sizeof(bTime));
+    outFile.write(reinterpret_cast< char *>(&dur), sizeof(dur));
     double time = bTime + 1;
     frequency = std::distance(sig.getTimeValues().begin(),
                               std::ranges::find_if(sig.getTimeValues(), [time](double val) { return time <= val; }));
-    outFile.write(reinterpret_cast<const char *>(&frequency), sizeof(frequency));
+    frequency -= 1;
+
+    outFile.write(reinterpret_cast< char *>(&frequency), sizeof(frequency));
 
     size_t sizeX = sig.size();
-    outFile.write(reinterpret_cast<const char *>(&sizeX), sizeof(sizeX));
 
-    outFile.write(reinterpret_cast<const char *>(sig.getSignalValues().data()), sizeX * sizeof(double));
+    outFile.write(reinterpret_cast< char *>(&sizeX), sizeof(sizeX));
+    std::vector<double> sigVals = sig.getSignalValues();
+    outFile.write(reinterpret_cast< char *>(sigVals.data()), sizeX * sizeof(double));
 
     outFile.close();
 }
@@ -78,22 +81,20 @@ std::unique_ptr<Signal> SignalProcesor::readSignalFromBinary(const std::string &
         std::cerr << "Error opening file for reading!" << std::endl;
         return {};
     }
-    std::unique_ptr<Signal> newSignal = std::make_unique<Signal>();
+    Signal newSignal;
+
     double bTime;
     double dur;
     double frequency;
     size_t sizeX;
-
     inFile.read(reinterpret_cast< char *>(&bTime), sizeof(bTime));
     inFile.read(reinterpret_cast< char *>(&dur), sizeof(dur));
     inFile.read(reinterpret_cast< char *>(&frequency), sizeof(frequency));
     inFile.read(reinterpret_cast< char *>(&sizeX), sizeof(sizeX));
-
     std::vector<double> sigVals(sizeX);
     std::vector<double> timeVals(sizeX);
     inFile.read(reinterpret_cast<char *>(sigVals.data()), sizeX * sizeof(double));
     inFile.close();
-
 
     double diff = 1 / frequency;
     double time = bTime;
@@ -104,8 +105,8 @@ std::unique_ptr<Signal> SignalProcesor::readSignalFromBinary(const std::string &
         i++;
     }
 
-    newSignal->setValues(sigVals, timeVals);
-    return newSignal;
+    newSignal.setValues(sigVals, timeVals);
+    return std::make_unique<Signal>(newSignal);
 }
 
 std::string SignalProcesor::readSignalFromBinaryAsString(const std::string &filename) {

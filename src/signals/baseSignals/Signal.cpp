@@ -146,10 +146,10 @@ void Signal::push_back(double value, double time) {
 void Signal::clear() {
     signalValues.clear();
     timeValues.clear();
-
 }
 
 void Signal::setValues(const std::vector<double> &sigVals, const std::vector<double> &timeVals) {
+
     signalValues = sigVals;
     timeValues = timeVals;
 }

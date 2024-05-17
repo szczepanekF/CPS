@@ -7,7 +7,7 @@
 #include "imgui.h"
 #include <implot.h>
 #include <GLFW/glfw3.h>
-#include <stdio.h>
+#include <cstdio>
 
 
 #include "imgui_impl_opengl3.h"
@@ -135,8 +135,6 @@ void MainApp::run() {
             }
 
             ImGui::End();
-            float x[] = {1, 2, 3, 4, 5};
-            float y[] = {1, 4, 9, 16, 25};
 
             plotComp->show();
             render();

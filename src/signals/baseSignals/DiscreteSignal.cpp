@@ -38,5 +38,9 @@ void DiscreteSignal::calculateSignal() {
 
 }
 
+void DiscreteSignal::setNumberOfSamples(int newSampleCount) {
+    numberOfSamples = newSampleCount;
+}
+
 
 

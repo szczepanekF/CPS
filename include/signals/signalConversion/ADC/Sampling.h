@@ -8,7 +8,6 @@ class Sampling : public DiscreteSignal {
 public:
     Sampling(std::unique_ptr<ContinousSignal> strategy, double sampleRate);
 
-
     double calculateSignalAtSample(int n) override;
 
 private:

@@ -13,3 +13,4 @@ double Sampling::calculateSignalAtSample(int n) {
     return strategy->calculateSignalAt(time);
 }
 
+

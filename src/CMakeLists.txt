@@ -39,6 +39,10 @@ add_lib(src
         signals/filters/HighPassFilter.cpp
         signals/filters/BandPassFilter.cpp
 
+        simulation/SimulatedSignal.cpp
+        simulation/DistanceSensor.cpp
+        simulation/Environment.cpp
+
         windows/Window.cpp
         windows/HammingWindow.cpp
         windows/HanningWindow.cpp

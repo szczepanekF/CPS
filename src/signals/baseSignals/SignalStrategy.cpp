@@ -39,5 +39,13 @@ void SignalStrategy::setFrequency(double freq) {
     FREQUENCY = freq;
 }
 
+void SignalStrategy::setDuration(double newDuration) {
+    duration = newDuration;
+}
+
+void SignalStrategy::setBeginTime(double time0) {
+    beginTime = time0;
+}
+
 
 
