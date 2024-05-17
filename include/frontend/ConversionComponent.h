@@ -46,8 +46,6 @@ private:
 
     std::unique_ptr<Signal> baseSignal;
     std::unique_ptr<SignalStrategy> mainSignalStrategy;
-    std::unique_ptr<SignalStrategy>conFilterConvSignalStrategy{};
-
 };
 
 

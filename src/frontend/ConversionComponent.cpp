@@ -43,9 +43,12 @@ void ConversionComponent::show() {
         if (measuresSet) {
             drawCalculatedMeasuresPanel();
         }
-        ImGui::SetCursorPos(ImVec2(1500, 400));
-        if (ImGui::Button("Add to operations")) {
-            addSignalToConvFilterCor(std::move(conFilterConvSignalStrategy));
+        if(isMainSignalStrategyDiscrete()) {
+            ImGui::SetCursorPos(ImVec2(1500, 400));
+            if (ImGui::Button("Add to operations")) {
+                addSignalToConvFilterCor(std::move(mainSignalStrategy));
+                clearSignals();
+            }
         }
     }
 }
@@ -152,25 +155,17 @@ OPERATION_TYPE ConversionComponent::getSelectedOperationType() {
 void ConversionComponent::setConversionSignal() {
     std::unique_ptr<SignalStrategy> strat{};
     if (isMainSignalStrategyDiscrete()) {
-        conFilterConvSignalStrategy = getChosenDacStrategy();
-//        strat = getChosenDacStrategy();
+        strat = getChosenDacStrategy();
     } else {
-        conFilterConvSignalStrategy = getChosenAdcStrategy();
-//        strat = getChosenAdcStrategy();
+        strat = getChosenAdcStrategy();
     }
 
-//    Signal& sig = strat->getSignal();
-    Signal& sig = conFilterConvSignalStrategy->getSignal();
-//    addSignal(std::move(strat), sig);
-    addSignal(std::move(conFilterConvSignalStrategy), sig);
-
+    Signal& sig = strat->getSignal();
+    addSignal(std::move(strat), sig);
 
     if (isMainSignalStrategyReconstruction()) {
         setMeasures();
-
     }
-
-
     std::ranges::for_each(operations, [](auto &oper) { oper.setIsActive(false); });
 }
 

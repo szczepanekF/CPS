@@ -25,7 +25,11 @@ Signal SignalMediator::getSignal() {
 void SignalMediator::clearSignals(Component *) {
     plotComponent->clearSignals();
     convComponent->setMainSignalStrategy(nullptr);
-//    convFilterCorComponent->clearSignalStrategies();
+//    convFilterCorComponent->clearDiscreteSignals();
+}
+
+void SignalMediator::setSecondPlotSignal(Signal &signal) {
+    plotComponent->setSecondPlotSignal(signal);
 }
 
 void SignalMediator::addComponent(Component *comp) {
@@ -45,7 +49,7 @@ void SignalMediator::addComponent(Component *comp) {
 }
 
 SignalMediator::SignalMediator() : convComponent(nullptr), plotComponent(PlotComponent::getInstance()),
-                                   managementComponent(nullptr), mainStrategy(nullptr), signals(),
+                                   managementComponent(nullptr), mainStrategy(nullptr),
                                    convFilterCorComponent(nullptr) {
 
 }

@@ -16,6 +16,7 @@ public:
     void addSignalToConFilterConv(Component* comp, std::unique_ptr<SignalStrategy>  strat) override;
     Signal getSignal() override;
     void clearSignals(Component* comp) override;
+    void setSecondPlotSignal(Signal& signal) override;
     void addComponent(Component* comp);
 private:
     std::shared_ptr<ConversionComponent> convComponent;
@@ -23,5 +24,4 @@ private:
     std::shared_ptr<SignalManagementComponent> managementComponent;
     std::shared_ptr<ConvFilterCorComponent> convFilterCorComponent;
     std::unique_ptr<SignalStrategy> mainStrategy;
-    std::unique_ptr<Signal> signals;
 };

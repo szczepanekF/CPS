@@ -10,7 +10,9 @@ DiscreteSignal::DiscreteSignal(double time0, double dur, double frequency)
 
 
 Signal &DiscreteSignal::getSignal() {
-    calculateSignal();
+    if (SignalStrategy::getSignal().empty()) {
+        calculateSignal();
+    }
     return SignalStrategy::getSignal();
 }
 

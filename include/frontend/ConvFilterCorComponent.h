@@ -7,7 +7,7 @@
 #include "signals/baseSignals/DiscreteSignal.h"
 #include "Component.h"
 #include "mediator/Mediator.h"
-
+class Window;
 class ConvFilterCorComponent : public Component{
 public:
 
@@ -15,11 +15,19 @@ public:
 
     void show() override;
     void addSignalStrategy(std::unique_ptr<SignalStrategy> signalStrategy);
-    void clearSignalStrategies();
+    void clearDiscreteSignals();
 private:
     void drawOperationPanel();
-    int selectedOperation = 0;
-    std::vector<std::unique_ptr<DiscreteSignal>> signalStrategies;
+    void drawParametersPanel();
+    void drawFilterWindowChoicePanel();
+    std::unique_ptr<Window> getChosenWindow() const;
+    int selectedOperation;
+    std::vector<std::unique_ptr<DiscreteSignal>> discreteSignals;
+    double M;
+    double f0;
+    double frequency;
+    double K;
+    int windowChoice;
 };
 
 

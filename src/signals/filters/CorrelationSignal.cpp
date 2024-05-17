@@ -10,7 +10,7 @@ double CorrelationSignal::calculateSignalAtSample(int n) {
 
     double sum = 0;
     int start = std::max(0, n);
-    int end = std::min(n + getNumberOfSamples(), h->getNumberOfSamples());
+    int end = std::min(n + x->getNumberOfSamples(), h->getNumberOfSamples());
 
     for (int k = start; k < end; k++) {
         sum += h->calculateSignalAtSample(k) * x->calculateSignalAtSample(k - n);

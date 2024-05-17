@@ -41,7 +41,7 @@ public:
 
     bool empty() const;
 
-    void resize(size_t newSize);
+    void clear();
 
     void setValues(const std::vector<double> &sigVals, const std::vector<double> &timeVals);
 

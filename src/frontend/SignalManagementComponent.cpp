@@ -1,15 +1,18 @@
 #include "frontend/SignalManagementComponent.h"
 #include "imgui.h"
 
+#include <iostream>
 #include "unordered_set"
 #include "signals/allBaseSignals.h"
 #include "frontend/Parameter.h"
 #include "frontend/ConversionComponent.h"
 #include "frontend/PlotComponent.h"
+#include "signals/baseSignals/OperationResultSignal.h"
 
 
 SignalManagementComponent::SignalManagementComponent(std::shared_ptr<Mediator> med)
-        : Component(med), filename(), signalProcesor(), drawedSignal(nullptr) {
+        : Component(med), filename(), signalProcesor(), drawedSignal(nullptr),
+            signalForOperation1(), signalForOperation2(), isOperationChecked(false) {
     addToMediator();
     initChecks();
     params = {Parameter("Amplitude"),
@@ -66,6 +69,15 @@ void SignalManagementComponent::showFileOperations() {
     }
 
     createButton("Unload files and clear signal", 5);
+    ImGui::SetNextItemWidth(500);
+    if (ImGui::Checkbox("Signals Operation", &isOperationChecked)) {
+
+        signalForOperation1 = nullptr;
+        signalForOperation2 = nullptr;
+        cleanUp();
+        clearSignals();
+
+    }
 }
 
 void SignalManagementComponent::showSignalChoice() {
@@ -113,6 +125,8 @@ void SignalManagementComponent::createButton(const char *label, int option) {
             ImGui::OpenPopup("operationsPopup");
         } else if (option == 5) {
             cleanUp();
+            signalForOperation2 = nullptr;
+            signalForOperation1 = nullptr;
             filenames.clear();
             signalProcesor.clearSignals();
             clearSignals();
@@ -129,8 +143,6 @@ void SignalManagementComponent::createButton(const char *label, int option) {
                 filenames.push_back(std::string(filename) + ".bin");
                 ImGui::OpenPopup("fileSuccess");
             } else {
-                cleanUp();
-
                 setDrawedSignalBySignalType();
             }
         }
@@ -138,6 +150,7 @@ void SignalManagementComponent::createButton(const char *label, int option) {
 }
 
 void SignalManagementComponent::cleanUp() {
+
     drawedSignal.reset();
 }
 
@@ -162,7 +175,6 @@ void SignalManagementComponent::handleParamsVisibility(std::unordered_set<int> &
             params[i].isVisible = true;
             params[i].value = 0.0;
         } else {
-
             params[i].isVisible = false;
         }
     }
@@ -224,9 +236,23 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
             return;
     }
 
-    clearSignals();
+
     drawedSignal = std::make_unique<Signal>(strat->getSignal());
-    addSignal(std::unique_ptr<SignalStrategy> (strat), *drawedSignal);
+    std::unique_ptr<SignalStrategy> stratUniquePtr = std::unique_ptr<SignalStrategy> (strat);
+    if (!isOperationChecked) {
+        clearSignals();
+
+        std::cout<<stratUniquePtr->getSignal().size() << " " << stratUniquePtr->getSignal().getSignalValues().front() << " " << stratUniquePtr->getSignal().getSignalValues().back();
+        std::cout<<stratUniquePtr->getSignal().size() << " " << stratUniquePtr->getSignal().getTimeValues().front() << " " << stratUniquePtr->getSignal().getTimeValues().back();
+        addSignal(std::move(stratUniquePtr), *drawedSignal);
+    } else {
+        if (signalForOperation1 == nullptr) {
+            signalForOperation1 = std::move(stratUniquePtr);
+        } else {
+            signalForOperation2 = std::move(stratUniquePtr);
+        }
+        addSignal(nullptr, *drawedSignal);
+    }
 }
 
 
@@ -325,7 +351,11 @@ void SignalManagementComponent::drawParameterPanel() {
     ImGui::Begin("Signal parameters", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showSignalParameters();
-    createButton("Draw the plot", 2);
+    if (signalForOperation2 == nullptr) {
+        createButton("Draw the plot", 2);
+    } else {
+        createStrategyOperationButtons();
+    }
     ImGui::End();
 }
 
@@ -385,6 +415,35 @@ void SignalManagementComponent::createOperationButtons() {
         }
     }
 }
+
+void SignalManagementComponent::createStrategyOperationButtons() {
+    std::array<std::string, 4> arr = {"add", "subtract", "multiply", "divide"};
+    for (const auto& operation: arr) {
+        if (ImGui::Button(operation.c_str())) {
+            std::function<double(double, double)> operationFunction = [](double a, double b) {return a + b;};
+            if (operation == "add") {
+                operationFunction = [](double a, double b) {return a + b;};
+            } else if (operation == "subtract") {
+                operationFunction = [](double a, double b) {return a - b;};
+            } else if (operation == "multiply") {
+                operationFunction = [](double a, double b) {return a * b;};
+            } else if (operation == "divide") {
+                operationFunction = [](double a, double b) {return a / b;};
+            }
+
+            SignalStrategy* strat = new OperationResultSignal(std::move(signalForOperation1), std::move(signalForOperation2), operationFunction);
+            cleanUp();
+            clearSignals();
+            std::cout<<strat->getSignal().size() << " " << strat->getSignal().getSignalValues().front() << " " << strat->getSignal().getSignalValues().back();
+            std::cout<<strat->getSignal().size() << " " << strat->getSignal().getTimeValues().front() << " " << strat->getSignal().getTimeValues().back();
+
+            drawedSignal = std::make_unique<Signal>(strat->getSignal());
+            addSignal(std::unique_ptr<SignalStrategy> (strat), *drawedSignal);
+            isOperationChecked = false;
+        }
+    }
+}
+
 
 
 

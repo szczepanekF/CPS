@@ -22,6 +22,7 @@ add_lib(src
         signals/baseSignals/UnitImpulseSignal.cpp
         signals/baseSignals/UnitJumpSignal.cpp
         signals/baseSignals/Signal.cpp
+        signals/baseSignals/OperationResultSignal.cpp
         signals/signalConversion/ADC/Sampling.cpp
         signals/signalConversion/ADC/Quantization.cpp
         signals/signalConversion/ADC/QuantizationRounded.cpp

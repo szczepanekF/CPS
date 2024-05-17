@@ -13,6 +13,7 @@ public:
     virtual void clearSignals();
     virtual void addSignal(std::unique_ptr<SignalStrategy> strat, Signal& sig);
     virtual void addSignalToConvFilterCor(std::unique_ptr<SignalStrategy> strat);
+    virtual void setSecondPlotSignal(Signal& signal);
 
 private:
     std::shared_ptr<Mediator> mediator;

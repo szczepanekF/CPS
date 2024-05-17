@@ -19,7 +19,7 @@ GLFWwindow *window;
 const char *glsl_version;
 ImVec4 clear_color;
 int display_w, display_h;
-
+int y = 430;
 
 
 void MainApp::glfw_error_callback(int error, const char *description) {
@@ -106,25 +106,28 @@ void MainApp::run() {
         while (!glfwWindowShouldClose(window)) {
             setFrame();
             ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-            ImGui::SetNextWindowSize(ImVec2(display_w, 430), ImGuiCond_Always);
+            ImGui::SetNextWindowSize(ImVec2(display_w, y), ImGuiCond_Always);
             ImGui::Begin("Assignments", nullptr,
                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
             if (ImGui::BeginTabBar("MyTabBar"))
             {
                 if (ImGui::BeginTabItem("Signal creation"))
                 {
+//                    y=430;
                     comp.show();
                     ImGui::EndTabItem();
                 }
 
                 if (ImGui::BeginTabItem("Signal conversion"))
                 {
+//                    y=430;
                     conCom.show();
                     ImGui::EndTabItem();
                 }
 
                 if(ImGui::BeginTabItem("Assignment 3 label (TODO)"))
                 {
+//                    y=1000;
                     convFilterCorComponent.show();
                     ImGui::EndTabItem();
                 }

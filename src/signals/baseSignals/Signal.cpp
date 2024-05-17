@@ -143,9 +143,9 @@ void Signal::push_back(double value, double time) {
 
 }
 
-void Signal::resize(size_t newSize) {
-    signalValues.resize(newSize);
-    timeValues.resize(newSize);
+void Signal::clear() {
+    signalValues.clear();
+    timeValues.clear();
 
 }
 

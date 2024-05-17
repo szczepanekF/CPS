@@ -59,6 +59,7 @@ private:
 
     void createPopup(const std::string &label, const std::string &info, const std::function<void()>& func);
     void createOperationButtons();
+    void createStrategyOperationButtons();
 
 //    void updateOtherComponents(SignalStrategy* strat);
 
@@ -79,6 +80,8 @@ private:
     std::unique_ptr<Signal> drawedSignal;
     std::vector<std::unique_ptr<Signal>> operations;
     SIGNAL_TYPE signalType;
-
+    std::unique_ptr<SignalStrategy> signalForOperation1;
+    std::unique_ptr<SignalStrategy> signalForOperation2;
+    bool isOperationChecked;
 
 };

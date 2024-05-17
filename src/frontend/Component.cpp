@@ -20,3 +20,8 @@ void Component::clearSignals() {
 void Component::addToMediator() {
     mediator->addComponent(this);
 }
+
+void Component::setSecondPlotSignal(Signal& signal) {
+    mediator->setSecondPlotSignal(signal);
+}
+
