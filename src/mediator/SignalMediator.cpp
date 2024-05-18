@@ -9,8 +9,9 @@
 #include "frontend/ConversionComponent.h"
 #include "frontend/ConvFilterCorComponent.h"
 
-void SignalMediator::addSignal(Component *, std::unique_ptr<SignalStrategy> strat, Signal &sig) {
-    plotComponent->addSignal(sig);
+void SignalMediator::addSignal(Component *, std::unique_ptr<SignalStrategy> strat, const Signal &sig,
+                               const std::string &signalName) {
+    plotComponent->addSignal(sig, signalName);
     convComponent->setMainSignalStrategy(std::move(strat));
 }
 
@@ -28,8 +29,12 @@ void SignalMediator::clearSignals(Component *) {
 //    convFilterCorComponent->clearDiscreteSignals();
 }
 
-void SignalMediator::setSecondPlotSignal(Signal &signal) {
-    plotComponent->setSecondPlotSignal(signal);
+void SignalMediator::setSecondPlotSignal(const Signal &signal, const std::string &signalName) {
+    plotComponent->setSecondPlotSignal(signal, signalName);
+}
+
+void SignalMediator::setThirdPlotSignal(const Signal &signal, const std::string &signalName) {
+    plotComponent->setThirdPlotSignal(signal, signalName);
 }
 
 void SignalMediator::addComponent(Component *comp) {
@@ -49,8 +54,8 @@ void SignalMediator::addComponent(Component *comp) {
 }
 
 SignalMediator::SignalMediator() : convComponent(nullptr), plotComponent(PlotComponent::getInstance()),
-                                   managementComponent(nullptr), mainStrategy(nullptr),
-                                   convFilterCorComponent(nullptr) {
+                                   managementComponent(nullptr), convFilterCorComponent(nullptr),
+                                   mainStrategy(nullptr) {
 }
 
 

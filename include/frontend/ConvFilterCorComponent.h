@@ -18,6 +18,7 @@ public:
     void clearDiscreteSignals();
 private:
     void drawOperationPanel();
+
     void drawParametersPanel();
     void drawFilterWindowChoicePanel();
     std::unique_ptr<Window> getChosenWindow() const;
@@ -25,9 +26,8 @@ private:
     std::vector<std::unique_ptr<DiscreteSignal>> discreteSignals;
     double M;
     double f0;
-    double frequency;
-    double K;
     int windowChoice;
+
 };
 
 

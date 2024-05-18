@@ -3,7 +3,6 @@
 #include "signals/baseSignals/SignalStrategy.h"
 #include <implot.h>
 #include <iostream>
-#include <memory>
 
 PlotComponent *PlotComponent::instance = nullptr;
 
@@ -14,22 +13,21 @@ PlotComponent *PlotComponent::getInstance() {
     return instance;
 }
 
-PlotComponent::PlotComponent() : signals(), bins(10) {
+PlotComponent::PlotComponent() : signalsNamesPairList(), secondPlotSignalNamePair(), thirdPlotSignalNamePair(), bins(10), componentHeight(500), componentPlacementY(450) {
 
 }
 
 void PlotComponent::show() {
-    ImGui::SetNextWindowPos(ImVec2(50, 450), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(1600, 500), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(50, componentPlacementY), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(1600, componentHeight), ImGuiCond_Always);
     ImGui::Begin("Plot", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showPlotPanel();
-    if (signals.size() == 1) {
+    if (signalsNamesPairList.size() == 1 && secondPlotSignalNamePair.first.empty()) {
         binInput();
     }
     ImGui::End();
 }
-
 
 
 void PlotComponent::binInput() {
@@ -38,33 +36,49 @@ void PlotComponent::binInput() {
     bins = std::max(5, std::min(20, bins));
 }
 
-void PlotComponent::addSignal(const Signal &signal) {
+void PlotComponent::addSignal(const Signal &signal, const std::string &signalName) {
     if (!signal.empty()) {
-        signals.push_back(signal);
+        std::string name = signalName;
+        if (name.empty()) {
+            name = std::to_string(signalsNamesPairList.size());
+        }
+        signalsNamesPairList.emplace_back(signal, name);
     }
 }
 
 Signal PlotComponent::getSignal(int position) {
-    if(position == -1) {
-        return signals.back();
+    if (position == -1) {
+        return signalsNamesPairList.back().first;
     } else {
-        return signals.at(position);
+        return signalsNamesPairList[position].first;
     }
 }
 
 void PlotComponent::clearSignals() {
-    signals.clear();
-    secondPlotSignal.clear();
+    signalsNamesPairList.clear();
+    secondPlotSignalNamePair.first.clear();
+    secondPlotSignalNamePair.second.clear();
+    thirdPlotSignalNamePair.first.clear();
+    thirdPlotSignalNamePair.second.clear();
 }
 
 void PlotComponent::showPlotPanel() {
-    if (ImPlot::BeginPlot("Plot")) {
+    // TODO plot naming convention
+        // TODO plot type list for signal -> (scatter or line)
+    if (ImPlot::BeginPlot("Plot 1")) {
         showSignals();
         ImPlot::EndPlot();
     }
-    if(!secondPlotSignal.empty()) {
-        if (ImPlot::BeginPlot("Result signal")) {
-            showSignal(secondPlotSignal);
+    if (!secondPlotSignalNamePair.first.empty()) {
+        if (ImPlot::BeginPlot("Plot 2")) {
+            showSignal(secondPlotSignalNamePair);
+            ImPlot::EndPlot();
+        }
+    }
+
+    if (!thirdPlotSignalNamePair.first.empty()) {
+        if (ImPlot::BeginPlot("Plot 3")) {
+            showSignal(thirdPlotSignalNamePair);
             ImPlot::EndPlot();
         }
     }
@@ -72,35 +86,50 @@ void PlotComponent::showPlotPanel() {
 
 
 void PlotComponent::showSignals() {
-    for (size_t i = 0; i < signals.size(); i++) {
-        showSignal(signals[i], i);
+    for (const auto& signalNamePair: signalsNamesPairList) {
+        showSignal(signalNamePair);
     }
 }
 
-void PlotComponent::showSignal(const Signal& signal, int signalNumber) {
+void PlotComponent::showSignal(const std::pair<Signal, std::string> &signalNamePair) {
+    const Signal &signal = signalNamePair.first;
     const auto &sigVals = signal.getSignalValues();
     const auto &timeVals = signal.getTimeValues();
     std::vector<float> xs(timeVals.begin(), timeVals.end());
     std::vector<float> ys(sigVals.begin(), sigVals.end());
-    std::cout <<"\n" << signal.size() << " " << xs.size() << " " << ys.size() << "\n";
-    std::cout <<"\n" << xs.front() << " " << xs.back() <<  "\n";
-    drawDataPlots(xs.data(), ys.data(), signal.size(), signalNumber);
+    drawDataPlots(xs.data(), ys.data(), signal.size(), signalNamePair.second);
 }
 
-void PlotComponent::drawDataPlots(float *xData, float *yData, size_t dataSize, size_t signalNumber) {
-    showScatterPlot(xData, yData, dataSize, signalNumber);
-    ImPlot::PlotLine(("Line Plot " + std::to_string(signalNumber)).c_str(), xData, yData, dataSize);
-    if(signals.size() == 1) {
-        ImPlot::PlotHistogram(("Histogram " + std::to_string(signalNumber)).c_str(), yData, dataSize, bins);
+void PlotComponent::drawDataPlots(float *xData, float *yData, int dataSize, const std::string &signalName) {
+    showScatterPlot(xData, yData, dataSize, signalName);
+    ImPlot::PlotLine(("Line Plot " + signalName).c_str(), xData, yData, dataSize);
+    if (signalsNamesPairList.size() == 1 && secondPlotSignalNamePair.first.empty()) {
+        ImPlot::PlotHistogram(("Histogram " + signalName).c_str(), yData, dataSize, bins);
     }
+
 }
 
-void PlotComponent::showScatterPlot(float *xData, float *yData, size_t dataSize, size_t signalNumber) {
-    ImPlot::PlotScatter(("Scatter Plot " + std::to_string(signalNumber)).c_str(), xData, yData, dataSize);
+void PlotComponent::showScatterPlot(float *xData, float *yData, int dataSize, const std::string &signalName) {
+    ImPlot::PlotScatter(("Scatter Plot " + signalName).c_str(), xData, yData, dataSize);
 }
 
-void PlotComponent::setSecondPlotSignal(const Signal &secondPlotSignal) {
-    this->secondPlotSignal = secondPlotSignal;
+void PlotComponent::setSecondPlotSignal(const Signal &secondPlotSignal, const std::string &signalName) {
+    secondPlotSignalNamePair = {secondPlotSignal, signalName};
+}
+
+void PlotComponent::setThirdPlotSignal(const Signal &thirdPlotSignal, const std::string &signalName) {
+    thirdPlotSignalNamePair = {thirdPlotSignal, signalName};
+}
+
+
+void PlotComponent::resetHeight() {
+    componentHeight = 500;
+    componentPlacementY = 450;
+}
+
+void PlotComponent::setHeight(float newHeight) {
+    componentHeight = newHeight;
+    componentPlacementY = 150;
 }
 
 

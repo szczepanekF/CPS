@@ -16,7 +16,10 @@ public:
     std::unique_ptr<ContinousSignal> createProbingSignal();
 
     void update(std::unique_ptr<ContinousSignal> echoSignal, double timestamp, double signalVelocity);
-
+    const Signal& getProbingSignal();
+    const Signal& getEchoSignal();
+    const Signal& getCorrelationSignal();
+    double getMeasuredDistance();
 private:
     void calculateDistance(std::unique_ptr<Sampling> sampledProbeSignal, std::unique_ptr<Sampling> sampledEchoSignal,
                            double signalVelocity);
@@ -26,7 +29,11 @@ private:
     int bufferLength;
     double reportingPeriod;
     double lastMeasuermentTimestamp;
+
     double distance;
+    Signal probingSignal;
+    Signal echoSignal;
+    Signal correlationSignal;
 
 
 };

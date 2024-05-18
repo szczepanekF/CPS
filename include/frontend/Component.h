@@ -9,11 +9,12 @@ public:
     explicit Component(std::shared_ptr<Mediator> mediator);
     virtual ~Component() = default;
 
-    virtual void addToMediator();
-    virtual void clearSignals();
-    virtual void addSignal(std::unique_ptr<SignalStrategy> strat, Signal& sig);
-    virtual void addSignalToConvFilterCor(std::unique_ptr<SignalStrategy> strat);
-    virtual void setSecondPlotSignal(Signal& signal);
+    void addToMediator();
+    void clearSignals();
+    void addSignal(std::unique_ptr<SignalStrategy> strat, const Signal& sig, const std::string& signalName = "");
+    void addSignalToConvFilterCor(std::unique_ptr<SignalStrategy> strat);
+    void setSecondPlotSignal(const Signal& signal, const std::string& signalName = "");
+    void setThirdPlotSignal(const Signal& signal, const std::string& signalName = "");
 
 private:
     std::shared_ptr<Mediator> mediator;

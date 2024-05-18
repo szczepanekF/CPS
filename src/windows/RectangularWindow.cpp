@@ -3,7 +3,6 @@
 
 RectangularWindow::RectangularWindow(int m) : Window(m) {}
 
-double RectangularWindow::w(int n) {
-
+double RectangularWindow::w(int) {
     return 1;
 }

@@ -13,6 +13,7 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"
 #include "mediator/SignalMediator.h"
+#include "frontend/SimulationComponent.h"
 
 
 GLFWwindow *window;
@@ -100,11 +101,15 @@ void MainApp::run() {
     ConversionComponent conCom(mediator);
     ConvFilterCorComponent convFilterCorComponent(mediator);
 
+    SimulationComponent simulationComponent(mediator);
     PlotComponent *plotComp = PlotComponent::getInstance();
+
     if (isFrameInitSuccessful()) {
         configureWindow();
         while (!glfwWindowShouldClose(window)) {
             setFrame();
+
+
             ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
             ImGui::SetNextWindowSize(ImVec2(display_w, y), ImGuiCond_Always);
             ImGui::Begin("Assignments", nullptr,
@@ -125,11 +130,23 @@ void MainApp::run() {
                     ImGui::EndTabItem();
                 }
 
-                if(ImGui::BeginTabItem("Assignment 3 label (TODO)"))
+                if(ImGui::BeginTabItem("Convolution, correlation and filters"))
                 {
 //                    y=1000;
                     convFilterCorComponent.show();
                     ImGui::EndTabItem();
+                }
+
+                if(ImGui::BeginTabItem("Distance sensor simulation"))
+                {
+                    PlotComponent::getInstance()->setHeight(850);
+                    y=150;
+                    simulationComponent.show();
+                    ImGui::EndTabItem();
+                } else {
+
+                    y = 430;
+                    PlotComponent::getInstance()->resetHeight();
                 }
                 ImGui::EndTabBar();
             }

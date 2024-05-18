@@ -54,6 +54,7 @@ add_lib(src
         frontend/SignalManagementComponent.cpp
         frontend/ConversionComponent.cpp
         frontend/ConvFilterCorComponent.cpp
+        frontend/SimulationComponent.cpp
         frontend/Operation.cpp
         frontend/PlotComponent.cpp
         frontend/Component.cpp

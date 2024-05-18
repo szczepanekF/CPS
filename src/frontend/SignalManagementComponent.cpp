@@ -196,9 +196,9 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
     SignalStrategy *strat;
     switch (signalType) {
         case SIN:
-//            strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
+            strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
 
-            strat = new SimulatedSignal(params[1].value, params[2].value, params[3].value);
+//            strat = new SimulatedSignal(params[1].value, params[2].value, params[3].value);
             break;
         case SIN_ONE:
             strat = new SinusoidalOneHalfRectifiedSignal(params[0].value, params[1].value, params[2].value,
@@ -247,8 +247,6 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
     if (!isOperationChecked) {
         clearSignals();
 
-        std::cout<<stratUniquePtr->getSignal().size() << " " << stratUniquePtr->getSignal().getSignalValues().front() << " " << stratUniquePtr->getSignal().getSignalValues().back();
-        std::cout<<stratUniquePtr->getSignal().size() << " " << stratUniquePtr->getSignal().getTimeValues().front() << " " << stratUniquePtr->getSignal().getTimeValues().back();
         addSignal(std::move(stratUniquePtr), *drawedSignal);
     } else {
         if (signalForOperation1 == nullptr) {
@@ -259,8 +257,6 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
         addSignal(nullptr, *drawedSignal);
     }
 
-//tu idk
-    addSignal(std::unique_ptr<SignalStrategy> (strat), *drawedSignal);
 }
 
 
@@ -442,8 +438,6 @@ void SignalManagementComponent::createStrategyOperationButtons() {
             SignalStrategy* strat = new OperationResultSignal(std::move(signalForOperation1), std::move(signalForOperation2), operationFunction);
             cleanUp();
             clearSignals();
-            std::cout<<strat->getSignal().size() << " " << strat->getSignal().getSignalValues().front() << " " << strat->getSignal().getSignalValues().back();
-            std::cout<<strat->getSignal().size() << " " << strat->getSignal().getTimeValues().front() << " " << strat->getSignal().getTimeValues().back();
 
             drawedSignal = std::make_unique<Signal>(strat->getSignal());
             addSignal(std::unique_ptr<SignalStrategy> (strat), *drawedSignal);

@@ -12,8 +12,11 @@ public:
 
     double calculateSignalAt(double time) override;
 
+    void setBeginTime(double beginTime) override;
+
 private:
     SinusoidalSignal sinusoidalSignal;
-    TriangularSignal triangularSignal;
+//    TriangularSignal triangularSignal;
+    RectangularSignal triangularSignal;
 
 };

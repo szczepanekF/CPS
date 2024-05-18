@@ -23,7 +23,7 @@ public:
 
     virtual void calculateSignal();
 
-    void setBeginTime(double beginTime);
+    virtual void setBeginTime(double beginTime);
 
 protected:
     void setDuration(double newDuration);

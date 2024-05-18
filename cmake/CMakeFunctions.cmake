@@ -15,11 +15,10 @@ endfunction()
 
 function(set_link_options TARGET_NAME)
     target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/libs)
-#    target_link_libraries(${TARGET_NAME} PRIVATE Python3::NumPY)
     target_compile_options(${TARGET_NAME} PRIVATE
             -Wall
             -Wextra
-#            -Werror
+            -Werror
             -Wreturn-type
             -Wno-unused-variable
             -Wno-maybe-uninitialized
@@ -33,7 +32,7 @@ function(set_link_options TARGET_NAME)
             -Wlogical-op
             -Wnull-dereference
             #            -O3
-            )
+    )
 endfunction()
 
 function(add_to_project_libs TARGET_NAME)
@@ -46,6 +45,4 @@ macro(download_conan_cmake)
         file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/develop2/conan_provider.cmake"
                 "${CMAKE_BINARY_DIR}/conan/conan.cmake")
     endif ()
-
-
 endmacro()
