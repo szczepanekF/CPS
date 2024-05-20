@@ -23,13 +23,13 @@ ConvFilterCorComponent::ConvFilterCorComponent(std::shared_ptr<Mediator> mediato
 
 
 void ConvFilterCorComponent::addSignalStrategy(std::unique_ptr<SignalStrategy> signalStrategy) {
-    if (discreteSignals.size() < 2) {
+    if (discreteSignals.size() >= 2) {
+        discreteSignals.clear();
+    }
         std::unique_ptr<DiscreteSignal> discreteSignal = std::unique_ptr<DiscreteSignal>(
                 dynamic_cast<DiscreteSignal *>(signalStrategy.release()));
         discreteSignals.push_back(std::move(discreteSignal));
-    } else {
-        std::cout << "error";
-    }
+
 }
 
 void ConvFilterCorComponent::clearDiscreteSignals() {
@@ -64,6 +64,7 @@ void ConvFilterCorComponent::drawOperationPanel() {
 
     std::unique_ptr<Window> window = getChosenWindow();
     std::string signalName;
+    std::string secondSignalName = "X signal";
     if (ImGui::Button("Draw signal")) {
 
         addSignal(nullptr, discreteSignals[0]->getSignal(), "H signal");
@@ -71,7 +72,7 @@ void ConvFilterCorComponent::drawOperationPanel() {
         std::unique_ptr<SignalStrategy> strat;
         switch (selectedOperation) {
             case 1:
-                addSignal(nullptr, discreteSignals[1]->getSignal(), "X signal");
+                addSignal(nullptr, discreteSignals[1]->getSignal(), secondSignalName);
                 strat = std::make_unique<CorrelationSignal>(std::move(discreteSignals[0]),
                                                             std::move(discreteSignals[1]));
                 signalName = "Correlation";
@@ -79,19 +80,28 @@ void ConvFilterCorComponent::drawOperationPanel() {
             case 2:
             case 3:
             case 4:
+                secondSignalName = "Filter";
+                [[fallthrough]];
             case 0: {
                 if (selectedOperation == 2) {
-                    discreteSignals.push_back(std::make_unique<BandPassFilter>(M, f0,discreteSignals[0]->getFrequency(),
+                    discreteSignals.insert(discreteSignals.begin(), std::make_unique<BandPassFilter>(M, f0,discreteSignals[0]->getFrequency(),
                                                              std::move(window)));
+                    addSignal(nullptr, discreteSignals[0]->getSignal(), secondSignalName);
+
                 } else if (selectedOperation == 3) {
-                    discreteSignals.push_back(std::make_unique<HighPassFilter>(M, f0, discreteSignals[0]->getFrequency(),
+                    discreteSignals.insert(discreteSignals.begin(), std::make_unique<HighPassFilter>(M, f0, discreteSignals[0]->getFrequency(),
                                                                                std::move(window)));
+                    addSignal(nullptr, discreteSignals[0]->getSignal(), secondSignalName);
+
                 } else if (selectedOperation == 4) {
-                    discreteSignals.push_back(std::make_unique<LowPassFilter>(M, f0, discreteSignals[0]->getFrequency()
+                    discreteSignals.insert(discreteSignals.begin(), std::make_unique<LowPassFilter>(M, f0, discreteSignals[0]->getFrequency()
                                                                               , std::move(window)));
+                    addSignal(nullptr, discreteSignals[0]->getSignal(), secondSignalName);
+
+                } else {
+                    addSignal(nullptr, discreteSignals[1]->getSignal(), secondSignalName);
                 }
 
-                addSignal(nullptr, discreteSignals[1]->getSignal(), "Filter");
                 strat = std::make_unique<ConvolutionSignal>(std::move(discreteSignals[0]),
                                                             std::move(discreteSignals[1]));
                 signalName = "Convolution";

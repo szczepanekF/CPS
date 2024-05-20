@@ -136,7 +136,8 @@ void SimulationComponent::timeStepSlider() {
 void SimulationComponent::addSignalsToPlot() {
     auto currentTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float> elapsed = currentTime - lastExecutionTime;
-    if (isSimulationStarted && env != nullptr && elapsed.count() >= 0.3) {
+//    if (isSimulationStarted && env != nullptr && elapsed.count() >= 0.3) {
+    if (isSimulationStarted && env != nullptr) {
         env->step();
         drawSimulationPlots();
     }

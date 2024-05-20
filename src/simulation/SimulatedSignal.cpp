@@ -6,7 +6,7 @@ SimulatedSignal::SimulatedSignal(double beginTime, double duration, double perio
         : ContinousSignal(beginTime, duration),
           sinusoidalSignal(1, beginTime, duration, period),
 //          triangularSignal(2.5, beginTime, duration, period / 3.33, 0.3) {}
-
+//
           triangularSignal(0.6, beginTime, duration, period / 6 * 2, 0.3) {}
 double SimulatedSignal::calculateSignalAt(double time) {
 //    return sinusoidalSignal.calculateSignalAt(time) * triangularSignal.calculateSignalAt(time);

@@ -110,7 +110,9 @@ void PlotComponent::drawDataPlots(float *xData, float *yData, int dataSize, cons
 }
 
 void PlotComponent::showScatterPlot(float *xData, float *yData, int dataSize, const std::string &signalName) {
+    ImPlot::PushStyleVar(ImPlotStyleVar_MarkerSize, 1.0f);
     ImPlot::PlotScatter(("Scatter Plot " + signalName).c_str(), xData, yData, dataSize);
+    ImPlot::PopStyleVar();
 }
 
 void PlotComponent::setSecondPlotSignal(const Signal &secondPlotSignal, const std::string &signalName) {
