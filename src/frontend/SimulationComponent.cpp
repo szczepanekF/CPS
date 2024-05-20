@@ -128,7 +128,7 @@ void SimulationComponent::resetSimulationButton() {
 }
 
 void SimulationComponent::timeStepSlider() {
-    ImGui::SliderFloat("Time step", &timeStep, 0, 1);
+    ImGui::SliderFloat("Time step", &timeStep, 0, 0.3);
 }
 
 

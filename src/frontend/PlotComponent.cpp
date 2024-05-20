@@ -13,7 +13,9 @@ PlotComponent *PlotComponent::getInstance() {
     return instance;
 }
 
-PlotComponent::PlotComponent() : signalsNamesPairList(), secondPlotSignalNamePair(), thirdPlotSignalNamePair(), bins(10), componentHeight(500), componentPlacementY(450) {
+PlotComponent::PlotComponent()
+        : signalsNamesPairList(), secondPlotSignalNamePair(), thirdPlotSignalNamePair(), bins(10), componentHeight(500),
+          componentPlacementY(450) {
 
 }
 
@@ -64,20 +66,20 @@ void PlotComponent::clearSignals() {
 
 void PlotComponent::showPlotPanel() {
     // TODO plot naming convention
-        // TODO plot type list for signal -> (scatter or line)
-    if (ImPlot::BeginPlot("Plot 1")) {
+    // TODO plot type list for signal -> (scatter or line)
+    if (ImPlot::BeginPlot("Plot 1", ImVec2(1550, 250))) {
         showSignals();
         ImPlot::EndPlot();
     }
     if (!secondPlotSignalNamePair.first.empty()) {
-        if (ImPlot::BeginPlot("Plot 2")) {
+        if (ImPlot::BeginPlot("Plot 2", ImVec2(1550, 250))) {
             showSignal(secondPlotSignalNamePair);
             ImPlot::EndPlot();
         }
     }
 
     if (!thirdPlotSignalNamePair.first.empty()) {
-        if (ImPlot::BeginPlot("Plot 3")) {
+        if (ImPlot::BeginPlot("Plot 3", ImVec2(1550, 250))) {
             showSignal(thirdPlotSignalNamePair);
             ImPlot::EndPlot();
         }
@@ -86,7 +88,7 @@ void PlotComponent::showPlotPanel() {
 
 
 void PlotComponent::showSignals() {
-    for (const auto& signalNamePair: signalsNamesPairList) {
+    for (const auto &signalNamePair: signalsNamesPairList) {
         showSignal(signalNamePair);
     }
 }
@@ -125,7 +127,7 @@ void PlotComponent::setThirdPlotSignal(const Signal &thirdPlotSignal, const std:
 
 
 void PlotComponent::resetHeight() {
-    componentHeight = 500;
+    componentHeight = 550;
     componentPlacementY = 450;
 }
 

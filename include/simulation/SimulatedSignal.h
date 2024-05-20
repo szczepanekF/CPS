@@ -16,7 +16,8 @@ public:
 
 private:
     SinusoidalSignal sinusoidalSignal;
-//    TriangularSignal triangularSignal;
-    RectangularSignal triangularSignal;
+    TriangularSignal triangularSignal;
+//    RectangularSignal triangularSignal;
+//    SinusoidalSignal triangularSignal;
 
 };
