@@ -16,6 +16,8 @@ public:
     void setThirdPlotSignal(const Signal& thirdPlotSignal, const std::string& signalName);
     void setHeight(float newHeight);
     void resetHeight();
+    void stylePlot();
+
 private:
     PlotComponent();
 
@@ -24,7 +26,6 @@ private:
     void showSignal(const std::pair<Signal, std::string>& signalNamePair);
     void drawDataPlots(float* xData, float *yData, int dataSize, const std::string& signalName);
     void showScatterPlot(float* xData, float *yData, int dataSize, const std::string& signalName);
-
     void binInput();
 
     static PlotComponent* instance;

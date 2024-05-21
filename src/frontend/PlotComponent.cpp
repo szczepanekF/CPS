@@ -112,7 +112,7 @@ void PlotComponent::drawDataPlots(float *xData, float *yData, int dataSize, cons
 }
 
 void PlotComponent::showScatterPlot(float *xData, float *yData, int dataSize, const std::string &signalName) {
-    ImPlot::PushStyleVar(ImPlotStyleVar_MarkerSize, 1.0f);
+    ImPlot::PushStyleVar(ImPlotStyleVar_MarkerSize, 5.0f);
     ImPlot::PlotScatter(("Scatter Plot " + signalName).c_str(), xData, yData, dataSize);
     ImPlot::PopStyleVar();
 }
@@ -136,5 +136,23 @@ void PlotComponent::setHeight(float newHeight) {
     componentPlacementY = 150;
 }
 
+void PlotComponent::stylePlot() {
+    // Set line thickness
+//    ImPlot::GetStyle().LineWeight = 2.0f; // Increase the thickness
 
+    // Customize colors
+    ImPlot::GetStyle().Colors[ImPlotCol_Line] = ImVec4(1.0f, 0.5f, 0.0f, 1.0f); // Orange line
+    ImPlot::GetStyle().Colors[ImPlotCol_MarkerOutline] = ImVec4(0.0f, 0.5f, 1.0f, 1.0f); // Light blue markers
+    ImPlot::GetStyle().Colors[ImPlotCol_MarkerFill] = ImVec4(0.0f, 0.5f, 1.0f, 1.0f); // Light green marker fill
+
+    // Set background colors
+    ImPlot::GetStyle().Colors[ImPlotCol_PlotBg] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // White plot background
+    ImPlot::GetStyle().Colors[ImPlotCol_PlotBorder] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); // Black plot border
+    ImPlot::GetStyle().Colors[ImPlotCol_Line] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); // Black grid lines
+    ImPlot::GetStyle().Colors[ImPlotCol_PlotBorder] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); // Black plot border
+
+    // Set grid colors
+    ImPlot::GetStyle().Colors[ImPlotCol_AxisGrid] = ImVec4(0.7f, 0.7f, 0.7f, 1.0f); // Light gray x-axis grid
+
+}
 

@@ -106,6 +106,7 @@ void MainApp::run() {
 
     if (isFrameInitSuccessful()) {
         configureWindow();
+        plotComp->stylePlot();
         while (!glfwWindowShouldClose(window)) {
             setFrame();
 

@@ -158,18 +158,15 @@ std::unique_ptr<Window> ConvFilterCorComponent::getChosenWindow() const {
     switch (windowChoice) {
 
         case 0: {
-            std::cout<<"sdaa";
 
             return std::make_unique<BlackmanWindow>(M);
         }
         case 1: {
-            std::cout<<"sdaa1";
 
             return std::make_unique<HammingWindow>(M);
 
         }
         case 2: {
-            std::cout<<"sdaa2";
 
             return std::make_unique<HanningWindow>(M);
 
