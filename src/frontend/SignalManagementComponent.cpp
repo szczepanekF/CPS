@@ -196,9 +196,9 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
     SignalStrategy *strat;
     switch (signalType) {
         case SIN:
-//            strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
+            strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
 //
-            strat = new SimulatedSignal(params[1].value, params[2].value, params[3].value);
+//            strat = new SimulatedSignal(params[1].value, params[2].value, params[3].value);
             break;
         case SIN_ONE:
             strat = new SinusoidalOneHalfRectifiedSignal(params[0].value, params[1].value, params[2].value,
