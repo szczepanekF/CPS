@@ -9,7 +9,7 @@
 #include "frontend/Parameter.h"
 #include "frontend/ConversionComponent.h"
 #include "frontend/PlotComponent.h"
-#include "simulation/SimulatedSignal.h"
+#include "signals/simulation/SimulatedSignal.h"
 #include "signals/baseSignals/OperationResultSignal.h"
 
 

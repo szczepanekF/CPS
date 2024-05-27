@@ -1,5 +1,5 @@
 
-#include "windows/RectangularWindow.h"
+#include "signals/windows/RectangularWindow.h"
 
 RectangularWindow::RectangularWindow(int m) : Window(m) {}
 

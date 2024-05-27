@@ -14,6 +14,7 @@
 #include "imgui_impl_glfw.h"
 #include "mediator/SignalMediator.h"
 #include "frontend/SimulationComponent.h"
+#include "frontend/ComplexTransformerComponent.h"
 
 
 GLFWwindow *window;
@@ -26,7 +27,6 @@ int y = 430;
 void MainApp::glfw_error_callback(int error, const char *description) {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
-
 
 
 bool MainApp::isFrameInitSuccessful() {
@@ -83,15 +83,12 @@ void MainApp::clear() {
 }
 
 
-
 void MainApp::setFrame() {
     glfwPollEvents();
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 }
-
-
 
 
 void MainApp::run() {
@@ -102,6 +99,7 @@ void MainApp::run() {
     ConvFilterCorComponent convFilterCorComponent(mediator);
 
     SimulationComponent simulationComponent(mediator);
+    ComplexTransformerComponent convexTransformComponent(mediator);
     PlotComponent *plotComp = PlotComponent::getInstance();
 
     if (isFrameInitSuccessful()) {
@@ -115,39 +113,35 @@ void MainApp::run() {
             ImGui::SetNextWindowSize(ImVec2(display_w, y), ImGuiCond_Always);
             ImGui::Begin("Assignments", nullptr,
                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-            if (ImGui::BeginTabBar("MyTabBar"))
-            {
-                if (ImGui::BeginTabItem("Signal creation"))
-                {
-//                    y=430;
+            if (ImGui::BeginTabBar("MyTabBar")) {
+                if (ImGui::BeginTabItem("Signal creation")) {
                     comp.show();
                     ImGui::EndTabItem();
                 }
 
-                if (ImGui::BeginTabItem("Signal conversion"))
-                {
-//                    y=430;
+                if (ImGui::BeginTabItem("Signal conversion")) {
                     conCom.show();
                     ImGui::EndTabItem();
                 }
 
-                if(ImGui::BeginTabItem("Convolution, correlation and filters"))
-                {
-//                    y=1000;
+                if (ImGui::BeginTabItem("Convolution, correlation and filters")) {
                     convFilterCorComponent.show();
                     ImGui::EndTabItem();
                 }
 
-                if(ImGui::BeginTabItem("Distance sensor simulation"))
-                {
+                if (ImGui::BeginTabItem("Distance sensor simulation")) {
                     PlotComponent::getInstance()->setHeight(850);
-                    y=150;
+                    y = 150;
                     simulationComponent.show();
                     ImGui::EndTabItem();
                 } else {
 
                     y = 430;
                     PlotComponent::getInstance()->resetHeight();
+                }
+                if (ImGui::BeginTabItem("Convex signals and transformers")) {
+                    convexTransformComponent.show();
+                    ImGui::EndTabItem();
                 }
                 ImGui::EndTabBar();
             }

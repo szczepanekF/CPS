@@ -4,7 +4,7 @@
 
 #include <memory>
 #include "signals/baseSignals/DiscreteSignal.h"
-#include "windows/Window.h"
+#include "signals/windows/Window.h"
 
 class LowPassFilter : public DiscreteSignal {
 public:

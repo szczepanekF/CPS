@@ -11,10 +11,10 @@
 #include "signals/filters/CorrelationSignal.h"
 #include "signals/filters/HighPassFilter.h"
 #include "signals/filters/LowPassFilter.h"
-#include "windows/RectangularWindow.h"
-#include "windows/BlackmanWindow.h"
-#include "windows/HammingWindow.h"
-#include "windows/HanningWindow.h"
+#include "signals/windows/RectangularWindow.h"
+#include "signals/windows/BlackmanWindow.h"
+#include "signals/windows/HammingWindow.h"
+#include "signals/windows/HanningWindow.h"
 
 ConvFilterCorComponent::ConvFilterCorComponent(std::shared_ptr<Mediator> mediator)
         : Component(std::move(mediator)), selectedOperation(-1), windowChoice(-1) {

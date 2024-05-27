@@ -8,7 +8,7 @@
 #include <unordered_set>
 #include <functional>
 #include "signals/SignalTypes.h"
-#include "operations/SignalProcesor.h"
+#include "signals/operations/SignalProcesor.h"
 #include "Component.h"
 #include "Parameter.h"
 
