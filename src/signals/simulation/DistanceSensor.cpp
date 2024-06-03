@@ -1,7 +1,7 @@
 #include <numeric>
-#include <iostream>
-#include "simulation/DistanceSensor.h"
-#include "simulation/SimulatedSignal.h"
+
+#include "signals/simulation/DistanceSensor.h"
+#include "signals/simulation/SimulatedSignal.h"
 
 DistanceSensor::DistanceSensor(double samplingFrequency, double probingSignalPeriod, int bufferLength,
                                double reportingPeriod)

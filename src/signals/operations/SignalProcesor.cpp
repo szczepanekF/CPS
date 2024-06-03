@@ -3,7 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include <ranges>
-#include "operations/SignalProcesor.h"
+#include "signals/operations/SignalProcesor.h"
 
 SignalProcesor::SignalProcesor() : signalValues() {
 
@@ -138,7 +138,50 @@ void SignalProcesor::clearSignals() {
     signalValues.clear();
 }
 
+void SignalProcesor::saveComplexSignalToBinary(const DiscreteComplexSignal &sig, const std::string &filename) {
+    std::vector<std::complex<double>> samples = sig.getSamples();
+    double frequency = sig.getFrequency();
+    if (samples.empty()) {
+        throw std::logic_error("Signal empty");
+    }
 
+    std::ofstream outFile(filename, std::ios::out | std::ios::binary | std::ios::trunc);
+    if (!outFile.is_open()) {
+        std::cerr << "Error opening file for writing!" << std::endl;
+        return;
+    }
+
+    outFile.write(reinterpret_cast< char *>(&frequency), sizeof(frequency));
+
+    size_t sizeX = samples.size();
+    outFile.write(reinterpret_cast< char *>(&sizeX), sizeof(sizeX));
+
+    outFile.write(reinterpret_cast< char *>(samples.data()), sizeX * sizeof(std::complex<double>));
+
+    outFile.close();
+}
+
+
+std::unique_ptr<DiscreteComplexSignal> SignalProcesor::readComplexSignalFromBinary(const std::string &filename) {
+    std::ifstream inFile(filename, std::ios::in | std::ios::binary);
+    if (!inFile.is_open()) {
+        std::cerr << "Error opening file for reading!" << std::endl;
+        return {};
+    }
+
+
+    double frequency;
+
+    inFile.read(reinterpret_cast< char *>(&frequency), sizeof(frequency));
+    size_t sizeX;
+    inFile.read(reinterpret_cast< char *>(&sizeX), sizeof(sizeX));
+    std::vector<std::complex<double>> samples(sizeX);
+    inFile.read(reinterpret_cast<char *>(samples.data()), sizeX * sizeof(std::complex<double>));
+    inFile.close();
+
+
+    return std::make_unique<DiscreteComplexSignalStatic>(samples, frequency);
+}
 
 
 

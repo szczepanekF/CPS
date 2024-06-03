@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "simulation/SimulatedSignal.h"
+#include "signals/simulation/SimulatedSignal.h"
 
 SimulatedSignal::SimulatedSignal(double beginTime, double duration, double period)
         : ContinousSignal(beginTime, duration),

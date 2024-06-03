@@ -1,7 +1,7 @@
 
 #pragma once
 #include "Component.h"
-#include "simulation/Environment.h"
+#include "signals/simulation/Environment.h"
 #include <chrono>
 class SimulationComponent : public Component{
 public:

@@ -22,6 +22,7 @@ add_lib(src
         signals/baseSignals/UnitImpulseSignal.cpp
         signals/baseSignals/UnitJumpSignal.cpp
         signals/baseSignals/Signal.cpp
+        signals/baseSignals/DiscreteSignalStatic.cpp
         signals/baseSignals/OperationResultSignal.cpp
         signals/signalConversion/ADC/Sampling.cpp
         signals/signalConversion/ADC/Quantization.cpp
@@ -31,23 +32,33 @@ add_lib(src
         signals/signalConversion/DAC/ReconstructionZeroOrderHold.cpp
         signals/signalConversion/DAC/ReconstructionFirstOrderHold.cpp
         signals/signalConversion/DAC/ReconstructionSincBased.cpp
-        operations/SignalProcesor.cpp
-
+        signals/operations/SignalProcesor.cpp
         signals/filters/ConvolutionSignal.cpp
         signals/filters/CorrelationSignal.cpp
         signals/filters/LowPassFilter.cpp
         signals/filters/HighPassFilter.cpp
         signals/filters/BandPassFilter.cpp
-
-        simulation/SimulatedSignal.cpp
-        simulation/DistanceSensor.cpp
-        simulation/Environment.cpp
-
-        windows/Window.cpp
-        windows/HammingWindow.cpp
-        windows/HanningWindow.cpp
-        windows/BlackmanWindow.cpp
-        windows/RectangularWindow.cpp
+        signals/simulation/SimulatedSignal.cpp
+        signals/simulation/DistanceSensor.cpp
+        signals/simulation/Environment.cpp
+        signals/windows/Window.cpp
+        signals/windows/HammingWindow.cpp
+        signals/windows/HanningWindow.cpp
+        signals/windows/BlackmanWindow.cpp
+        signals/windows/RectangularWindow.cpp
+        signals/complexSignals/ComplexSignal.cpp
+        signals/complexSignals/DiscreteComplexSignalStatic.cpp
+        signals/transformers/ComplexTransform.cpp
+        signals/transformers/DiscreteCosineTransform.cpp
+        signals/transformers/DiscreteFourierTransform.cpp
+        signals/transformers/FastCosineTransform.cpp
+        signals/transformers/DITFastFourierTransform.cpp
+        signals/transformers/WalshHadamardTransform.cpp
+        signals/transformers/FastWalshHadamardTransform.cpp
+        signals/transformers/DIFFastFourierTransform.cpp
+        signals/transformers/WaveletTransform.cpp
+        signals/transformers/SignalTransformer.cpp
+        signals/complexSignals/DiscreteComplexSignal.cpp
 
         frontend/Parameter.cpp
         frontend/MainApp.cpp
@@ -58,7 +69,7 @@ add_lib(src
         frontend/Operation.cpp
         frontend/PlotComponent.cpp
         frontend/Component.cpp
-
+        frontend/ComplexTransformerComponent.cpp
         bindings/imgui_impl_glfw.cpp
         bindings/imgui_impl_opengl3.cpp
         mediator/SignalMediator.cpp

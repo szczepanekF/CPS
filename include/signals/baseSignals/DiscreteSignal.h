@@ -17,7 +17,7 @@ public:
 
     virtual double calculateSignalAtSample(int n) = 0;
 
-    virtual int getNumberOfSamples() const;
+    int getNumberOfSamples() const;
 
 private:
     int numberOfSamples;

@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "simulation/Environment.h"
+#include "signals/simulation/Environment.h"
 
 Environment::Environment(double signalVelocity, double echoVelocity, double distance,
                          const float& timeStep, std::unique_ptr<DistanceSensor> distanceSensor)
