@@ -47,9 +47,6 @@ void ComplexTransformerComponent::showTransformerChoice() {
     ImGui::RadioButton("FCT", &transformerChoice, 4);
     ImGui::RadioButton("Walsh-Hadamard transform", &transformerChoice, 5);
     ImGui::RadioButton("Fast Walsh-Hadamard transform", &transformerChoice, 6);
-    ImGui::RadioButton("Wavelet transform DB4", &transformerChoice, 7);
-    ImGui::RadioButton("Wavelet transform DB6", &transformerChoice, 8);
-    ImGui::RadioButton("Wavelet transform DB8", &transformerChoice, 9);
     if (ImGui::Button("Draw transformation")) {
         drawTransformation();
     }
@@ -162,15 +159,6 @@ void ComplexTransformerComponent::transformToReal(std::unique_ptr<Sampling> sign
         case 6:
             realTransform = transformer.Fast_Walsh_hadamard(*signal);
             break;
-        case 7:
-            realTransform = transformer.Wavelet(*signal, DB4);
-            break;
-        case 8:
-            realTransform = transformer.Wavelet(*signal, DB6);
-            break;
-        case 9:
-            realTransform = transformer.Wavelet(*signal, DB8);
-            break;
         default:
             realTransform.reset();
             return;
@@ -190,18 +178,22 @@ void ComplexTransformerComponent::plotTransformedSignal() {
 void ComplexTransformerComponent::updateComplexSignal() {
     ComplexSignalValueType val1 = REAL;
     ComplexSignalValueType val2 = IMAGINARY;
+    std::string str1 = "real values";
+    std::string str2 = "imaginary values";
     if (!firstComplexVisualModeOn) {
         val1 = ABSOLUTE;
         val2 = ARGUMENT;
+        str1 = "absolute values";
+        str2 = "imaginary values";
     }
 
-    std::string signalName = "Complex transformed signal";
+
     clearSignals();
     complexTransform->setType(val1);
 
-    addSignal(nullptr, complexTransform->getSignal(), signalName);
+    addSignal(nullptr, complexTransform->getSignal(), str1);
     complexTransform->setType(val2);
-    setSecondPlotSignal(complexTransform->getSignal(), signalName);
+    setSecondPlotSignal(complexTransform->getSignal(), str2);
 }
 
 void ComplexTransformerComponent::clearTransformSignals() {

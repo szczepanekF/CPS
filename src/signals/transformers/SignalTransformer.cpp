@@ -60,24 +60,22 @@ SignalTransformer::transformToComplexSignal(Sampling &sig, const ComplexTransfor
     std::vector<std::complex<double>> signal(x.size());
     std::ranges::transform(x, std::back_inserter(signal),
                            [](double val) { return std::complex<double>(val, 0.0); });
-    std::cout << "START\n";
     auto start = std::chrono::system_clock::now();
     std::vector<std::complex<double>> transformedValues = complexTransform.transform(signal);
     auto end = std::chrono::system_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "elapsed: " << elapsed.count();
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    std::cout << "elapsed nanos: " << elapsed.count() << "\n";
     return std::make_unique<DiscreteComplexSignalStatic>(transformedValues, sig.getFrequency());
 }
 
 std::unique_ptr<DiscreteSignal>
 SignalTransformer::transformToRealSignal(Sampling &sig, const RealTransform &realTransform) {
     std::vector<double> signal = sig.getSignal().getSignalValues();
-    std::cout << "START\n";
     auto start = std::chrono::system_clock::now();
     std::vector<double> transformedValues = realTransform.transform(signal);
     auto end = std::chrono::system_clock::now();
-    auto elapsed =end - start;
+    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
 
-    std::cout << "elapsed nanos?: " << elapsed.count() << "\n";
+    std::cout << "elapsed nanos: " << elapsed.count() << "\n";
     return std::make_unique<DiscreteSignalStatic>(transformedValues, sig.getFrequency());
 }
