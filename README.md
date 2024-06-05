@@ -1,6 +1,6 @@
-![image](https://github.com/szczepanekF/CPS/assets/107700989/f2e7d721-40b3-4760-940b-42841a5500a2)# Signal Processing Application
+## Signal Processing Application
 
-![Application Screenshot](path-to-your-image.png)
+
 
 ## Overview
 
@@ -67,7 +67,9 @@ To toggle the visibility of a signal type:
 - Click its representation in the legend.
 
 To generate signal which is based on basic arithmetic operation performed on two other signals:
-1. Check box
+1. Check box "Signals operation".
+2. Draw two signals that operation will be performed on.
+3. Select on of 4 operations.
 
 ### File Operations
 
@@ -76,7 +78,60 @@ To generate signal which is based on basic arithmetic operation performed on two
 - **Load Text Signal**: Enter a filename and click "Load signal in text format".
 - **Clear Loaded Signals**: Click "Unload files and clear signal".
 
+### Signal Conversion and Reconstruction
+![Sampling](https://github.com/szczepanekF/CPS/assets/107700989/7afc75c5-e71b-4adf-a1f8-d0ffc955b4e3)
+![Sampled signal](https://github.com/szczepanekF/CPS/assets/107700989/c3fe3ffe-0c33-44f2-84a0-74f53fac1d7e)
+![Reconstructed signal](https://github.com/szczepanekF/CPS/assets/107700989/e22ce00d-84b4-43f8-b419-b0701ef08ea5)
+
+
+To start sampling or reconstruction of a continuous signal:
+1. Draw the signal first.
+2. Click on the "Signal conversion" tab.
+
+In the "Signal conversion" section, you have three options:
+- **Sampling**: Requires specifying the sampling frequency.
+- **Quantization**: Requires specifying the sampling frequency and the number of quantization levels.
+
+After generating samples, there are three signal reconstruction options:
+- **Reconstruction Methods**: Only the sinc-based method requires specifying the parameter N.
+
+Upon selecting a reconstruction method, the reconstructed signal will be displayed on the plot.
+
+
+
+### Convolution correlation and filters
+![correlation, convolution](https://github.com/szczepanekF/CPS/assets/107700989/d31e3fe9-a1f2-4eb5-88e5-cc933b03246f)
+
+To perform correlation / convolution on 2 signals:
+1. Draw the signal first.
+2. Click on the "Signal conversion" tab.
+3. Sample signal.
+4. Click on the "Add to operations" button.
+5. Go to first point and add second signal to operations
+6. Click on the "Convolution, correlation and filters" tab.
+7. Select correlation / convolution and click "Draw signal"
+
+
+
+To filter a signal:
+1. Draw the signal first.
+2. Click on the "Signal conversion" tab.
+3. Sample signal.
+4. Click on the "Add to operations" button.
+5. Click on the "Convolution, correlation and filters" tab.
+6. Choose filter, pass parameters and click "Draw signal"
+
+### Distance sensor simulation
+Go to "Distance sensor simulation" tab, pass parameters and run the simulation
+It is recommended to autofit all the plots right after starting the simmulation.
+
+
+
 ### Transformation Panel
+![signal s3](https://github.com/szczepanekF/CPS/assets/107700989/eb761d88-9b3b-4715-b43b-db7d397defb3)
+![real and imaginary part](https://github.com/szczepanekF/CPS/assets/107700989/765d19a2-7ed1-4d73-b551-3e88c64de144)
+![absoulte and phase part](https://github.com/szczepanekF/CPS/assets/107700989/2bd214d0-2c54-4313-8644-dca3d8aec99a)
+
 
 To draw a signal:
 - Click "Draw signal" in the "Signals" section.
