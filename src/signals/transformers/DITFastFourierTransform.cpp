@@ -33,7 +33,7 @@ std::vector<std::complex<double>> DITFastFourierTransform::transform(std::vector
     return x;
 }
 
-int DITFastFourierTransform::reverseBits(int x, int log2n) const {
+int DITFastFourierTransform::reverseBits(int x, int log2n) {
     int n = 0;
     for (int i = 0; i < log2n; i++) {
         n <<= 1;

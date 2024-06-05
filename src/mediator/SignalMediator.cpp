@@ -26,7 +26,6 @@ Signal SignalMediator::getSignal() {
 void SignalMediator::clearSignals(Component *) {
     plotComponent->clearSignals();
     convComponent->setMainSignalStrategy(nullptr);
-//    convFilterCorComponent->clearDiscreteSignals();
 }
 
 void SignalMediator::setSecondPlotSignal(const Signal &signal, const std::string &signalName) {
@@ -41,9 +40,6 @@ void SignalMediator::addComponent(Component *comp) {
     if (auto convComp = dynamic_cast<ConversionComponent *> (comp)) {
         convComponent = std::shared_ptr<ConversionComponent>(convComp);
         return;
-    } else if (auto managementComp = dynamic_cast<SignalManagementComponent *> (comp)) {
-        managementComponent = std::shared_ptr<SignalManagementComponent>(managementComp);
-        return;
     } else if (auto convFilterCorComp = dynamic_cast<ConvFilterCorComponent *> (comp)) {
         convFilterCorComponent = std::shared_ptr<ConvFilterCorComponent>(convFilterCorComp);
         return;
@@ -53,9 +49,7 @@ void SignalMediator::addComponent(Component *comp) {
 
 }
 
-SignalMediator::SignalMediator() : convComponent(nullptr), plotComponent(PlotComponent::getInstance()),
-                                   managementComponent(nullptr), convFilterCorComponent(nullptr),
-                                   mainStrategy(nullptr) {
+SignalMediator::SignalMediator() : convComponent(nullptr), plotComponent(PlotComponent::getInstance()), convFilterCorComponent(nullptr){
 }
 
 

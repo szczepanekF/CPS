@@ -32,11 +32,11 @@ const Signal &Environment::getCorrelationSignal() {
     return distanceSensor->getCorrelationSignal();
 }
 
-double Environment::getTimestamp() {
+double Environment::getTimestamp() const {
     return timestamp;
 }
 
-double Environment::getRealDistance() {
+double Environment::getRealDistance() const {
     return distance;
 }
 

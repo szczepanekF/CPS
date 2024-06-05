@@ -2,10 +2,16 @@
 #pragma once
 
 
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+
 class MainApp {
 
 public:
     void run();
+
+    MainApp();
+
 private:
     void clear();
 
@@ -14,6 +20,11 @@ private:
     bool isFrameInitSuccessful();
 
     void configureWindow();
-    void setFrame();
+    static void setFrame();
     void render();
+    GLFWwindow *window;
+    const char *glsl_version;
+    ImVec4 clear_color;
+    int display_w, display_h;
+    float y;
 };

@@ -14,7 +14,7 @@ std::vector<double> DiscreteCosineTransform::transform(std::vector<double> x) co
     return vals;
 }
 
-double DiscreteCosineTransform::c(int m, int N) const {
+double DiscreteCosineTransform::c(int m, int N) {
     if (m == 0) {
         return std::sqrt(1.0 / N);
     }

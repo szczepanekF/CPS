@@ -9,7 +9,7 @@
 class ReconstructionZeroOrderHold : public Reconstruction {
 
 public:
-    ReconstructionZeroOrderHold(std::unique_ptr<DiscreteSignal> strategy);
+    explicit ReconstructionZeroOrderHold(std::unique_ptr<DiscreteSignal> strategy);
 
     double calculateSignalAt(double time) override;
 

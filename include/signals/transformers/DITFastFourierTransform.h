@@ -10,5 +10,5 @@ public:
     std::vector<std::complex<double>> transform(std::vector<std::complex<double>> x) const  override;
 
 protected:
-    int reverseBits(int x, int log2n) const ;
+    static int reverseBits(int x, int log2n) ;
 };

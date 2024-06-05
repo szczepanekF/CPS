@@ -22,7 +22,7 @@ PlotComponent::PlotComponent()
 void PlotComponent::show() {
     ImGui::SetNextWindowPos(ImVec2(50, componentPlacementY), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(1600, componentHeight), ImGuiCond_Always);
-    ImGui::Begin("Plot", nullptr,
+    ImGui::Begin("Signal processing app", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showPlotPanel();
     if (signalsNamesPairList.size() == 1 && secondPlotSignalNamePair.first.empty()) {
@@ -65,21 +65,19 @@ void PlotComponent::clearSignals() {
 }
 
 void PlotComponent::showPlotPanel() {
-    // TODO plot naming convention
-    // TODO plot type list for signal -> (scatter or line)
-    if (ImPlot::BeginPlot("Plot 1", ImVec2(1550, 250))) {
+    if (ImPlot::BeginPlot("Main plot window", ImVec2(1550, 250))) {
         showSignals();
         ImPlot::EndPlot();
     }
     if (!secondPlotSignalNamePair.first.empty()) {
-        if (ImPlot::BeginPlot("Plot 2", ImVec2(1550, 250))) {
+        if (ImPlot::BeginPlot("Second plot window", ImVec2(1550, 250))) {
             showSignal(secondPlotSignalNamePair);
             ImPlot::EndPlot();
         }
     }
 
     if (!thirdPlotSignalNamePair.first.empty()) {
-        if (ImPlot::BeginPlot("Plot 3", ImVec2(1550, 250))) {
+        if (ImPlot::BeginPlot("Third plot window", ImVec2(1550, 250))) {
             showSignal(thirdPlotSignalNamePair);
             ImPlot::EndPlot();
         }
@@ -137,22 +135,19 @@ void PlotComponent::setHeight(float newHeight) {
 }
 
 void PlotComponent::stylePlot() {
-    // Set line thickness
-//    ImPlot::GetStyle().LineWeight = 2.0f; // Increase the thickness
 
-    // Customize colors
-    ImPlot::GetStyle().Colors[ImPlotCol_Line] = ImVec4(1.0f, 0.5f, 0.0f, 1.0f); // Orange line
-    ImPlot::GetStyle().Colors[ImPlotCol_MarkerOutline] = ImVec4(0.0f, 0.5f, 1.0f, 1.0f); // Light blue markers
-    ImPlot::GetStyle().Colors[ImPlotCol_MarkerFill] = ImVec4(0.0f, 0.5f, 1.0f, 1.0f); // Light green marker fill
+    ImPlot::GetStyle().Colors[ImPlotCol_Line] = ImVec4(1.0f, 0.5f, 0.0f, 1.0f);
+    ImPlot::GetStyle().Colors[ImPlotCol_MarkerOutline] = ImVec4(0.0f, 0.5f, 1.0f, 1.0f);
+    ImPlot::GetStyle().Colors[ImPlotCol_MarkerFill] = ImVec4(0.0f, 0.5f, 1.0f, 1.0f);
 
-    // Set background colors
-    ImPlot::GetStyle().Colors[ImPlotCol_PlotBg] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // White plot background
-    ImPlot::GetStyle().Colors[ImPlotCol_PlotBorder] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); // Black plot border
-    ImPlot::GetStyle().Colors[ImPlotCol_Line] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); // Black grid lines
-    ImPlot::GetStyle().Colors[ImPlotCol_PlotBorder] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); // Black plot border
 
-    // Set grid colors
-    ImPlot::GetStyle().Colors[ImPlotCol_AxisGrid] = ImVec4(0.7f, 0.7f, 0.7f, 1.0f); // Light gray x-axis grid
+    ImPlot::GetStyle().Colors[ImPlotCol_PlotBg] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    ImPlot::GetStyle().Colors[ImPlotCol_PlotBorder] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+    ImPlot::GetStyle().Colors[ImPlotCol_Line] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+    ImPlot::GetStyle().Colors[ImPlotCol_PlotBorder] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+
+    ImPlot::GetStyle().Colors[ImPlotCol_AxisGrid] = ImVec4(0.7f, 0.7f, 0.7f, 1.0f);
 
 }
 

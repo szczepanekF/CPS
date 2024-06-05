@@ -61,6 +61,6 @@ const Signal &DistanceSensor::getCorrelationSignal() {
     return correlationSignal;
 }
 
-double DistanceSensor::getMeasuredDistance() {
+double DistanceSensor::getMeasuredDistance() const {
     return distance;
 }

@@ -17,7 +17,7 @@
 #include "signals/windows/HanningWindow.h"
 
 ConvFilterCorComponent::ConvFilterCorComponent(std::shared_ptr<Mediator> mediator)
-        : Component(std::move(mediator)), selectedOperation(-1), windowChoice(-1) {
+        : Component(std::move(mediator)), selectedOperation(-1), M(0),  f0(0), windowChoice(-1){
     addToMediator();
 }
 

@@ -90,8 +90,7 @@ void SimulationComponent::drawParameterOptionVertically() {
 
     startSimulationButton();
     ImGui::SameLine(0, spacing);
-    if (env != nullptr && !isSimulationStarted)
-    {
+    if (env != nullptr && !isSimulationStarted) {
         nextStepButton();
         ImGui::SameLine(0, spacing);
     }
@@ -132,11 +131,7 @@ void SimulationComponent::timeStepSlider() {
 }
 
 
-
 void SimulationComponent::addSignalsToPlot() {
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<float> elapsed = currentTime - lastExecutionTime;
-//    if (isSimulationStarted && env != nullptr && elapsed.count() >= 0.3) {
     if (isSimulationStarted && env != nullptr) {
         env->step();
         drawSimulationPlots();
@@ -172,6 +167,7 @@ void SimulationComponent::drawSimulationPlots() {
     setThirdPlotSignal(env->getCorrelationSignal(), "Correlation signal");
     lastExecutionTime = std::chrono::high_resolution_clock::now();
 }
+
 void SimulationComponent::nextStepButton() {
     ImGui::SetNextItemWidth(200);
     if (ImGui::Button("Next step")) {

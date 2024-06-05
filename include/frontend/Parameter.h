@@ -7,6 +7,6 @@ public:
     double value;
     bool isVisible;
 
-    Parameter(const std::string &name);
+    explicit Parameter(const std::string &name);
 
 };

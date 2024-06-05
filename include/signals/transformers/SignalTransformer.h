@@ -21,6 +21,6 @@ public:
     std::unique_ptr<DiscreteSignal> Fast_Walsh_hadamard(Sampling& sig);
     std::unique_ptr<DiscreteSignal> Wavelet(Sampling& sig, TransformOrder order);
 private:
-    std::unique_ptr<DiscreteComplexSignal> transformToComplexSignal(Sampling& sig, const ComplexTransform& tranform);
+    std::unique_ptr<DiscreteComplexSignal> transformToComplexSignal(Sampling& sig, const ComplexTransform& transform);
     std::unique_ptr<DiscreteSignal> transformToRealSignal(Sampling& sig, const RealTransform& transform);
 };

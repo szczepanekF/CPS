@@ -18,13 +18,9 @@ class ImGuiExample(ConanFile):
 
         copy(self, "*glfw*", os.path.join(self.dependencies["imgui"].package_folder,
                                           "res", "bindings"), os.path.join(self.source_folder, "src", "bindings"))
-        # copy(self, "*glfw*.cpp", os.path.join(self.dependencies["imgui"].package_folder,
-        #                                     "res", "bindings"), os.path.join(self.dependencies["imgui"].package_folder, "res", "src"))
 
         copy(self, "*opengl3*", os.path.join(self.dependencies["imgui"].package_folder,
                                              "res", "bindings"), os.path.join(self.source_folder, "src", "bindings"))
-        # copy(self, "*opengl3*.cpp", os.path.join(self.dependencies["imgui"].package_folder,
-        #                                      "res", "bindings"), os.path.join(self.dependencies["imgui"].package_folder, "res", "src"))
         self.output.warning(self.dependencies["imgui"].package_folder)
         self.output.warning(self.source_folder)
 

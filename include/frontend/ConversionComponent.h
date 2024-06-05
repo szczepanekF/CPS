@@ -22,7 +22,7 @@ private:
     void drawCalculatedMeasuresPanel() const;
     void initializeOperations();
     void drawRadioButton(size_t operationInd);
-    bool isOperationDiscrete(OPERATION_TYPE type);
+    static bool isOperationDiscrete(OPERATION_TYPE type);
     OPERATION_TYPE getSelectedOperationType();
     bool isOperationSelected();
     void setConversionSignal();

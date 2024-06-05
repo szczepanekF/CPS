@@ -17,13 +17,6 @@
 #include "frontend/ComplexTransformerComponent.h"
 
 
-GLFWwindow *window;
-const char *glsl_version;
-ImVec4 clear_color;
-int display_w, display_h;
-int y = 430;
-
-
 void MainApp::glfw_error_callback(int error, const char *description) {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
@@ -37,12 +30,12 @@ bool MainApp::isFrameInitSuccessful() {
     glsl_version = "#version 130";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    window = glfwCreateWindow(1920, 1080, "CPS", nullptr, nullptr);
+    window = glfwCreateWindow(1920, 1080, "Signal processing application", nullptr, nullptr);
     if (window == nullptr) {
         return false;
     }
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
+    glfwSwapInterval(1);
     return true;
 }
 
@@ -61,7 +54,6 @@ void MainApp::configureWindow() {
 }
 
 void MainApp::render() {
-// Rendering
     ImGui::Render();
     glfwGetFramebufferSize(window, &display_w, &display_h);
     glViewport(0, 0, display_w, display_h);
@@ -111,7 +103,7 @@ void MainApp::run() {
 
             ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
             ImGui::SetNextWindowSize(ImVec2(display_w, y), ImGuiCond_Always);
-            ImGui::Begin("Assignments", nullptr,
+            ImGui::Begin("Menu", nullptr,
                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
             if (ImGui::BeginTabBar("MyTabBar")) {
                 if (ImGui::BeginTabItem("Signal creation")) {
@@ -155,3 +147,6 @@ void MainApp::run() {
     }
 
 }
+
+MainApp::MainApp() : window(), glsl_version(), clear_color(), display_w(),
+                     display_h(), y(430) {}

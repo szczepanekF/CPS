@@ -19,7 +19,7 @@ public:
     const Signal& getProbingSignal();
     const Signal& getEchoSignal();
     const Signal& getCorrelationSignal();
-    double getMeasuredDistance();
+    double getMeasuredDistance() const;
 private:
     void calculateDistance(std::unique_ptr<Sampling> sampledProbeSignal, std::unique_ptr<Sampling> sampledEchoSignal,
                            double signalVelocity);

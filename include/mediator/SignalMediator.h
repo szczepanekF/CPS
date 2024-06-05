@@ -23,7 +23,5 @@ public:
 private:
     std::shared_ptr<ConversionComponent> convComponent;
     std::shared_ptr<PlotComponent> plotComponent;
-    std::shared_ptr<SignalManagementComponent> managementComponent;
     std::shared_ptr<ConvFilterCorComponent> convFilterCorComponent;
-    std::unique_ptr<SignalStrategy> mainStrategy;
 };

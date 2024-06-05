@@ -8,7 +8,7 @@
 #include "Component.h"
 #include "mediator/Mediator.h"
 class Window;
-class ConvFilterCorComponent : public Component{
+class ConvFilterCorComponent : public Component {
 public:
 
     explicit ConvFilterCorComponent(std::shared_ptr<Mediator> mediator);

@@ -1,6 +1,5 @@
 
 #pragma once
-#define SIGNAL_TYPE_COUNT 11
 #include "signals/baseSignals/SignalStrategy.h"
 #include "signals/baseSignals/SinusoidalSignal.h"
 #include "signals/baseSignals/GaussianNoise.h"

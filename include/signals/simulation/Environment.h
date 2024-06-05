@@ -15,9 +15,9 @@ public:
     const Signal& getProbingSignal();
     const Signal& getEchoSignal();
     const Signal& getCorrelationSignal();
-    double getTimestamp();
+    double getTimestamp() const;
 
-    double getRealDistance();
+    double getRealDistance() const;
     double getMeasuredDistance();
 private:
     double signalVelocity;

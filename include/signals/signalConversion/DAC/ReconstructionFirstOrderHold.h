@@ -8,7 +8,7 @@
 
 class ReconstructionFirstOrderHold : public Reconstruction {
 public:
-    ReconstructionFirstOrderHold(std::unique_ptr<DiscreteSignal> strategy);
+    explicit ReconstructionFirstOrderHold(std::unique_ptr<DiscreteSignal> strategy);
 
     double calculateSignalAt(double time) override;
 };

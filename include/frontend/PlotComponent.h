@@ -25,7 +25,7 @@ private:
     void showSignals();
     void showSignal(const std::pair<Signal, std::string>& signalNamePair);
     void drawDataPlots(float* xData, float *yData, int dataSize, const std::string& signalName);
-    void showScatterPlot(float* xData, float *yData, int dataSize, const std::string& signalName);
+    static void showScatterPlot(float* xData, float *yData, int dataSize, const std::string& signalName);
     void binInput();
 
     static PlotComponent* instance;

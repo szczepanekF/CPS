@@ -1,9 +1,8 @@
-#include <iostream>
+
 #include <utility>
 #include "frontend/SignalManagementComponent.h"
 #include "imgui.h"
 
-#include <iostream>
 #include "unordered_set"
 #include "signals/allBaseSignals.h"
 #include "frontend/Parameter.h"
@@ -14,10 +13,9 @@
 
 
 SignalManagementComponent::SignalManagementComponent(std::shared_ptr<Mediator> med)
-        : Component(med), filename(), signalProcesor(), drawedSignal(nullptr),
+        : Component(std::move(med)), filename(), signalProcesor(), drawedSignal(nullptr),
             signalForOperation1(), signalForOperation2(), isOperationChecked(false) {
 
-    addToMediator();
     initChecks();
     params = {Parameter("Amplitude"),
               Parameter("Start time"),
@@ -58,7 +56,7 @@ void SignalManagementComponent::showFileOperations() {
 
     if (!filenames.empty()) {
         ImGui::Separator();
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); // Red color
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
         ImGui::Text("Loaded files:");
 
         ImGui::PopStyleColor();
@@ -379,7 +377,7 @@ SignalManagementComponent::createPopup(const std::string &label, const std::stri
 void SignalManagementComponent::drawFilePanel() {
     ImGui::SetNextWindowPos(ImVec2(950, 100), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Always);
-    ImGui::Begin("Buttons", nullptr,
+    ImGui::Begin("Signal options", nullptr,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
     showFileOperations();
     createPopup("fileError", "Draw or read signal in order to save file", []() {});
@@ -412,7 +410,6 @@ void SignalManagementComponent::createOperationButtons() {
                 cleanUp();
                 clearSignals();
                 drawedSignal = std::make_unique<Signal>(signal);
-                // TODO tutaj zakładamy że nie można DA/AD konwersji na wczytanych plikach robić
                 addSignal(nullptr, *drawedSignal);
                 ImGui::CloseCurrentPopup();
             }
