@@ -122,6 +122,9 @@ To filter a signal:
 6. Choose filter, pass parameters and click "Draw signal"
 
 ### Distance sensor simulation
+
+![distance sensor simmulation](https://github.com/szczepanekF/CPS/assets/107700989/d12cd6b5-d8d7-4db3-90bc-06cd81e24913)
+
 Go to "Distance sensor simulation" tab, pass parameters and run the simulation
 It is recommended to autofit all the plots right after starting the simmulation.
 
@@ -143,15 +146,3 @@ For complex signal values:
 - Toggle the display mode between W1 and W2.
 - Save/load complex values using "FileOperations".
 - Clear the plot using "Clear signal".
-
-## Contributions
-
-Contributions are welcome! Please fork this repository and submit a pull request with your improvements.
-
-## License
-
-This project is licensed under the MIT License.
-
----
-
-For further information, please refer to the detailed documentation provided within the repository.
