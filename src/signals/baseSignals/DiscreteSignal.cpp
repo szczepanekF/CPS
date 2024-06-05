@@ -1,6 +1,7 @@
 
 #include "signals/baseSignals/DiscreteSignal.h"
 #include <cmath>
+#include <iostream>
 
 DiscreteSignal::DiscreteSignal(double time0, double dur, double frequency)
         : SignalStrategy(time0, dur) {
@@ -10,7 +11,10 @@ DiscreteSignal::DiscreteSignal(double time0, double dur, double frequency)
 
 
 Signal &DiscreteSignal::getSignal() {
+    std::cout<<"What";
     if (SignalStrategy::getSignal().empty()) {
+        std::cout<<"the actual";
+
         calculateSignal();
     }
     return SignalStrategy::getSignal();
@@ -31,6 +35,7 @@ void DiscreteSignal::calculateSignal() {
     Signal &signal = SignalStrategy::getSignal();
     int i = 0;
     double period = 1 / getFrequency();
+    std::cout<<getNumberOfSamples();
     while (i < getNumberOfSamples()) {
         signal.push_back(calculateSignalAtSample(i), i * period + getBeginTime());
         i++;

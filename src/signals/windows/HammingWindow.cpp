@@ -2,6 +2,7 @@
 
 
 #include "signals/windows/HammingWindow.h"
+
 HammingWindow::HammingWindow(int m) : Window(m) {}
 
 double HammingWindow::w(int n) {

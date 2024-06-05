@@ -16,8 +16,9 @@ std::unique_ptr<ContinousSignal> DistanceSensor::createProbingSignal() {
 
 void DistanceSensor::update(std::unique_ptr<ContinousSignal> echoSignalInput, double timestamp, double signalVelocity) {
     double startTime = timestamp - bufferLength / samplingFrequency;
-    std::unique_ptr<Sampling> sampledProbeSignal = std::make_unique<Sampling>( createProbingSignal(), samplingFrequency);
-    std::unique_ptr<Sampling> sampledEchoSignal = std::make_unique<Sampling>(std::move(echoSignalInput), samplingFrequency);
+    std::unique_ptr<Sampling> sampledProbeSignal = std::make_unique<Sampling>(createProbingSignal(), samplingFrequency);
+    std::unique_ptr<Sampling> sampledEchoSignal = std::make_unique<Sampling>(std::move(echoSignalInput),
+                                                                             samplingFrequency);
     sampledProbeSignal->setBeginTime(startTime);
     sampledProbeSignal->setNumberOfSamples(bufferLength);
     sampledEchoSignal->setBeginTime(startTime);
@@ -33,7 +34,8 @@ void DistanceSensor::update(std::unique_ptr<ContinousSignal> echoSignalInput, do
     }
 }
 
-void DistanceSensor::calculateDistance(std::unique_ptr<Sampling> sampledProbeSignal, std::unique_ptr<Sampling> sampledEchoSignal,
+void DistanceSensor::calculateDistance(std::unique_ptr<Sampling> sampledProbeSignal,
+                                       std::unique_ptr<Sampling> sampledEchoSignal,
                                        double signalVelocity) {
     CorrelationSignal sig(std::move(sampledEchoSignal), std::move(sampledProbeSignal));
     correlationSignal = sig.getSignal();

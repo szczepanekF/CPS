@@ -3,7 +3,7 @@
 #include <vector>
 #include "signals/transformers/WalshHadamardTransform.h"
 
-std::vector<double> WalshHadamardTransform::transform(std::vector<double> x) const{
+std::vector<double> WalshHadamardTransform::transform(std::vector<double> x) const {
     int N = x.size();
     int m = std::log2(N);
     std::vector<double> output(N, 0);
@@ -18,7 +18,7 @@ std::vector<double> WalshHadamardTransform::transform(std::vector<double> x) con
     return output;
 }
 
-void WalshHadamardTransform::fillWalshHadamardMatrix(std::vector<std::vector<double>> &H, int m) const  {
+void WalshHadamardTransform::fillWalshHadamardMatrix(std::vector<std::vector<double>> &H, int m) const {
     if (m == 0) {
         H[0][0] = 1;
         return;

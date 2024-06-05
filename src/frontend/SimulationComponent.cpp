@@ -123,6 +123,9 @@ void SimulationComponent::resetSimulationButton() {
         clearSignals();
         env = nullptr;
         isSimulationStarted = false;
+        timestamp = 0;
+        realDist =  0;
+        measuredDist = 0;
     }
 }
 

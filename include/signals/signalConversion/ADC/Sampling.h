@@ -9,7 +9,7 @@ public:
     Sampling(std::unique_ptr<ContinousSignal> strategy, double sampleRate);
 
     double calculateSignalAtSample(int n) override;
-
+    double calculateSignalAt(double time) override;
 private:
     std::unique_ptr<ContinousSignal> strategy;
 

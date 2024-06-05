@@ -6,7 +6,7 @@ ComplexSignalValueType ComplexSignal::getType() const {
 }
 
 void ComplexSignal::setType(ComplexSignalValueType newType) {
-    Signal& sig = SignalStrategy::getSignal();
+    Signal &sig = SignalStrategy::getSignal();
     sig.clear();
     ComplexSignal::type = newType;
 }

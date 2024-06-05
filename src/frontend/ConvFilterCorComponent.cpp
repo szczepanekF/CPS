@@ -17,7 +17,7 @@
 #include "signals/windows/HanningWindow.h"
 
 ConvFilterCorComponent::ConvFilterCorComponent(std::shared_ptr<Mediator> mediator)
-        : Component(std::move(mediator)), selectedOperation(-1), M(0),  f0(0), windowChoice(-1){
+        : Component(std::move(mediator)), selectedOperation(-1), M(0), f0(0), windowChoice(-1) {
     addToMediator();
 }
 
@@ -26,9 +26,9 @@ void ConvFilterCorComponent::addSignalStrategy(std::unique_ptr<SignalStrategy> s
     if (discreteSignals.size() >= 2) {
         discreteSignals.clear();
     }
-        std::unique_ptr<DiscreteSignal> discreteSignal = std::unique_ptr<DiscreteSignal>(
-                dynamic_cast<DiscreteSignal *>(signalStrategy.release()));
-        discreteSignals.push_back(std::move(discreteSignal));
+    std::unique_ptr<DiscreteSignal> discreteSignal = std::unique_ptr<DiscreteSignal>(
+            dynamic_cast<DiscreteSignal *>(signalStrategy.release()));
+    discreteSignals.push_back(std::move(discreteSignal));
 
 }
 
@@ -63,7 +63,6 @@ void ConvFilterCorComponent::drawOperationPanel() {
     }
 
 
-
     if (ImGui::Button("Draw signal")) {
         std::unique_ptr<Window> window = getChosenWindow();
         std::string signalName;
@@ -85,18 +84,21 @@ void ConvFilterCorComponent::drawOperationPanel() {
                 [[fallthrough]];
             case 0: {
                 if (selectedOperation == 2) {
-                    discreteSignals.insert(discreteSignals.begin(), std::make_unique<BandPassFilter>(M, f0,discreteSignals[0]->getFrequency(),
-                                                             std::move(window)));
+                    discreteSignals.insert(discreteSignals.begin(),
+                                           std::make_unique<BandPassFilter>(M, f0, discreteSignals[0]->getFrequency(),
+                                                                            std::move(window)));
                     addSignal(nullptr, discreteSignals[0]->getSignal(), secondSignalName);
 
                 } else if (selectedOperation == 3) {
-                    discreteSignals.insert(discreteSignals.begin(), std::make_unique<HighPassFilter>(M, f0, discreteSignals[0]->getFrequency(),
-                                                                               std::move(window)));
+                    discreteSignals.insert(discreteSignals.begin(),
+                                           std::make_unique<HighPassFilter>(M, f0, discreteSignals[0]->getFrequency(),
+                                                                            std::move(window)));
                     addSignal(nullptr, discreteSignals[0]->getSignal(), secondSignalName);
 
                 } else if (selectedOperation == 4) {
-                    discreteSignals.insert(discreteSignals.begin(), std::make_unique<LowPassFilter>(M, f0, discreteSignals[0]->getFrequency()
-                                                                              , std::move(window)));
+                    discreteSignals.insert(discreteSignals.begin(),
+                                           std::make_unique<LowPassFilter>(M, f0, discreteSignals[0]->getFrequency(),
+                                                                           std::move(window)));
                     addSignal(nullptr, discreteSignals[0]->getSignal(), secondSignalName);
 
                 } else {

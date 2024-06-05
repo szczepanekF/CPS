@@ -11,7 +11,7 @@
 
 ConversionComponent::ConversionComponent(std::shared_ptr<Mediator> mediator)
         : Component(std::move(mediator)), samplingFrequency(0.0), quantizationLimit(0.0),
-          measuresSet(false), MSE(0.0), SNR(0.0), PSNR(0.0), MD(0.0){
+          measuresSet(false), MSE(0.0), SNR(0.0), PSNR(0.0), MD(0.0) {
     addToMediator();
     initializeOperations();
 }
@@ -43,7 +43,7 @@ void ConversionComponent::show() {
         if (measuresSet) {
             drawCalculatedMeasuresPanel();
         }
-        if(isMainSignalStrategyDiscrete()) {
+        if (isMainSignalStrategyDiscrete()) {
             ImGui::SetCursorPos(ImVec2(1500, 400));
             if (ImGui::Button("Add to operations")) {
                 addSignalToConvFilterCor(std::move(mainSignalStrategy));
@@ -135,7 +135,7 @@ bool ConversionComponent::isOperationDiscrete(OPERATION_TYPE type) {
 
 void ConversionComponent::drawRadioButton(size_t operationInd) {
     Operation &op = operations[operationInd];
-    if (ImGui::RadioButton(op.getName(), op.getIsActive())) {
+    if (ImGui::RadioButton(op.getName(), op.isOperationActive())) {
         op.setIsActive(true);
         for (size_t i = 0; i < operations.size(); i++) {
             if (operationInd != i) operations[i].setIsActive(false);
@@ -145,7 +145,7 @@ void ConversionComponent::drawRadioButton(size_t operationInd) {
 
 OPERATION_TYPE ConversionComponent::getSelectedOperationType() {
     for (auto &operation: operations) {
-        if (operation.getIsActive()) {
+        if (operation.isOperationActive()) {
             return operation.getType();
         }
     }
@@ -153,14 +153,14 @@ OPERATION_TYPE ConversionComponent::getSelectedOperationType() {
 }
 
 void ConversionComponent::setConversionSignal() {
-    std::unique_ptr<SignalStrategy> strat{};
+    std::unique_ptr<SignalStrategy> strat;
     if (isMainSignalStrategyDiscrete()) {
         strat = getChosenDacStrategy();
     } else {
         strat = getChosenAdcStrategy();
     }
 
-    Signal& sig = strat->getSignal();
+    Signal &sig = strat->getSignal();
     addSignal(std::move(strat), sig);
 
     if (isMainSignalStrategyReconstruction()) {
@@ -182,6 +182,7 @@ std::unique_ptr<SignalStrategy> ConversionComponent::getChosenAdcStrategy() {
     switch (type) {
         case SAMPL:
             strat = std::move(sampling);
+
             break;
         case QUANT_CLIPPED: {
             strat = std::make_unique<QuantizationClipped>(std::move(sampling), quantizationLimit);
@@ -222,7 +223,7 @@ std::unique_ptr<SignalStrategy> ConversionComponent::getChosenDacStrategy() {
 }
 
 bool ConversionComponent::isOperationSelected() {
-    return std::ranges::any_of(operations, [](auto &operation) { return operation.getIsActive(); });
+    return std::ranges::any_of(operations, [](auto &operation) { return operation.isOperationActive(); });
 }
 
 void ConversionComponent::unsetMeasures() {

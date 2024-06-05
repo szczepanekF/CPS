@@ -1,6 +1,7 @@
 
 #include "signals/transformers/DiscreteCosineTransform.h"
 #include <cmath>
+
 std::vector<double> DiscreteCosineTransform::transform(std::vector<double> x) const {
     int N = x.size();
     std::vector<double> vals(N);

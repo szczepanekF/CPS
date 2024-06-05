@@ -15,6 +15,7 @@ public:
 
     void setNumberOfSamples(int numberOfSamples);
 
+
     virtual double calculateSignalAtSample(int n) = 0;
 
     int getNumberOfSamples() const;

@@ -1,5 +1,6 @@
 
 #include <utility>
+#include <iostream>
 #include "frontend/SignalManagementComponent.h"
 #include "imgui.h"
 
@@ -14,7 +15,7 @@
 
 SignalManagementComponent::SignalManagementComponent(std::shared_ptr<Mediator> med)
         : Component(std::move(med)), filename(), signalProcesor(), drawedSignal(nullptr),
-            signalForOperation1(), signalForOperation2(), isOperationChecked(false) {
+          signalForOperation1(), signalForOperation2(), isOperationChecked(false) {
 
     initChecks();
     params = {Parameter("Amplitude"),
@@ -195,8 +196,6 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
     switch (signalType) {
         case SIN:
             strat = new SinusoidalSignal(params[0].value, params[1].value, params[2].value, params[3].value);
-//
-//            strat = new SimulatedSignal(params[1].value, params[2].value, params[3].value);
             break;
         case SIN_ONE:
             strat = new SinusoidalOneHalfRectifiedSignal(params[0].value, params[1].value, params[2].value,
@@ -239,12 +238,10 @@ void SignalManagementComponent::setDrawedSignalBySignalType() {
             return;
     }
 
-
-    drawedSignal = std::make_unique<Signal>(strat->getSignal());
-    std::unique_ptr<SignalStrategy> stratUniquePtr = std::unique_ptr<SignalStrategy> (strat);
+    std::unique_ptr<SignalStrategy> stratUniquePtr = std::unique_ptr<SignalStrategy>(strat);
+    drawedSignal = std::make_unique<Signal>(stratUniquePtr->getSignal());
     if (!isOperationChecked) {
         clearSignals();
-
         addSignal(std::move(stratUniquePtr), *drawedSignal);
     } else {
         if (signalForOperation1 == nullptr) {
@@ -419,25 +416,26 @@ void SignalManagementComponent::createOperationButtons() {
 
 void SignalManagementComponent::createStrategyOperationButtons() {
     std::array<std::string, 4> arr = {"add", "subtract", "multiply", "divide"};
-    for (const auto& operation: arr) {
+    for (const auto &operation: arr) {
         if (ImGui::Button(operation.c_str())) {
-            std::function<double(double, double)> operationFunction = [](double a, double b) {return a + b;};
+            std::function<double(double, double)> operationFunction = [](double a, double b) { return a + b; };
             if (operation == "add") {
-                operationFunction = [](double a, double b) {return a + b;};
+                operationFunction = [](double a, double b) { return a + b; };
             } else if (operation == "subtract") {
-                operationFunction = [](double a, double b) {return a - b;};
+                operationFunction = [](double a, double b) { return a - b; };
             } else if (operation == "multiply") {
-                operationFunction = [](double a, double b) {return a * b;};
+                operationFunction = [](double a, double b) { return a * b; };
             } else if (operation == "divide") {
-                operationFunction = [](double a, double b) {return a / b;};
+                operationFunction = [](double a, double b) { return a / b; };
             }
 
-            SignalStrategy* strat = new OperationResultSignal(std::move(signalForOperation1), std::move(signalForOperation2), operationFunction);
+            SignalStrategy *strat = new OperationResultSignal(std::move(signalForOperation1),
+                                                              std::move(signalForOperation2), operationFunction);
             cleanUp();
             clearSignals();
-
-            drawedSignal = std::make_unique<Signal>(strat->getSignal());
-            addSignal(std::unique_ptr<SignalStrategy> (strat), *drawedSignal);
+            std::unique_ptr<SignalStrategy> strategy(strat);
+            drawedSignal = std::make_unique<Signal>(strategy->getSignal());
+            addSignal(std::move(strategy), *drawedSignal);
             isOperationChecked = false;
         }
     }

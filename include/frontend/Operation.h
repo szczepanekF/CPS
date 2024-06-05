@@ -9,7 +9,7 @@ public:
     const char *getName() const;
 
 
-    bool getIsActive() const;
+    bool isOperationActive() const;
 
     void setIsActive(bool isActive);
 

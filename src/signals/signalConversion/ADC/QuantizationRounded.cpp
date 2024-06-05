@@ -5,7 +5,7 @@
 QuantizationRounded::QuantizationRounded(std::unique_ptr<Sampling> strategy, int quantizationLevels)
         : Quantization(std::move(strategy), quantizationLevels) {}
 
-double QuantizationRounded::typicalFunction(double& value) {
+double QuantizationRounded::typicalFunction(double &value) {
     return std::round(value);
 }
 

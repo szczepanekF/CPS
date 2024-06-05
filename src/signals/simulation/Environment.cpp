@@ -3,7 +3,7 @@
 #include "signals/simulation/Environment.h"
 
 Environment::Environment(double signalVelocity, double echoVelocity, double distance,
-                         const float& timeStep, std::unique_ptr<DistanceSensor> distanceSensor)
+                         const float &timeStep, std::unique_ptr<DistanceSensor> distanceSensor)
         : signalVelocity(signalVelocity), echoVelocity(echoVelocity), distance(distance), timestamp(0),
           timeStep(timeStep), distanceSensor(std::move(distanceSensor)) {}
 

@@ -49,7 +49,8 @@ void SignalMediator::addComponent(Component *comp) {
 
 }
 
-SignalMediator::SignalMediator() : convComponent(nullptr), plotComponent(PlotComponent::getInstance()), convFilterCorComponent(nullptr){
+SignalMediator::SignalMediator() : convComponent(nullptr), plotComponent(PlotComponent::getInstance()),
+                                   convFilterCorComponent(nullptr) {
 }
 
 

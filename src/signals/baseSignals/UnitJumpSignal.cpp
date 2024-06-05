@@ -3,7 +3,7 @@
 #include "signals/baseSignals/UnitJumpSignal.h"
 
 UnitJumpSignal::UnitJumpSignal(double amp, double time0, double dur, double jumpTime)
-        : ContinousSignal(time0, dur),amplitude(amp), jumpTime(jumpTime) {
+        : ContinousSignal(time0, dur), amplitude(amp), jumpTime(jumpTime) {
 
 }
 
