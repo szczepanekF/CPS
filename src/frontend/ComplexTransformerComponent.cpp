@@ -184,7 +184,7 @@ void ComplexTransformerComponent::updateComplexSignal() {
         val1 = ABSOLUTE;
         val2 = ARGUMENT;
         str1 = "absolute values";
-        str2 = "imaginary values";
+        str2 = "phase values";
     }
 
 
