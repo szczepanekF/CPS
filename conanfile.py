@@ -9,7 +9,7 @@ class ImGuiExample(ConanFile):
 
 
     def requirements(self):
-        self.requires("imgui/1.90")
+        self.requires("imgui/1.90.5")
         self.requires("glfw/3.4")
         self.requires("glew/2.2.0")
         self.requires("implot/0.16")
